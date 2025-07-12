@@ -268,7 +268,7 @@ jobs:
           --toc-depth=3 \
           --number-sections \
           --epub-chapter-level=1 \
-          --katex \
+          --mathjax \
           --verbose \
           -o "Happy-LLM-教程.epub" \
           temp_epub/*.md
