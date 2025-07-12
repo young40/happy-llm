@@ -18,13 +18,14 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
       
-    - name: Install pandoc and dependencies
+    - name: Setup pandoc
+      uses: r-lib/actions/setup-pandoc@v2
+      
+    - name: Install fonts
       run: |
         sudo apt-get update
-        sudo apt-get install -y pandoc texlive-xetex texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra fonts-noto-cjk
+        sudo apt-get install -y fonts-noto-cjk
         
     - name: Create EPUB metadata
       run: |
@@ -199,66 +200,65 @@ jobs:
         }
         EOF
         
-    - name: Generate EPUB
+    - name: Prepare markdown files
       run: |
-        # 创建临时目录存放所有markdown文件
+        # 创建临时目录
         mkdir -p temp_epub
         
-        # 检查文件是否存在并复制
-        echo "开始复制markdown文件..."
-        
-        if [ -f "docs/README.md" ]; then
-          cp docs/README.md temp_epub/00-README.md
-          echo "✓ 复制 README.md"
-        else
-          echo "⚠️ 警告: docs/README.md 不存在"
-        fi
-        
-        if [ -f "docs/前言.md" ]; then
-          cp docs/前言.md temp_epub/01-前言.md
-          echo "✓ 复制 前言.md"
-        else
-          echo "⚠️ 警告: docs/前言.md 不存在"
-        fi
-        
-        # 复制各章节文件
-        chapters=(
-          "docs/chapter1/第一章 NLP基础概念.md:02-第一章-NLP基础概念.md"
-          "docs/chapter2/第二章 Transformer架构.md:03-第二章-Transformer架构.md"
-          "docs/chapter3/第三章 预训练语言模型.md:04-第三章-预训练语言模型.md"
-          "docs/chapter4/第四章 大语言模型.md:05-第四章-大语言模型.md"
-          "docs/chapter5/第五章 动手搭建大模型.md:06-第五章-动手搭建大模型.md"
-          "docs/chapter6/第六章 大模型训练流程实践.md:07-第六章-大模型训练流程实践.md"
-          "docs/chapter7/第七章 大模型应用.md:08-第七章-大模型应用.md"
+        # 定义要处理的文件列表
+        declare -A files=(
+          ["docs/README.md"]="00-README.md"
+          ["docs/前言.md"]="01-前言.md"
+          ["docs/chapter1/第一章 NLP基础概念.md"]="02-第一章-NLP基础概念.md"
+          ["docs/chapter2/第二章 Transformer架构.md"]="03-第二章-Transformer架构.md"
+          ["docs/chapter3/第三章 预训练语言模型.md"]="04-第三章-预训练语言模型.md"
+          ["docs/chapter4/第四章 大语言模型.md"]="05-第四章-大语言模型.md"
+          ["docs/chapter5/第五章 动手搭建大模型.md"]="06-第五章-动手搭建大模型.md"
+          ["docs/chapter6/第六章 大模型训练流程实践.md"]="07-第六章-大模型训练流程实践.md"
+          ["docs/chapter7/第七章 大模型应用.md"]="08-第七章-大模型应用.md"
         )
         
-        for chapter in "${chapters[@]}"; do
-          IFS=':' read -r source target <<< "$chapter"
-          if [ -f "$source" ]; then
+        # 复制文件并检查
+        copied_count=0
+        for source in "${!files[@]}"; do
+          target="${files[$source]}"
+          if [[ -f "$source" ]]; then
             cp "$source" "temp_epub/$target"
-            echo "✓ 复制 $(basename "$source")"
+            echo "✓ 复制: $(basename "$source")"
+            ((copied_count++))
           else
-            echo "⚠️ 警告: $source 不存在"
+            echo "⚠️  警告: $source 不存在"
           fi
         done
         
-        # 检查是否有文件被复制
-        if [ ! "$(ls -A temp_epub)" ]; then
+        if [[ $copied_count -eq 0 ]]; then
           echo "❌ 错误: 没有找到任何markdown文件"
           exit 1
         fi
         
-        echo "找到以下文件:"
+        echo "📊 成功复制 $copied_count 个文件"
+        echo "📁 文件列表:"
         ls -la temp_epub/
         
-        # 使用pandoc生成epub
-        echo "开始生成EPUB文件..."
+    - name: Generate EPUB
+      run: |
+        echo "🔄 开始生成EPUB文件..."
+        
+        # 检查封面图片
+        if [[ ! -f "docs/images/head.jpg" ]]; then
+          echo "⚠️  警告: 封面图片不存在，将使用默认封面"
+          cover_option=""
+        else
+          cover_option="--epub-cover-image=docs/images/head.jpg"
+        fi
+        
+        # 生成EPUB
         pandoc \
           --from markdown \
           --to epub \
           --metadata-file=metadata.yaml \
           --css=epub-style.css \
-          --epub-cover-image=docs/images/head.jpg \
+          $cover_option \
           --toc \
           --toc-depth=3 \
           --number-sections \
@@ -267,9 +267,18 @@ jobs:
           -o "Happy-LLM-教程.epub" \
           temp_epub/*.md
         
-        if [ $? -eq 0 ]; then
-          echo "✓ EPUB文件生成成功!"
+        if [[ $? -eq 0 ]]; then
+          echo "✅ EPUB文件生成成功!"
           ls -lh "Happy-LLM-教程.epub"
+          
+          # 验证文件
+          if [[ -f "Happy-LLM-教程.epub" ]]; then
+            file_size=$(stat -c%s "Happy-LLM-教程.epub" 2>/dev/null || stat -f%z "Happy-LLM-教程.epub" 2>/dev/null || echo "unknown")
+            echo "📏 文件大小: $file_size bytes"
+          else
+            echo "❌ 错误: EPUB文件未生成"
+            exit 1
+          fi
         else
           echo "❌ EPUB文件生成失败"
           exit 1
