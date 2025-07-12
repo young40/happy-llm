@@ -83,6 +83,20 @@
 > *Happy-LLM PDF : https://github.com/datawhalechina/happy-llm/releases/tag/PDF*  
 > *Happy-LLM PDF 国内下载地址 : https://www.datawhale.cn/learn/summary/179*  
 
+### EPUB 版本下载
+
+&emsp;&emsp;***Happy-LLM 还提供 EPUB 格式的电子书，方便在电子阅读器上阅读。EPUB 版本会自动生成，包含完整的教程内容和代码示例。***
+
+> *Happy-LLM EPUB : 在 GitHub Actions 中自动生成，可在 Releases 页面下载最新版本*  
+> *📱 支持在手机、平板、电子阅读器等设备上阅读*
+
+**自动生成特性：**
+- ✅ 支持中文排版和字体
+- ✅ 包含完整的目录导航
+- ✅ 代码高亮显示
+- ✅ 图片和表格支持
+- ✅ 响应式布局设计
+
 ## 💡 如何学习
 
 &emsp;&emsp;本项目适合大学生、研究人员、LLM 爱好者。在学习本项目之前，建议具备一定的编程经验，尤其是要对 Python 编程语言有一定的了解。最好具备深度学习的相关知识，并了解 NLP 领域的相关概念和术语，以便更轻松地学习本项目。

@@ -1,0 +1,91 @@
+name: Test EPUB Generation
+
+on:
+  workflow_dispatch:
+    inputs:
+      test_mode:
+        description: '测试模式'
+        required: true
+        default: 'basic'
+        type: choice
+        options:
+        - basic
+        - full
+
+jobs:
+  test-epub:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Install pandoc
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y pandoc
+        
+    - name: Check required files
+      run: |
+        echo "检查必需的markdown文件..."
+        
+        required_files=(
+          "docs/README.md"
+          "docs/前言.md"
+          "docs/chapter1/第一章 NLP基础概念.md"
+          "docs/chapter2/第二章 Transformer架构.md"
+          "docs/chapter3/第三章 预训练语言模型.md"
+          "docs/chapter4/第四章 大语言模型.md"
+          "docs/chapter5/第五章 动手搭建大模型.md"
+          "docs/chapter6/第六章 大模型训练流程实践.md"
+          "docs/chapter7/第七章 大模型应用.md"
+        )
+        
+        missing_files=()
+        
+        for file in "${required_files[@]}"; do
+          if [ ! -f "$file" ]; then
+            missing_files+=("$file")
+            echo "❌ 缺失: $file"
+          else
+            echo "✓ 存在: $file"
+          fi
+        done
+        
+        if [ ${#missing_files[@]} -gt 0 ]; then
+          echo "❌ 发现 ${#missing_files[@]} 个缺失文件:"
+          printf '%s\n' "${missing_files[@]}"
+          exit 1
+        else
+          echo "✓ 所有必需文件都存在"
+        fi
+        
+    - name: Test pandoc conversion
+      if: inputs.test_mode == 'full'
+      run: |
+        echo "测试pandoc转换..."
+        
+        # 创建测试文件
+        mkdir -p test_epub
+        cp docs/README.md test_epub/test.md
+        
+        # 测试基本转换
+        pandoc test_epub/test.md -o test.epub
+        
+        if [ -f "test.epub" ]; then
+          echo "✓ pandoc转换测试成功"
+          ls -lh test.epub
+        else
+          echo "❌ pandoc转换测试失败"
+          exit 1
+        fi
+        
+    - name: Upload test results
+      uses: actions/upload-artifact@v4
+      if: inputs.test_mode == 'full' && always()
+      with:
+        name: test-results
+        path: |
+          test.epub
+          test_epub/
+        retention-days: 1 
