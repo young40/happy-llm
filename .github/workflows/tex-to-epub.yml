@@ -168,11 +168,21 @@ jobs:
         # 创建临时目录
         mkdir -p temp_epub
         
-        # 复制所有tex文件到临时目录
-        find . -name "*.tex" -not -name "main.tex" -exec cp {} temp_epub/ \;
+        # 按章节顺序处理tex文件
+        chapters=(
+          "前言"
+          "chapter1/第一章 NLP基础概念"
+          "chapter2/第二章 Transformer架构"
+          "chapter3/第三章 预训练语言模型"
+          "chapter4/第四章 大语言模型"
+          "chapter5/第五章 动手搭建大模型"
+          "chapter6/第六章 大模型训练流程实践"
+          "chapter7/第七章 大模型应用"
+        )
         
-        # 转换每个tex文件为markdown
-        for tex_file in temp_epub/*.tex; do
+        # 转换每个章节的tex文件为markdown
+        for chapter in "${chapters[@]}"; do
+          tex_file="${chapter}.tex"
           if [ -f "$tex_file" ]; then
             filename=$(basename "$tex_file" .tex)
             echo "转换: $tex_file -> temp_epub/${filename}.md"
@@ -183,52 +193,51 @@ jobs:
               --to markdown \
               --output "temp_epub/${filename}.md" \
               --wrap=none
+          else
+            echo "警告: 找不到文件 $tex_file"
           fi
         done
         
-        # 创建主文档
-        cat > temp_epub/00-前言.md << 'EOF'
-        # 前言
+        # 处理额外章节
+        if [ -f "Extra-Chapter/Readme.tex" ]; then
+          echo "转换: Extra-Chapter/Readme.tex -> temp_epub/额外章节.md"
+          pandoc "Extra-Chapter/Readme.tex" \
+            --from latex \
+            --to markdown \
+            --output "temp_epub/额外章节.md" \
+            --wrap=none
+        fi
         
+        # 创建目录文件
+        cat > temp_epub/00-目录.md << 'EOF'
+        # 目录
+        
+        ## 前言
+        ## 第一章 NLP基础概念
+        ## 第二章 Transformer架构
+        ## 第三章 预训练语言模型
+        ## 第四章 大语言模型
+        ## 第五章 动手搭建大模型
+        ## 第六章 大模型训练流程实践
+        ## 第七章 大模型应用
+        ## 额外章节
         EOF
         
-        cat > temp_epub/01-第一章.md << 'EOF'
-        # 第一章 NLP基础概念
+        # 按顺序合并所有markdown文件
+        cat temp_epub/00-目录.md > combined.md
+        cat temp_epub/前言.md >> combined.md
+        cat temp_epub/第一章\ NLP基础概念.md >> combined.md
+        cat temp_epub/第二章\ Transformer架构.md >> combined.md
+        cat temp_epub/第三章\ 预训练语言模型.md >> combined.md
+        cat temp_epub/第四章\ 大语言模型.md >> combined.md
+        cat temp_epub/第五章\ 动手搭建大模型.md >> combined.md
+        cat temp_epub/第六章\ 大模型训练流程实践.md >> combined.md
+        cat temp_epub/第七章\ 大模型应用.md >> combined.md
         
-        EOF
-        
-        cat > temp_epub/02-第二章.md << 'EOF'
-        # 第二章 Transformer架构
-        
-        EOF
-        
-        cat > temp_epub/03-第三章.md << 'EOF'
-        # 第三章 预训练语言模型
-        
-        EOF
-        
-        cat > temp_epub/04-第四章.md << 'EOF'
-        # 第四章 大语言模型
-        
-        EOF
-        
-        cat > temp_epub/05-第五章.md << 'EOF'
-        # 第五章 动手搭建大模型
-        
-        EOF
-        
-        cat > temp_epub/06-第六章.md << 'EOF'
-        # 第六章 大模型训练流程实践
-        
-        EOF
-        
-        cat > temp_epub/07-第七章.md << 'EOF'
-        # 第七章 大模型应用
-        
-        EOF
-        
-        # 合并所有markdown文件
-        cat temp_epub/*.md > combined.md
+        # 添加额外章节（如果存在）
+        if [ -f "temp_epub/额外章节.md" ]; then
+          cat temp_epub/额外章节.md >> combined.md
+        fi
         
         # 生成EPUB
         pandoc combined.md \
