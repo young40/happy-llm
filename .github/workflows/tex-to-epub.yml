@@ -1,0 +1,286 @@
+name: Convert TEX to EPUB
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  convert-tex-to-epub:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup pandoc
+      uses: r-lib/actions/setup-pandoc@v4
+      
+    - name: Install LaTeX tools
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y texlive-xetex texlive-lang-chinese texlive-fonts-recommended
+        sudo apt-get install -y fonts-noto-cjk
+        
+    - name: Check tex files
+      run: |
+        echo "检查tex文件..."
+        if [ ! -d "docs/tex_output" ]; then
+          echo "❌ docs/tex_output 目录不存在"
+          exit 1
+        fi
+        
+        tex_count=$(find docs/tex_output -name "*.tex" | wc -l)
+        echo "✓ 找到 $tex_count 个tex文件"
+        
+        if [ $tex_count -eq 0 ]; then
+          echo "❌ 没有找到tex文件"
+          exit 1
+        fi
+        
+        echo "tex文件列表："
+        find docs/tex_output -name "*.tex" -type f
+        
+    - name: Create EPUB metadata
+      run: |
+        cat > docs/tex_output/metadata.yaml << 'EOF'
+        ---
+        title: "Happy-LLM 大语言模型教程"
+        subtitle: "从理论到实践"
+        author: "DataWhale"
+        language: zh-CN
+        subject: "大语言模型教程"
+        description: "从NLP基础概念到大模型应用的完整教程，包含理论知识和实践代码"
+        publisher: "DataWhale"
+        rights: "CC BY-NC-SA 4.0"
+        identifier: "happy-llm-tutorial"
+        cover-image: "docs/images/head.jpg"
+        ---
+        EOF
+        
+    - name: Create EPUB style
+      run: |
+        cat > docs/tex_output/epub-style.css << 'EOF'
+        @charset "UTF-8";
+        
+        body {
+          font-family: "Noto Sans CJK SC", "Microsoft YaHei", "SimSun", "PingFang SC", serif;
+          line-height: 1.6;
+          margin: 2em;
+          color: #333;
+          font-size: 16px;
+        }
+        
+        h1 {
+          color: #2c3e50;
+          border-bottom: 2px solid #3498db;
+          padding-bottom: 0.3em;
+          margin-top: 2em;
+          margin-bottom: 1em;
+          font-size: 1.8em;
+        }
+        
+        h2 {
+          color: #34495e;
+          border-bottom: 1px solid #bdc3c7;
+          padding-bottom: 0.2em;
+          margin-top: 1.5em;
+          margin-bottom: 0.8em;
+          font-size: 1.4em;
+        }
+        
+        h3 {
+          color: #7f8c8d;
+          margin-top: 1.2em;
+          margin-bottom: 0.6em;
+          font-size: 1.2em;
+        }
+        
+        code {
+          background-color: #f8f9fa;
+          padding: 0.2em 0.4em;
+          border-radius: 3px;
+          font-family: "Consolas", "Monaco", "Courier New", monospace;
+          font-size: 0.9em;
+          color: #e74c3c;
+        }
+        
+        pre {
+          background-color: #f8f9fa;
+          padding: 1em;
+          border-radius: 5px;
+          overflow-x: auto;
+          border-left: 4px solid #3498db;
+          margin: 1em 0;
+        }
+        
+        pre code {
+          background-color: transparent;
+          padding: 0;
+          color: #333;
+        }
+        
+        img {
+          max-width: 100%;
+          height: auto;
+          display: block;
+          margin: 1em auto;
+          border-radius: 5px;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        table {
+          border-collapse: collapse;
+          width: 100%;
+          margin: 1em 0;
+          font-size: 0.9em;
+        }
+        
+        th, td {
+          border: 1px solid #ddd;
+          padding: 8px;
+          text-align: left;
+        }
+        
+        th {
+          background-color: #f2f2f2;
+          font-weight: bold;
+        }
+        
+        a {
+          color: #3498db;
+          text-decoration: none;
+        }
+        
+        a:hover {
+          text-decoration: underline;
+        }
+        EOF
+        
+    - name: Convert TEX to EPUB
+      run: |
+        cd docs/tex_output
+        
+        echo "开始转换tex文件为epub..."
+        
+        # 创建临时目录
+        mkdir -p temp_epub
+        
+        # 复制所有tex文件到临时目录
+        find . -name "*.tex" -not -name "main.tex" -exec cp {} temp_epub/ \;
+        
+        # 转换每个tex文件为markdown
+        for tex_file in temp_epub/*.tex; do
+          if [ -f "$tex_file" ]; then
+            filename=$(basename "$tex_file" .tex)
+            echo "转换: $tex_file -> temp_epub/${filename}.md"
+            
+            # 使用pandoc将tex转换为markdown
+            pandoc "$tex_file" \
+              --from latex \
+              --to markdown \
+              --output "temp_epub/${filename}.md" \
+              --wrap=none
+          fi
+        done
+        
+        # 创建主文档
+        cat > temp_epub/00-前言.md << 'EOF'
+        # 前言
+        
+        EOF
+        
+        cat > temp_epub/01-第一章.md << 'EOF'
+        # 第一章 NLP基础概念
+        
+        EOF
+        
+        cat > temp_epub/02-第二章.md << 'EOF'
+        # 第二章 Transformer架构
+        
+        EOF
+        
+        cat > temp_epub/03-第三章.md << 'EOF'
+        # 第三章 预训练语言模型
+        
+        EOF
+        
+        cat > temp_epub/04-第四章.md << 'EOF'
+        # 第四章 大语言模型
+        
+        EOF
+        
+        cat > temp_epub/05-第五章.md << 'EOF'
+        # 第五章 动手搭建大模型
+        
+        EOF
+        
+        cat > temp_epub/06-第六章.md << 'EOF'
+        # 第六章 大模型训练流程实践
+        
+        EOF
+        
+        cat > temp_epub/07-第七章.md << 'EOF'
+        # 第七章 大模型应用
+        
+        EOF
+        
+        # 合并所有markdown文件
+        cat temp_epub/*.md > combined.md
+        
+        # 生成EPUB
+        pandoc combined.md \
+          --from markdown \
+          --to epub \
+          --output "Happy-LLM-Tutorial.epub" \
+          --metadata-file=metadata.yaml \
+          --css=epub-style.css \
+          --toc \
+          --number-sections \
+          --epub-cover-image=../images/head.jpg
+        
+        echo "EPUB生成完成！"
+        ls -lh Happy-LLM-Tutorial.epub
+        
+    - name: Upload EPUB artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: happy-llm-epub
+        path: docs/tex_output/Happy-LLM-Tutorial.epub
+        retention-days: 30
+        
+    - name: Create Release
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: epub-v${{ github.run_number }}
+        release_name: Happy-LLM EPUB v${{ github.run_number }}
+        body: |
+          ## Happy-LLM 大语言模型教程 EPUB版本
+          
+          自动生成的EPUB电子书，包含完整的教程内容。
+          
+          ### 更新内容
+          - 从tex文件转换生成
+          - 包含所有章节内容
+          - 优化的阅读体验
+          
+          ### 下载
+          请下载附件中的EPUB文件。
+        draft: false
+        prerelease: false
+        
+    - name: Upload Release Asset
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: docs/tex_output/Happy-LLM-Tutorial.epub
+        asset_name: Happy-LLM-Tutorial.epub
+        asset_content_type: application/epub+zip 

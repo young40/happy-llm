@@ -1,0 +1,573 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\documentclass[
+]{article}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{5}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\newenvironment{Shaded}{}{}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\BuiltInTok}[1]{\textcolor[rgb]{0.00,0.50,0.00}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{#1}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{#1}}
+\newcommand{\ImportTok}[1]{\textcolor[rgb]{0.00,0.50,0.00}{\textbf{#1}}}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{#1}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\author{}
+\date{}
+
+\begin{document}
+
+{
+\setcounter{tocdepth}{3}
+\tableofcontents
+}
+\section{大模型都这么厉害了，微调0.6B的小模型有什么意义？}\label{ux5927ux6a21ux578bux90fdux8fd9ux4e48ux5389ux5bb3ux4e86ux5faeux8c030.6bux7684ux5c0fux6a21ux578bux6709ux4ec0ux4e48ux610fux4e49}
+
+大家在日常使用Deepseek-R1或者是阿里新发布的Qwen3模型，他们的模型都是能力很强，所提供的API服也都可以满足大家的日常或者是公司开发所需。但大家也可以想一个简单的问题几个简单的问题，如下：
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  公司的数据是够敏感，是否需要保密？
+\item
+  日常使用大模型的任务是否很困难，对推理链是否刚需？
+\item
+  任务调用的大模型API并发量是多少？每日资金消耗有多少？
+\end{enumerate}
+
+对于问题1，如果公司数据敏感，那我建议不要调用供应商提供的大模型API。就算供应商保证不会拿你们数据做训练，但你们的数据还是泄漏了（会有不必要的风险），建议本地部署大模型。
+
+对于问题2，如果使用大模型的场景问题很困难并且刚需推理链，那可以使用供应商的API，这样可以保证推理链的上下文不会爆显存。如果问题很简单，没有刚需推理链，那建议本地部署小模型即可。
+
+对于问题3，如果任务很简单，且调用的大模型API并发量很高，那我建议微调一个特定任务的小模型，本地部署。这样可以满足高并发，并且可以减少资金消耗。（本地部署，默认硬件环境单卡4090）
+
+看到这里，想必大家已经思考完了以上三个问题，心中有了答案。那我给出一个小小的案例。
+
+\subsection{微调模型的需求性}\label{ux5faeux8c03ux6a21ux578bux7684ux9700ux6c42ux6027}
+
+假如你的公司有一个从投诉的文本中抽取用户信息的任务。比如，你需要从以下文本中抽取用户姓名、住址、邮箱、投诉的问题等等。
+
+\begin{quote}
+这只是一个小小的案例，数据也是我用大模型批量制造的。真正的投诉数据不会这么``干净、整洁''。
+\end{quote}
+
+INPUT：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{龙琳，宁夏回族自治区璐市城东林街g座 955491，邮箱 nafan@example.com。小区垃圾堆积成山，晚上噪音扰人清梦，停车难上加难，简直无法忍受！}
+\end{Highlighting}
+\end{Shaded}
+
+OUTPUT：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{\{}
+    \DataTypeTok{"name"}\FunctionTok{:} \StringTok{"龙琳"}\FunctionTok{,}
+    \DataTypeTok{"address"}\FunctionTok{:} \StringTok{"宁夏回族自治区璐市城东林街g座 955491"}\FunctionTok{,}
+    \DataTypeTok{"email"}\FunctionTok{:} \StringTok{"nafan@example.com"}\FunctionTok{,}
+    \DataTypeTok{"question"}\FunctionTok{:} \StringTok{"小区垃圾堆积成山，晚上噪音扰人清梦，停车难上加难，简直无法忍受！"}
+\FunctionTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+那你当然可以调用
+Deepseek最强大的模型R1，也可以调用阿里最新发布最强大的模型
+Qwen3-235B-A22B等等，这些模型的信息抽取效果也很非常的棒。
+
+但有个问题，如果你有几百万条这样的数据要处理，全部调用最新的，最好的大模型可能需要消耗几万块钱。并且，如果这些投诉数据，比如电信投诉数据，电网投诉数据，这些数据是敏感的不可以直接放到外网的。
+
+所以，综合数据敏感，和资金消耗。最好的选择就是微调一个小模型（如Qwen3-0.6B），既可以保证高并发，可以保证数据不泄漏，保证模型抽取的效果，还可以省钱！！！
+
+那下面，用一个小案例带大家实操一下，微调Qwen3-0.6B小模型完成文本信息抽取任务。
+
+\subsection{配置环境
+下载数据}\label{ux914dux7f6eux73afux5883-ux4e0bux8f7dux6570ux636e}
+
+\begin{quote}
+Colab
+文件地址：https://colab.research.google.com/drive/18ByY11KVhIy6zWx1uKUjSzqeHTme-TtU?usp=drive\_link
+\end{quote}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\OperatorTok{!}\NormalTok{pip install datasets swanlab }\OperatorTok{{-}}\NormalTok{q}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\OperatorTok{!}\NormalTok{wget }\OperatorTok{{-}{-}}\NormalTok{no}\OperatorTok{{-}}\NormalTok{check}\OperatorTok{{-}}\NormalTok{certificate }\StringTok{\textquotesingle{}https://docs.google.com/uc?export=download\&id=1a0sf5C209CLW5824TJkUM4olMy0zZWpg\textquotesingle{}} \OperatorTok{{-}}\NormalTok{O fake\_sft.json}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{处理数据}\label{ux5904ux7406ux6570ux636e}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{from}\NormalTok{ datasets }\ImportTok{import}\NormalTok{ Dataset}
+\ImportTok{import}\NormalTok{ pandas }\ImportTok{as}\NormalTok{ pd}
+\ImportTok{from}\NormalTok{ transformers }\ImportTok{import}\NormalTok{ AutoTokenizer, AutoModelForCausalLM, DataCollatorForSeq2Seq, TrainingArguments, Trainer, GenerationConfig}
+\ImportTok{from}\NormalTok{ peft }\ImportTok{import}\NormalTok{ LoraConfig, TaskType, get\_peft\_model}
+\ImportTok{import}\NormalTok{ torch}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# 将JSON文件转换为CSV文件}
+\NormalTok{df }\OperatorTok{=}\NormalTok{ pd.read\_json(}\StringTok{\textquotesingle{}fake\_sft.json\textquotesingle{}}\NormalTok{)}
+\NormalTok{ds }\OperatorTok{=}\NormalTok{ Dataset.from\_pandas(df)}
+\NormalTok{ds[:}\DecValTok{3}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model\_id }\OperatorTok{=} \StringTok{"Qwen/Qwen3{-}0.6B"}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{tokenizer }\OperatorTok{=}\NormalTok{ AutoTokenizer.from\_pretrained(model\_id, use\_fast}\OperatorTok{=}\VariableTok{False}\NormalTok{)}
+\NormalTok{tokenizer}
+\end{Highlighting}
+\end{Shaded}
+
+对大语言模型进行
+\texttt{supervised-finetuning}（\texttt{sft}，有监督微调）的数据格式如下：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{\{}
+  \DataTypeTok{"instruction"}\FunctionTok{:} \StringTok{"回答以下用户问题，仅输出答案。"}\FunctionTok{,}
+  \DataTypeTok{"input"}\FunctionTok{:} \StringTok{"1+1等于几?"}\FunctionTok{,}
+  \DataTypeTok{"output"}\FunctionTok{:} \StringTok{"2"}
+\FunctionTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+其中，\texttt{instruction}
+是用户指令，告知模型其需要完成的任务；\texttt{input}
+是用户输入，是完成用户指令所必须的输入内容；\texttt{output}
+是模型应该给出的输出。
+
+有监督微调的目标是让模型具备理解并遵循用户指令的能力。因此，在构建数据集时，我们应针对我们的目标任务，针对性构建数据。比如，如果我们的目标是通过大量人物的对话数据微调得到一个能够
+role-play 甄嬛对话风格的模型，因此在该场景下的数据示例如下：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{\{}
+  \DataTypeTok{"instruction"}\FunctionTok{:} \StringTok{"你父亲是谁？"}\FunctionTok{,}
+  \DataTypeTok{"input"}\FunctionTok{:} \StringTok{""}\FunctionTok{,}
+  \DataTypeTok{"output"}\FunctionTok{:} \StringTok{"家父是大理寺少卿甄远道。"}
+\FunctionTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\texttt{Qwen3} 采用的 \texttt{Chat\ Template}格式如下：
+
+由于 \texttt{Qwen3} 是混合推理模型，因此可以手动选择开启思考模式
+
+不开启 \texttt{thinking\ mode}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{messages }\OperatorTok{=}\NormalTok{ [}
+\NormalTok{    \{}\StringTok{"role"}\NormalTok{: }\StringTok{"system"}\NormalTok{, }\StringTok{"content"}\NormalTok{: }\StringTok{"You are a helpful AI"}\NormalTok{\},}
+\NormalTok{    \{}\StringTok{"role"}\NormalTok{: }\StringTok{"user"}\NormalTok{, }\StringTok{"content"}\NormalTok{: }\StringTok{"How are you?"}\NormalTok{\},}
+\NormalTok{    \{}\StringTok{"role"}\NormalTok{: }\StringTok{"assistant"}\NormalTok{, }\StringTok{"content"}\NormalTok{: }\StringTok{"I\textquotesingle{}m fine, think you. and you?"}\NormalTok{\},}
+\NormalTok{]}
+
+\NormalTok{text }\OperatorTok{=}\NormalTok{ tokenizer.apply\_chat\_template(}
+\NormalTok{    messages,}
+\NormalTok{    tokenize}\OperatorTok{=}\VariableTok{False}\NormalTok{,}
+\NormalTok{    add\_generation\_prompt}\OperatorTok{=}\VariableTok{True}\NormalTok{,}
+\NormalTok{    enable\_thinking}\OperatorTok{=}\VariableTok{False}
+\NormalTok{)}
+\BuiltInTok{print}\NormalTok{(text)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+<|im_start|>system
+You are a helpful AI<|im_end|>
+<|im_start|>user
+How are you?<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+
+I'm fine, think you. and you?<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+\end{verbatim}
+
+\texttt{LoRA}（\texttt{Low-Rank\ Adaptation}）训练的数据是需要经过格式化、编码之后再输入给模型进行训练的，我们需要先将输入文本编码为
+\texttt{input\_ids}，将输出文本编码为
+\texttt{labels}，编码之后的结果是向量。我们首先定义一个预处理函数，这个函数用于对每一个样本，同时编码其输入、输出文本并返回一个编码后的字典：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def}\NormalTok{ process\_func(example):}
+\NormalTok{    MAX\_LENGTH }\OperatorTok{=} \DecValTok{1024} \CommentTok{\# 设置最大序列长度为1024个token}
+\NormalTok{    input\_ids, attention\_mask, labels }\OperatorTok{=}\NormalTok{ [], [], [] }\CommentTok{\# 初始化返回值}
+    \CommentTok{\# 适配chat\_template}
+\NormalTok{    instruction }\OperatorTok{=}\NormalTok{ tokenizer(}
+        \SpecialStringTok{f"\textless{}s\textgreater{}\textless{}|im\_start|\textgreater{}system}\CharTok{\textbackslash{}n}\SpecialCharTok{\{}\NormalTok{example[}\StringTok{\textquotesingle{}system\textquotesingle{}}\NormalTok{]}\SpecialCharTok{\}}\SpecialStringTok{\textless{}|im\_end|\textgreater{}}\CharTok{\textbackslash{}n}\SpecialStringTok{"}
+        \SpecialStringTok{f"\textless{}|im\_start|\textgreater{}user}\CharTok{\textbackslash{}n}\SpecialCharTok{\{}\NormalTok{example[}\StringTok{\textquotesingle{}instruction\textquotesingle{}}\NormalTok{] }\OperatorTok{+}\NormalTok{ example[}\StringTok{\textquotesingle{}input\textquotesingle{}}\NormalTok{]}\SpecialCharTok{\}}\SpecialStringTok{\textless{}|im\_end|\textgreater{}}\CharTok{\textbackslash{}n}\SpecialStringTok{"}
+        \SpecialStringTok{f"\textless{}|im\_start|\textgreater{}assistant}\CharTok{\textbackslash{}n}\SpecialStringTok{\textless{}think\textgreater{}}\CharTok{\textbackslash{}n\textbackslash{}n}\SpecialStringTok{\textless{}/think\textgreater{}}\CharTok{\textbackslash{}n\textbackslash{}n}\SpecialStringTok{"}\NormalTok{,}
+\NormalTok{        add\_special\_tokens}\OperatorTok{=}\VariableTok{False}
+\NormalTok{    )}
+\NormalTok{    response }\OperatorTok{=}\NormalTok{ tokenizer(}\SpecialStringTok{f"}\SpecialCharTok{\{}\NormalTok{example[}\StringTok{\textquotesingle{}output\textquotesingle{}}\NormalTok{]}\SpecialCharTok{\}}\SpecialStringTok{"}\NormalTok{, add\_special\_tokens}\OperatorTok{=}\VariableTok{False}\NormalTok{)}
+    \CommentTok{\# 将instructio部分和response部分的input\_ids拼接，并在末尾添加eos token作为标记结束的token}
+\NormalTok{    input\_ids }\OperatorTok{=}\NormalTok{ instruction[}\StringTok{"input\_ids"}\NormalTok{] }\OperatorTok{+}\NormalTok{ response[}\StringTok{"input\_ids"}\NormalTok{] }\OperatorTok{+}\NormalTok{ [tokenizer.pad\_token\_id]}
+    \CommentTok{\# 注意力掩码，表示模型需要关注的位置}
+\NormalTok{    attention\_mask }\OperatorTok{=}\NormalTok{ instruction[}\StringTok{"attention\_mask"}\NormalTok{] }\OperatorTok{+}\NormalTok{ response[}\StringTok{"attention\_mask"}\NormalTok{] }\OperatorTok{+}\NormalTok{ [}\DecValTok{1}\NormalTok{]}
+    \CommentTok{\# 对于instruction，使用{-}100表示这些位置不计算loss（即模型不需要预测这部分）}
+\NormalTok{    labels }\OperatorTok{=}\NormalTok{ [}\OperatorTok{{-}}\DecValTok{100}\NormalTok{] }\OperatorTok{*} \BuiltInTok{len}\NormalTok{(instruction[}\StringTok{"input\_ids"}\NormalTok{]) }\OperatorTok{+}\NormalTok{ response[}\StringTok{"input\_ids"}\NormalTok{] }\OperatorTok{+}\NormalTok{ [tokenizer.pad\_token\_id]}
+    \ControlFlowTok{if} \BuiltInTok{len}\NormalTok{(input\_ids) }\OperatorTok{\textgreater{}}\NormalTok{ MAX\_LENGTH:  }\CommentTok{\# 超出最大序列长度截断}
+\NormalTok{        input\_ids }\OperatorTok{=}\NormalTok{ input\_ids[:MAX\_LENGTH]}
+\NormalTok{        attention\_mask }\OperatorTok{=}\NormalTok{ attention\_mask[:MAX\_LENGTH]}
+\NormalTok{        labels }\OperatorTok{=}\NormalTok{ labels[:MAX\_LENGTH]}
+    \ControlFlowTok{return}\NormalTok{ \{}
+        \StringTok{"input\_ids"}\NormalTok{: input\_ids,}
+        \StringTok{"attention\_mask"}\NormalTok{: attention\_mask,}
+        \StringTok{"labels"}\NormalTok{: labels}
+\NormalTok{    \}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{tokenized\_id }\OperatorTok{=}\NormalTok{ ds.}\BuiltInTok{map}\NormalTok{(process\_func, remove\_columns}\OperatorTok{=}\NormalTok{ds.column\_names)}
+\NormalTok{tokenized\_id}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{tokenizer.decode(tokenized\_id[}\DecValTok{0}\NormalTok{][}\StringTok{\textquotesingle{}input\_ids\textquotesingle{}}\NormalTok{])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{tokenizer.decode(}\BuiltInTok{list}\NormalTok{(}\BuiltInTok{filter}\NormalTok{(}\KeywordTok{lambda}\NormalTok{ x: x }\OperatorTok{!=} \OperatorTok{{-}}\DecValTok{100}\NormalTok{, tokenized\_id[}\DecValTok{1}\NormalTok{][}\StringTok{"labels"}\NormalTok{])))}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{加载模型}\label{ux52a0ux8f7dux6a21ux578b}
+
+加载模型并配置LoraConfig
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model }\OperatorTok{=}\NormalTok{ AutoModelForCausalLM.from\_pretrained(model\_id, device\_map}\OperatorTok{=}\StringTok{"auto"}\NormalTok{,torch\_dtype}\OperatorTok{=}\NormalTok{torch.bfloat16)}
+\NormalTok{model}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Qwen3ForCausalLM(
+  (model): Qwen3Model(
+    (embed_tokens): Embedding(151936, 1024)
+    (layers): ModuleList(
+      (0-27): 28 x Qwen3DecoderLayer(
+        (self_attn): Qwen3Attention(
+          (q_proj): Linear(in_features=1024, out_features=2048, bias=False)
+          (k_proj): Linear(in_features=1024, out_features=1024, bias=False)
+          (v_proj): Linear(in_features=1024, out_features=1024, bias=False)
+          (o_proj): Linear(in_features=2048, out_features=1024, bias=False)
+          (q_norm): Qwen3RMSNorm((128,), eps=1e-06)
+          (k_norm): Qwen3RMSNorm((128,), eps=1e-06)
+        )
+        (mlp): Qwen3MLP(
+          (gate_proj): Linear(in_features=1024, out_features=3072, bias=False)
+          (up_proj): Linear(in_features=1024, out_features=3072, bias=False)
+          (down_proj): Linear(in_features=3072, out_features=1024, bias=False)
+          (act_fn): SiLU()
+        )
+        (input_layernorm): Qwen3RMSNorm((1024,), eps=1e-06)
+        (post_attention_layernorm): Qwen3RMSNorm((1024,), eps=1e-06)
+      )
+    )
+    (norm): Qwen3RMSNorm((1024,), eps=1e-06)
+    (rotary_emb): Qwen3RotaryEmbedding()
+  )
+  (lm_head): Linear(in_features=1024, out_features=151936, bias=False)
+)
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model.enable\_input\_require\_grads() }\CommentTok{\# 开启梯度检查点时，要执行该方法}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{Lora Config}\label{lora-config}
+
+\texttt{LoraConfig}这个类中可以设置很多参数，比较重要的如下
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{task\_type}：模型类型，现在绝大部分 \texttt{decoder\_only}
+  的模型都是因果语言模型 \texttt{CAUSAL\_LM}
+\item
+  \texttt{target\_modules}：需要训练的模型层的名字，主要就是
+  \texttt{attention}部分的层，不同的模型对应的层的名字不同
+\item
+  \texttt{r}：\texttt{LoRA} 的秩，决定了低秩矩阵的维度，较小的
+  \texttt{r} 意味着更少的参数
+\item
+  \texttt{lora\_alpha}：缩放参数，与 \texttt{r} 一起决定了 \texttt{LoRA}
+  更新的强度。实际缩放比例为\texttt{lora\_alpha/r}，在当前示例中是
+  \texttt{32\ /\ 8\ =\ 4} 倍
+\item
+  \texttt{lora\_dropout}：应用于 \texttt{LoRA} 层的
+  \texttt{dropout\ rate}，用于防止过拟合
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{from}\NormalTok{ peft }\ImportTok{import}\NormalTok{ LoraConfig, TaskType, get\_peft\_model}
+
+\NormalTok{config }\OperatorTok{=}\NormalTok{ LoraConfig(}
+\NormalTok{    task\_type}\OperatorTok{=}\NormalTok{TaskType.CAUSAL\_LM,}
+\NormalTok{    target\_modules}\OperatorTok{=}\NormalTok{[}\StringTok{"q\_proj"}\NormalTok{, }\StringTok{"k\_proj"}\NormalTok{, }\StringTok{"v\_proj"}\NormalTok{, }\StringTok{"o\_proj"}\NormalTok{, }\StringTok{"gate\_proj"}\NormalTok{, }\StringTok{"up\_proj"}\NormalTok{, }\StringTok{"down\_proj"}\NormalTok{],}
+\NormalTok{    inference\_mode}\OperatorTok{=}\VariableTok{False}\NormalTok{, }\CommentTok{\# 训练模式}
+\NormalTok{    r}\OperatorTok{=}\DecValTok{8}\NormalTok{, }\CommentTok{\# Lora 秩}
+\NormalTok{    lora\_alpha}\OperatorTok{=}\DecValTok{32}\NormalTok{, }\CommentTok{\# Lora alaph，具体作用参见 Lora 原理}
+\NormalTok{    lora\_dropout}\OperatorTok{=}\FloatTok{0.1}\CommentTok{\# Dropout 比例}
+\NormalTok{)}
+\NormalTok{config}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model }\OperatorTok{=}\NormalTok{ get\_peft\_model(model, config)}
+\NormalTok{config}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model.print\_trainable\_parameters()  }\CommentTok{\# 模型参数训练量只有0.8395\%}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{quote}
+trainable params: 5,046,272 \textbar\textbar{} all params: 601,096,192
+\textbar\textbar{} trainable\%: 0.8395
+\end{quote}
+
+\subsection{Training Arguments}\label{training-arguments}
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{output\_dir}：模型的输出路径
+\item
+  \texttt{per\_device\_train\_batch\_size}：每张卡上的
+  \texttt{batch\_size}
+\item
+  \texttt{gradient\_accumulation\_steps}: 梯度累计
+\item
+  \texttt{num\_train\_epochs}：顾名思义 \texttt{epoch}
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{args }\OperatorTok{=}\NormalTok{ TrainingArguments(}
+\NormalTok{    output\_dir}\OperatorTok{=}\StringTok{"Qwen3\_instruct\_lora"}\NormalTok{,}
+\NormalTok{    per\_device\_train\_batch\_size}\OperatorTok{=}\DecValTok{4}\NormalTok{,}
+\NormalTok{    gradient\_accumulation\_steps}\OperatorTok{=}\DecValTok{4}\NormalTok{,}
+\NormalTok{    logging\_steps}\OperatorTok{=}\DecValTok{1}\NormalTok{,}
+\NormalTok{    num\_train\_epochs}\OperatorTok{=}\DecValTok{3}\NormalTok{,}
+\NormalTok{    save\_steps}\OperatorTok{=}\DecValTok{50}\NormalTok{,}
+\NormalTok{    learning\_rate}\OperatorTok{=}\FloatTok{1e{-}4}\NormalTok{,}
+\NormalTok{    save\_on\_each\_node}\OperatorTok{=}\VariableTok{True}\NormalTok{,}
+\NormalTok{    gradient\_checkpointing}\OperatorTok{=}\VariableTok{True}\NormalTok{,}
+\NormalTok{    report\_to}\OperatorTok{=}\StringTok{"none"}\NormalTok{,}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{SwanLab 简介}\label{swanlab-ux7b80ux4ecb}
+
+\href{https://github.com/swanhubx/swanlab}{SwanLab}
+是一个开源的模型训练记录工具，面向 AI
+研究者，提供了训练可视化、自动日志记录、超参数记录、实验对比、多人协同等功能。在
+\texttt{SwanLab}
+上，研究者能基于直观的可视化图表发现训练问题，对比多个实验找到研究灵感，并通过在线链接的分享与基于组织的多人协同训练，打破团队沟通的壁垒。
+
+\textbf{为什么要记录训练}
+
+相较于软件开发，模型训练更像一个实验科学。一个品质优秀的模型背后，往往是成千上万次实验。研究者需要不断尝试、记录、对比，积累经验，才能找到最佳的模型结构、超参数与数据配比。在这之中，如何高效进行记录与对比，对于研究效率的提升至关重要。
+
+\texttt{(2)\ Use\ an\ existing\ SwanLab\ account} 并使用 private API Key
+登录
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{import}\NormalTok{ swanlab}
+\ImportTok{from}\NormalTok{ swanlab.integration.transformers }\ImportTok{import}\NormalTok{ SwanLabCallback}
+
+\CommentTok{\# 实例化SwanLabCallback}
+\NormalTok{swanlab\_callback }\OperatorTok{=}\NormalTok{ SwanLabCallback(}
+\NormalTok{    project}\OperatorTok{=}\StringTok{"Qwen3{-}Lora"}\NormalTok{,  }\CommentTok{\# 注意修改}
+\NormalTok{    experiment\_name}\OperatorTok{=}\StringTok{"Qwen3{-}8B{-}LoRA{-}experiment"}  \CommentTok{\# 注意修改}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{import}\NormalTok{ swanlab}
+\ImportTok{from}\NormalTok{ swanlab.integration.transformers }\ImportTok{import}\NormalTok{ SwanLabCallback}
+
+\CommentTok{\# 实例化SwanLabCallback}
+\NormalTok{swanlab\_callback }\OperatorTok{=}\NormalTok{ SwanLabCallback(}
+\NormalTok{    project}\OperatorTok{=}\StringTok{"Qwen3{-}Lora"}\NormalTok{,}
+\NormalTok{    experiment\_name}\OperatorTok{=}\StringTok{"Qwen3{-}0.6B{-}extarct{-}lora{-}2"}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{trainer }\OperatorTok{=}\NormalTok{ Trainer(}
+\NormalTok{    model}\OperatorTok{=}\NormalTok{model,}
+\NormalTok{    args}\OperatorTok{=}\NormalTok{args,}
+\NormalTok{    train\_dataset}\OperatorTok{=}\NormalTok{tokenized\_id,}
+\NormalTok{    data\_collator}\OperatorTok{=}\NormalTok{DataCollatorForSeq2Seq(tokenizer}\OperatorTok{=}\NormalTok{tokenizer, padding}\OperatorTok{=}\VariableTok{True}\NormalTok{),}
+\NormalTok{    callbacks}\OperatorTok{=}\NormalTok{[swanlab\_callback]}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{trainer.train()}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{测试文本}\label{ux6d4bux8bd5ux6587ux672c}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{prompt }\OperatorTok{=} \StringTok{"龙琳   ，宁夏回族自治区璐市城东林街g座 955491，nafan@example.com。小区垃圾堆积成山，晚上噪音扰人清梦，停车难上加难，简直无法忍受！太插件了阿萨德看见啊啥的健康仨都会撒娇看到撒谎的、"}
+
+\NormalTok{messages }\OperatorTok{=}\NormalTok{ [}
+\NormalTok{    \{}\StringTok{"role"}\NormalTok{: }\StringTok{"system"}\NormalTok{, }\StringTok{"content"}\NormalTok{: }\StringTok{"将文本中的name、address、email、question提取出来，以json格式输出，字段为name、address、email、question，值为文本中提取出来的内容。"}\NormalTok{\},}
+\NormalTok{    \{}\StringTok{"role"}\NormalTok{: }\StringTok{"user"}\NormalTok{, }\StringTok{"content"}\NormalTok{: prompt\}}
+\NormalTok{]}
+
+\NormalTok{inputs }\OperatorTok{=}\NormalTok{ tokenizer.apply\_chat\_template(messages,}
+\NormalTok{                                       add\_generation\_prompt}\OperatorTok{=}\VariableTok{True}\NormalTok{,}
+\NormalTok{                                       tokenize}\OperatorTok{=}\VariableTok{True}\NormalTok{,}
+\NormalTok{                                       return\_tensors}\OperatorTok{=}\StringTok{"pt"}\NormalTok{,}
+\NormalTok{                                       return\_dict}\OperatorTok{=}\VariableTok{True}\NormalTok{,}
+\NormalTok{                                       enable\_thinking}\OperatorTok{=}\VariableTok{False}\NormalTok{).to(}\StringTok{\textquotesingle{}cuda\textquotesingle{}}\NormalTok{)}
+
+\NormalTok{gen\_kwargs }\OperatorTok{=}\NormalTok{ \{}\StringTok{"max\_length"}\NormalTok{: }\DecValTok{2500}\NormalTok{, }\StringTok{"do\_sample"}\NormalTok{: }\VariableTok{True}\NormalTok{, }\StringTok{"top\_k"}\NormalTok{: }\DecValTok{1}\NormalTok{\}}
+\ControlFlowTok{with}\NormalTok{ torch.no\_grad():}
+\NormalTok{    outputs }\OperatorTok{=}\NormalTok{ model.generate(}\OperatorTok{**}\NormalTok{inputs, }\OperatorTok{**}\NormalTok{gen\_kwargs)}
+\NormalTok{    outputs }\OperatorTok{=}\NormalTok{ outputs[:, inputs[}\StringTok{\textquotesingle{}input\_ids\textquotesingle{}}\NormalTok{].shape[}\DecValTok{1}\NormalTok{]:]}
+    \BuiltInTok{print}\NormalTok{(tokenizer.decode(outputs[}\DecValTok{0}\NormalTok{], skip\_special\_tokens}\OperatorTok{=}\VariableTok{True}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{\{}
+    \DataTypeTok{"name"}\FunctionTok{:} \StringTok{"龙琳"}\FunctionTok{,}
+    \DataTypeTok{"address"}\FunctionTok{:} \StringTok{"宁夏回族自治区璐市城东林街g座 955491"}\FunctionTok{,}
+    \DataTypeTok{"email"}\FunctionTok{:} \StringTok{"nafan@example.com"}\FunctionTok{,}
+    \DataTypeTok{"question"}\FunctionTok{:} \StringTok{"小区垃圾堆积成山，晚上噪音扰人清梦，停车难上加难，简直无法忍受！太插件了阿萨德看见啊啥的健康仨都会撒娇看到撒谎的、"}
+\FunctionTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+
+\end{document}

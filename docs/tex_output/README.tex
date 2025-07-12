@@ -1,0 +1,282 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\documentclass[
+]{article}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{5}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\author{}
+\date{}
+
+\begin{document}
+
+{
+\setcounter{tocdepth}{3}
+\tableofcontents
+}
+Happy-LLM
+
+📚 从零开始的大语言模型原理与实践教程
+
+深入理解 LLM 核心原理，动手实现你的第一个大模型
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{🎯 项目介绍}\label{ux9879ux76eeux4ecbux7ecd}
+
+\begin{quote}
+  \emph{很多小伙伴在看完 Datawhale开源项目：
+\href{https://github.com/datawhalechina/self-llm}{self-llm
+开源大模型食用指南}
+后，感觉意犹未尽，想要深入了解大语言模型的原理和训练过程。于是我们（Datawhale）决定推出《Happy-LLM》项目，旨在帮助大家深入理解大语言模型的原理和训练过程。}
+\end{quote}
+
+  本项目是一个\textbf{系统性的 LLM 学习教程}，将从 NLP
+的基本研究方法出发，根据 LLM 的思路及原理逐层深入，依次为读者剖析 LLM
+的架构基础和训练过程。同时，我们会结合目前 LLM
+领域最主流的代码框架，演练如何亲手搭建、训练一个
+LLM，期以实现授之以鱼，更授之以渔。希望大家能从这本书开始走入 LLM
+的浩瀚世界，探索 LLM 的无尽可能。
+
+\subsubsection{✨
+你将收获什么？}\label{ux4f60ux5c06ux6536ux83b7ux4ec0ux4e48}
+
+\begin{itemize}
+\tightlist
+\item
+  📚 \textbf{Datawhale 开源免费} 完全免费的学习本项目所有内容
+\item
+  🔍 \textbf{深入理解} Transformer 架构和注意力机制
+\item
+  📚 \textbf{掌握} 预训练语言模型的基本原理
+\item
+  🧠 \textbf{了解} 现有大模型的基本结构
+\item
+  🏗️ \textbf{动手实现} 一个完整的 LLaMA2 模型
+\item
+  ⚙️ \textbf{掌握训练} 从预训练到微调的全流程
+\item
+  🚀 \textbf{实战应用} RAG、Agent 等前沿技术
+\end{itemize}
+
+\subsection{📖 内容导航}\label{ux5185ux5bb9ux5bfcux822a}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+章节
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+关键内容
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+状态
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\href{./前言.md}{前言} & 本项目的缘起、背景及读者建议 & ✅ \\
+\href{./chapter1/第一章\%20NLP基础概念.md}{第一章 NLP 基础概念} & 什么是
+NLP、发展历程、任务分类、文本表示演进 & ✅ \\
+\href{./chapter2/第二章\%20Transformer架构.md}{第二章 Transformer 架构}
+& 注意力机制、Encoder-Decoder、手把手搭建 Transformer & ✅ \\
+\href{./chapter3/第三章\%20预训练语言模型.md}{第三章 预训练语言模型} &
+Encoder-only、Encoder-Decoder、Decoder-Only 模型对比 & ✅ \\
+\href{./chapter4/第四章\%20大语言模型.md}{第四章 大语言模型} & LLM
+定义、训练策略、涌现能力分析 & ✅ \\
+\href{./chapter5/第五章\%20动手搭建大模型.md}{第五章 动手搭建大模型} &
+实现 LLaMA2、训练 Tokenizer、预训练小型 LLM & ✅ \\
+\href{./chapter6/第六章\%20大模型训练流程实践.md}{第六章 大模型训练实践}
+& 预训练、有监督微调、LoRA/QLoRA 高效微调 & 🚧 \\
+\href{./chapter7/第七章\%20大模型应用.md}{第七章 大模型应用} &
+模型评测、RAG 检索增强、Agent 智能体 & ✅ \\
+\end{longtable}
+
+\subsubsection{模型下载}\label{ux6a21ux578bux4e0bux8f7d}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+模型名称
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+下载地址
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Happy-LLM-Chapter5-Base-215M &
+\href{https://www.modelscope.cn/models/kmno4zx/happy-llm-215M-base}{🤖
+ModelScope} \\
+Happy-LLM-Chapter5-SFT-215M &
+\href{https://www.modelscope.cn/models/kmno4zx/happy-llm-215M-sft}{🤖
+ModelScope} \\
+\end{longtable}
+
+\begin{quote}
+\emph{ModelScope
+创空间体验地址：\href{https://www.modelscope.cn/studios/kmno4zx/happy_llm_215M_sft}{🤖
+创空间}}
+\end{quote}
+
+\subsubsection{PDF 版本下载}\label{pdf-ux7248ux672cux4e0bux8f7d}
+
+  \textbf{\emph{本 Happy-LLM PDF
+教程完全开源免费。为防止各类营销号加水印后贩卖给大模型初学者，我们特地在
+PDF 文件中预先添加了不影响阅读的 Datawhale 开源标志水印，敬请谅解～}}
+
+\begin{quote}
+\emph{Happy-LLM PDF :
+https://github.com/datawhalechina/happy-llm/releases/tag/PDF}\\
+\emph{Happy-LLM PDF 国内下载地址 :
+https://www.datawhale.cn/learn/summary/179}
+\end{quote}
+
+\subsection{💡 如何学习}\label{ux5982ux4f55ux5b66ux4e60}
+
+  本项目适合大学生、研究人员、LLM
+爱好者。在学习本项目之前，建议具备一定的编程经验，尤其是要对 Python
+编程语言有一定的了解。最好具备深度学习的相关知识，并了解 NLP
+领域的相关概念和术语，以便更轻松地学习本项目。
+
+  本项目分为两部分------基础知识与实战应用。第1章～第4章是基础知识部分，从浅入深介绍
+LLM 的基本原理。其中，第1章简单介绍 NLP 的基本任务和发展，为非 NLP
+领域研究者提供参考；第2章介绍 LLM
+的基本架构------Transformer，包括原理介绍及代码实现，作为 LLM
+最重要的理论基础；第3章整体介绍经典的 PLM，包括
+Encoder-Only、Encoder-Decoder 和 Decoder-Only
+三种架构，也同时介绍了当前一些主流 LLM 的架构和思想；第4章则正式进入 LLM
+部分，详细介绍 LLM
+的特点、能力和整体训练过程。第5章～第7章是实战应用部分，将逐步带领大家深入
+LLM 的底层细节。其中，第5章将带领大家者基于 PyTorch 层亲手搭建一个
+LLM，并实现预训练、有监督微调的全流程；第6章将引入目前业界主流的 LLM
+训练框架 Transformers，带领学习者基于该框架快速、高效地实现 LLM
+训练过程；第7章则将介绍 基于 LLM 的各种应用，补全学习者对 LLM
+体系的认知，包括 LLM 的评测、检索增强生产（Retrieval-Augmented
+Generation，RAG）、智能体（Agent）的思想和简单实现。你可以根据个人兴趣和需求，选择性地阅读相关章节。
+
+  在阅读本书的过程中，建议你将理论和实际相结合。LLM
+是一个快速发展、注重实践的领域，我们建议你多投入实战，复现本书提供的各种代码，同时积极参加
+LLM 相关的项目与比赛，真正投入到 LLM 开发的浪潮中。我们鼓励你关注
+Datawhale 及其他 LLM 相关开源社区，当遇到问题时，你可以随时在本项目的
+issue 区提问。
+
+  最后，欢迎每一位读者在学习完本项目后加入到 LLM 开发者的行列。作为国内
+AI 开源社区，我们希望充分聚集共创者，一起丰富这个开源 LLM
+的世界，打造更多、更全面特色 LLM
+的教程。星火点点，汇聚成海。我们希望成为 LLM
+与普罗大众的阶梯，以自由、平等的开源精神，拥抱更恢弘而辽阔的 LLM 世界。
+
+\subsection{🤝 如何贡献}\label{ux5982ux4f55ux8d21ux732e}
+
+我们欢迎任何形式的贡献！
+
+\begin{itemize}
+\tightlist
+\item
+  🐛 \textbf{报告 Bug} - 发现问题请提交 Issue
+\item
+  💡 \textbf{功能建议} - 有好想法就告诉我们
+\item
+  📝 \textbf{内容完善} - 帮助改进教程内容
+\item
+  🔧 \textbf{代码优化} - 提交 Pull Request
+\end{itemize}
+
+\subsection{🙏 致谢}\label{ux81f4ux8c22}
+
+\subsubsection{核心贡献者}\label{ux6838ux5fc3ux8d21ux732eux8005}
+
+\begin{itemize}
+\tightlist
+\item
+  \href{https://github.com/KMnO4-zx}{宋志学-项目负责人}
+  (Datawhale成员-中国矿业大学(北京))
+\item
+  \href{https://github.com/logan-zou}{邹雨衡-项目负责人}
+  (Datawhale成员-对外经济贸易大学)
+\item
+  \href{https://xinzhongzhu.github.io/}{朱信忠-指导专家}（Datawhale首席科学家-浙江师范大学杭州人工智能研究院教授）
+\end{itemize}
+
+\subsubsection{特别感谢}\label{ux7279ux522bux611fux8c22}
+
+\begin{itemize}
+\tightlist
+\item
+  感谢 \href{https://github.com/Sm1les}{@Sm1les} 对本项目的帮助与支持
+\item
+  感谢所有为本项目做出贡献的开发者们 ❤️
+\end{itemize}
+
+\subsection{Star History}\label{star-history}
+
+⭐ 如果这个项目对你有帮助，请给我们一个 Star！
+
+\subsection{关于 Datawhale}\label{ux5173ux4e8e-datawhale}
+
+扫描二维码关注 Datawhale 公众号，获取更多优质开源内容
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{📜 开源协议}\label{ux5f00ux6e90ux534fux8bae}
+
+本作品采用\href{http://creativecommons.org/licenses/by-nc-sa/4.0/}{知识共享署名-非商业性使用-相同方式共享
+4.0 国际许可协议}进行许可。
+
+\end{document}

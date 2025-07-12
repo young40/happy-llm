@@ -1,0 +1,275 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\documentclass[
+]{article}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{5}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\author{}
+\date{}
+
+\begin{document}
+
+{
+\setcounter{tocdepth}{3}
+\tableofcontents
+}
+🚀 Happy-LLM 扩展内容
+
+社区驱动的大语言模型学习资源
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{📖 为什么会有 Extra
+Chapter？}\label{ux4e3aux4ec0ux4e48ux4f1aux6709-extra-chapter}
+
+  在 Happy-LLM
+主教程的基础上，我们发现社区中有许多优秀的学习者和实践者，他们在学习和使用大语言模型的过程中积累了宝贵的经验、独到的见解和实用的技巧。这些内容虽然不属于主教程的核心知识体系，但对于深入理解和应用大语言模型具有重要价值。
+
+\textbf{Extra Chapter 的设立目的：}
+
+\begin{itemize}
+\tightlist
+\item
+  🌟 \textbf{汇聚智慧}：收集社区成员的优秀学习笔记、实践经验和技术博客
+\item
+  🔄 \textbf{持续更新}：保持内容的时效性，跟上大语言模型领域的快速发展
+\item
+  🤝 \textbf{促进交流}：为社区成员提供分享和交流的平台
+\item
+  📚 \textbf{补充完善}：对主教程内容进行有益的补充和扩展
+\item
+  💡 \textbf{启发思考}：通过不同视角和实践案例，启发读者的深度思考
+\end{itemize}
+
+\textbf{Extra Chapter 包含的内容类型：}
+
+\begin{itemize}
+\tightlist
+\item
+  📝 \textbf{学习笔记}：深度学习心得和知识总结
+\item
+  🛠️ \textbf{实践案例}：真实项目中的应用经验
+\item
+  🔬 \textbf{技术探索}：前沿技术的研究和实验
+\item
+  💭 \textbf{思考感悟}：对大语言模型发展的独特见解
+\item
+  🎯 \textbf{专题研究}：特定领域或问题的深入分析
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{📋 PR 贡献规范}\label{pr-ux8d21ux732eux89c4ux8303}
+
+  我们热烈欢迎社区成员为 Extra Chapter
+贡献优质内容！为了保证内容质量和项目的整体性，请遵循以下规范：
+
+\subsubsection{🗂️
+目录结构规范}\label{ux76eeux5f55ux7ed3ux6784ux89c4ux8303}
+
+每个贡献的内容应按照以下目录结构组织：
+
+\begin{verbatim}
+Extra-Chapter/
+├── your-topic-name/                    # 你的主题文件夹
+│   ├── readme.md                       # 主要内容文件（必需）
+│   ├── images/                         # 图片资源文件夹（可选）
+│   │   ├── figure1.png
+│   │   └── figure2.jpg
+│   ├── code/                           # 代码文件夹（可选）
+│   │   ├── example.py
+│   │   └── requirements.txt
+│   ├── data/                           # 数据文件夹（可选）
+│   │   └── sample_data.json
+│   └── notebook.ipynb                  # Jupyter Notebook（如涉及代码必选）
+└── Readme.md                           # 本文件
+\end{verbatim}
+
+\subsubsection{📝
+文件命名规范}\label{ux6587ux4ef6ux547dux540dux89c4ux8303}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{主题文件夹命名}：
+
+  \begin{itemize}
+  \tightlist
+  \item
+    使用小写字母和连字符
+  \item
+    名称要简洁明了，能够概括主题内容
+  \item
+    例如：\texttt{why-fine-tune-small-large-language-models}、\texttt{rag-optimization-techniques}
+  \end{itemize}
+\item
+  \textbf{主要内容文件}：
+
+  \begin{itemize}
+  \tightlist
+  \item
+    必须命名为 \texttt{readme.md}
+  \item
+    使用 Markdown 格式编写
+  \end{itemize}
+\item
+  \textbf{图片文件}：
+
+  \begin{itemize}
+  \tightlist
+  \item
+    统一放在 \texttt{images/} 文件夹下
+  \item
+    使用描述性的文件名
+  \item
+    支持格式：\texttt{.png}、\texttt{.jpg}、\texttt{.jpeg}、\texttt{.gif}、\texttt{.svg}
+  \end{itemize}
+\item
+  \textbf{代码文件}：
+
+  \begin{itemize}
+  \tightlist
+  \item
+    如涉及代码，请尽量提供可直接运行的 Jupyter Notebook 文件
+  \item
+    统一放在 \texttt{code/} 文件夹下
+  \item
+    使用标准的文件扩展名
+  \item
+    如有依赖，请提供 \texttt{requirements.txt}
+  \item
+    如有 Jupyter Notebook 文件，请放在主文件夹下
+  \end{itemize}
+\end{enumerate}
+
+\subsubsection{✍️
+内容质量要求}\label{ux5185ux5bb9ux8d28ux91cfux8981ux6c42}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{原创性}：
+
+  \begin{itemize}
+  \tightlist
+  \item
+    内容必须是原创或经过授权的
+  \item
+    如引用他人内容，请注明出处
+  \end{itemize}
+\item
+  \textbf{技术准确性}：
+
+  \begin{itemize}
+  \tightlist
+  \item
+    确保技术内容的准确性
+  \item
+    代码示例应能正常运行
+  \item
+    提供必要的环境说明
+  \end{itemize}
+\item
+  \textbf{结构清晰}：
+
+  \begin{itemize}
+  \tightlist
+  \item
+    使用清晰的标题层次
+  \item
+    合理使用列表、表格等格式
+  \item
+    重要内容使用适当的强调
+  \end{itemize}
+\item
+  \textbf{语言规范}：
+
+  \begin{itemize}
+  \tightlist
+  \item
+    使用规范的中文表达
+  \item
+    技术术语使用准确
+  \item
+    避免错别字和语法错误
+  \end{itemize}
+\end{enumerate}
+
+\subsubsection{PR commit messgae
+内容}\label{pr-commit-messgae-ux5185ux5bb9}
+
+请在 PR commit message 中 包含以下内容：
+
+\begin{itemize}
+\tightlist
+\item
+  新增的主题文件夹名称
+\item
+  贡献内容的概述
+\item
+  贡献内容的详细描述
+\item
+  你的 Github 个人主页链接，及你的个人介绍
+\item
+  个人 title 及工作经历 or 学校 or 研究方向
+\end{itemize}
+
+如以下所示：
+
+\begin{verbatim}
+Extra Chapter: 你的主题名称
+
+详细描述你的贡献内容，包括新增的主题文件夹、文件内容和目录结构。
+
+- 新增的主题文件夹名称：your-topic-name
+- 贡献内容的概述：详细介绍你的贡献内容
+- 贡献内容的详细描述：详细描述你的贡献内容，包括新增的主题文件夹、文件内容和目录结构。
+- 你的 Github 个人主页链接及个人介绍：[你的个人主页链接](https://example.com)，介绍你的研究方向、技术专长等。
+- 个人 title 及工作经历 or 学校 or 研究方向：内容贡献者-xxxx学校，研究方向为自然语言处理。
+\end{verbatim}
+
+\end{document}
