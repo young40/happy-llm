@@ -163,10 +163,7 @@ jobs:
       run: |
         cd docs/tex_output
         
-        echo "开始转换tex文件为epub..."
-        
-        # 创建临时目录
-        mkdir -p temp_epub
+        echo "开始直接使用tex文件编译epub..."
         
         # 按章节顺序处理tex文件
         chapters=(
@@ -180,68 +177,138 @@ jobs:
           "chapter7/第七章 大模型应用"
         )
         
-        # 转换每个章节的tex文件为markdown
+        # 创建主tex文件
+        cat > main_combined.tex << 'EOF'
+        \documentclass[12pt,a4paper]{book}
+        \usepackage[UTF8]{ctex}
+        \usepackage{geometry}
+        \usepackage{graphicx}
+        \usepackage{hyperref}
+        \usepackage{bookmark}
+        \usepackage{amsmath,amssymb}
+        \usepackage{listings}
+        \usepackage{xcolor}
+        \usepackage{fancyhdr}
+        \usepackage{titlesec}
+        \usepackage{tocloft}
+        
+        % 页面设置
+        \geometry{left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+        
+        % 代码块设置
+        \lstset{
+            basicstyle=\ttfamily\small,
+            breaklines=true,
+            frame=single,
+            numbers=left,
+            numberstyle=\tiny,
+            keywordstyle=\color{blue},
+            commentstyle=\color{green!60!black},
+            stringstyle=\color{red},
+            backgroundcolor=\color{gray!10},
+            showspaces=false,
+            showstringspaces=false,
+            showtabs=false,
+            tabsize=2
+        }
+        
+        % 超链接设置
+        \hypersetup{
+            colorlinks=true,
+            linkcolor=blue,
+            filecolor=magenta,
+            urlcolor=cyan,
+            citecolor=green,
+            bookmarks=true,
+            bookmarksopen=true,
+            pdfstartview=FitH
+        }
+        
+        % 页眉页脚设置
+        \pagestyle{fancy}
+        \fancyhf{}
+        \fancyhead[LE,RO]{\thepage}
+        \fancyhead[RE]{\leftmark}
+        \fancyhead[LO]{\rightmark}
+        \renewcommand{\headrulewidth}{0.4pt}
+        
+        % 章节标题格式
+        \titleformat{\chapter}{\Large\bfseries}{\thechapter}{1em}{}
+        \titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+        \titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+        
+        % 目录格式
+        \renewcommand{\cftchapfont}{\bfseries}
+        \renewcommand{\cftsecfont}{\normalsize}
+        
+        \begin{document}
+        
+        % 标题页
+        \begin{titlepage}
+            \centering
+            \vspace*{2cm}
+            
+            {\Huge\bfseries 动手学大语言模型}\\[2cm]
+            
+            {\Large 从理论到实践}\\[1cm]
+            
+            {\large Datawhale 开源学习社区}\\[2cm]
+            
+            \vfill
+            
+            {\large \today}
+        \end{titlepage}
+        
+        % 版权页
+        \newpage
+        \thispagestyle{empty}
+        \vspace*{2cm}
+        \begin{center}
+            \textbf{版权声明}
+            
+            \vspace{1cm}
+            
+            本书由 Datawhale 开源学习社区编写，采用开源协议发布。
+            
+            欢迎读者在遵守开源协议的前提下自由使用、修改和分发本书内容。
+            
+            \vspace{1cm}
+            
+            GitHub: https://github.com/datawhalechina/happy-llm
+        \end{center}
+        
+        % 目录
+        \tableofcontents
+        \newpage
+        
+        EOF
+        
+        # 按顺序添加每个章节
         for chapter in "${chapters[@]}"; do
           tex_file="${chapter}.tex"
           if [ -f "$tex_file" ]; then
-            filename=$(basename "$tex_file" .tex)
-            echo "转换: $tex_file -> temp_epub/${filename}.md"
-            
-            # 使用pandoc将tex转换为markdown
-            pandoc "$tex_file" \
-              --from latex \
-              --to markdown \
-              --output "temp_epub/${filename}.md" \
-              --wrap=none
+            echo "添加章节: $tex_file"
+            # 提取章节内容（去掉文档类声明等）
+            sed -n '/\\begin{document}/,/\\end{document}/p' "$tex_file" | \
+              sed '1d;$d' >> main_combined.tex
           else
             echo "警告: 找不到文件 $tex_file"
           fi
         done
         
-        # 处理额外章节
+        # 添加额外章节
         if [ -f "Extra-Chapter/Readme.tex" ]; then
-          echo "转换: Extra-Chapter/Readme.tex -> temp_epub/额外章节.md"
-          pandoc "Extra-Chapter/Readme.tex" \
-            --from latex \
-            --to markdown \
-            --output "temp_epub/额外章节.md" \
-            --wrap=none
+          echo "添加额外章节: Extra-Chapter/Readme.tex"
+          sed -n '/\\begin{document}/,/\\end{document}/p' "Extra-Chapter/Readme.tex" | \
+            sed '1d;$d' >> main_combined.tex
         fi
         
-        # 创建目录文件
-        cat > temp_epub/00-目录.md << 'EOF'
-        # 目录
+        # 结束文档
+        echo "\\end{document}" >> main_combined.tex
         
-        ## 前言
-        ## 第一章 NLP基础概念
-        ## 第二章 Transformer架构
-        ## 第三章 预训练语言模型
-        ## 第四章 大语言模型
-        ## 第五章 动手搭建大模型
-        ## 第六章 大模型训练流程实践
-        ## 第七章 大模型应用
-        ## 额外章节
-        EOF
-        
-        # 按顺序合并所有markdown文件
-        cat temp_epub/00-目录.md > combined.md
-        cat temp_epub/前言.md >> combined.md
-        cat temp_epub/第一章\ NLP基础概念.md >> combined.md
-        cat temp_epub/第二章\ Transformer架构.md >> combined.md
-        cat temp_epub/第三章\ 预训练语言模型.md >> combined.md
-        cat temp_epub/第四章\ 大语言模型.md >> combined.md
-        cat temp_epub/第五章\ 动手搭建大模型.md >> combined.md
-        cat temp_epub/第六章\ 大模型训练流程实践.md >> combined.md
-        cat temp_epub/第七章\ 大模型应用.md >> combined.md
-        
-        # 添加额外章节（如果存在）
-        if [ -f "temp_epub/额外章节.md" ]; then
-          cat temp_epub/额外章节.md >> combined.md
-        fi
-        
-        # 生成EPUB
-        pandoc combined.md \
-          --from markdown \
+        # 直接编译为EPUB
+        pandoc main_combined.tex \
+          --from latex \
           --to epub \
           --output "Happy-LLM-Tutorial.epub" \
           --metadata-file=metadata.yaml \
