@@ -24,23 +24,42 @@ jobs:
         sudo apt-get install -y texlive-xetex texlive-lang-chinese texlive-fonts-recommended
         sudo apt-get install -y fonts-noto-cjk
         
-    - name: Check main combined tex file
+    - name: Check main tex file and structure
       run: |
-        echo "检查合并的tex文件..."
-        if [ ! -f "docs/tex_output/main_combined.tex" ]; then
-          echo "❌ main_combined.tex 文件不存在"
+        echo "检查main.tex文件..."
+        if [ ! -f "docs/tex_output/main.tex" ]; then
+          echo "❌ main.tex 文件不存在"
           exit 1
         fi
         
-        file_size=$(stat -c%s "docs/tex_output/main_combined.tex")
-        echo "✓ main_combined.tex 文件存在，大小: $file_size 字节"
+        echo "✓ main.tex 文件存在"
         
-        if [ $file_size -lt 10000 ]; then
-          echo "❌ main_combined.tex 文件过小，可能内容不完整"
-          exit 1
-        fi
+        # 检查所有input的文件是否存在
+        echo "检查\\input文件..."
+        cd docs/tex_output
         
-        echo "✓ 合并tex文件检查完成"
+        # 提取所有input文件并检查
+        input_files=(
+          "前言"
+          "chapter1/第一章 NLP基础概念"
+          "chapter2/第二章 Transformer架构"
+          "chapter3/第三章 预训练语言模型"
+          "chapter4/第四章 大语言模型"
+          "chapter5/第五章 动手搭建大模型"
+          "chapter6/第六章 大模型训练流程实践"
+          "chapter7/第七章 大模型应用"
+          "Extra-Chapter/Readme"
+        )
+        
+        for file in "${input_files[@]}"; do
+          if [ ! -f "${file}.tex" ]; then
+            echo "❌ ${file}.tex 文件不存在"
+            exit 1
+          fi
+          echo "✓ ${file}.tex 存在"
+        done
+        
+        echo "✓ 所有\\input文件检查完成"
         
     - name: Create EPUB metadata
       run: |
@@ -73,10 +92,10 @@ jobs:
       run: |
         cd docs/tex_output
         
-        echo "开始使用合并的tex文件编译epub..."
+        echo "开始使用main.tex文件编译epub..."
         
-        # 直接编译为EPUB
-        pandoc main_combined.tex \
+        # 使用main.tex编译为EPUB
+        pandoc main.tex \
           --from latex \
           --to epub \
           --output "Happy-LLM-教程.epub" \
