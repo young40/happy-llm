@@ -583,10 +583,10 @@ T5 模型的 Encoder 和 Decoder 部分都是基于 Transformer
 结构几乎完全一致，只有在位置编码和 Mask
 机制上有所不同。如图3.9所示，Encoder 和 Decoder 的结构如下：
 
-\begin{verbatim}
-<img src="https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/3-figures/2-3.png" alt="alt text" width="50%" />
-<p>图3.9 Encoder 和 Decoder</p>
-\end{verbatim}
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.5\textwidth]{https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/3-figures/2-3.png}
+\caption{图3.9 Encoder 和 Decoder}
+\end{figure}
 
 T5 的 Self-Attention 机制和 BERT 的 Attention 机制是一样的，都是基于
 Self-Attention 机制设计的。Self-Attention
@@ -596,10 +596,9 @@ Self-Attention 机制设计的。Self-Attention
 机制上有所不同，主要是为了区分输入和输出序列。如图3.10所示，Self-Attention
 结构如下：
 
-\begin{verbatim}
-<img src="https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/3-figures/2-4.png" alt="alt text" width="50%" />
-</p>图3.10 Self-Attention 结构</p>
-\end{verbatim}
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.5\textwidth]{https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/3-figures/2-4.png}
+\end{figure}
 
 与原始 Transformer 模型不同，T5 模型的LayerNorm 采用了
 RMSNorm，通过计算每个神经元的均方根（Root Mean
@@ -661,10 +660,10 @@ T5通过大规模的文本数据进行预训练，然后在具体任务上进行
 
 我们可以通过图3.11，更加直观地理解 T5 的大一统思想：
 
-\begin{verbatim}
-<img src="https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/3-figures/2-0.png" alt="alt text" width="90%" />
-<p>图3.11 T5 的大一统思想</p>
-\end{verbatim}
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.9\textwidth]{https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/3-figures/2-0.png}
+\caption{图3.11 T5 的大一统思想}
+\end{figure}
 
 对于不同的NLP任务，每次输入前都会加上一个任务描述前缀，明确指定当前任务的类型。这不仅帮助模型在预训练阶段学习到不同任务之间的通用特征，也便于在微调阶段迅速适应具体任务。例如，任务前缀可以是``summarize:
 ''用于摘要任务，或``translate English to German: ''用于翻译任务。
@@ -712,10 +711,10 @@ GPT-3 为基座模型的 ChatGPT 成功打开新时代的大门，成为 LLM
 \paragraph{（1） 模型架构------Decoder
 Only}\label{ux6a21ux578bux67b6ux6784decoder-only}
 
-\begin{verbatim}
-<img src="https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/3-figures/3-0.png" alt="alt text" width="100%" />
-<p>图3.12 GPT 模型结构</p>
-\end{verbatim}
+\begin{figure}[htbp]\centering
+\includegraphics[width=1.0\textwidth]{https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/3-figures/3-0.png}
+\caption{图3.12 GPT 模型结构}
+\end{figure}
 
 如图3.12可以看到，GPT 的整体结构和 BERT 是有一些类似的，只是相较于 BERT
 的 Encoder，选择使用了 Decoder 来进行模型结构的堆叠。由于 Decoder-Only
@@ -909,10 +908,10 @@ Only}\label{ux6a21ux578bux67b6ux6784decoder-only-1}
 
 与GPT系列模型一样，LLaMA模型也是基于Decoder-Only架构的预训练语言模型。LLaMA模型的整体结构与GPT系列模型类似，只是在模型规模和预训练数据集上有所不同。如图3.13是LLaMA模型的架构示意图：
 
-\begin{verbatim}
-<img src="https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/3-figures/3-1.png" alt="alt text" width="100%" />
-<p>图3.13 LLaMA-3 模型结构</p>
-\end{verbatim}
+\begin{figure}[htbp]\centering
+\includegraphics[width=1.0\textwidth]{https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/3-figures/3-1.png}
+\caption{图3.13 LLaMA-3 模型结构}
+\end{figure}
 
 与GPT类似，LLaMA模型的处理流程也始于将输入文本通过tokenizer进行编码，转化为一系列的input\_ids。这些input\_ids是模型能够理解和处理的数据格式。接下来，这些input\_ids会经过embedding层的转换，这里每个input\_id会被映射到一个高维空间中的向量，即词向量。同时，输入文本的位置信息也会通过positional
 embedding层被编码，以确保模型能够理解词序上下文信息。
@@ -1048,10 +1047,10 @@ CLM 的方式完成被遮蔽的 tokens 的预测。例如，输入和输出可�
 GLM 预训练任务产出的 GLM 模型，在一定程度上展现了其超出同体量 BERT
 系模型的优越性能：
 
-\begin{verbatim}
-<img src="https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/3-figures/3-2.png" alt="alt text" width="90%" />
-<p>图3.14 alt text</p>
-\end{verbatim}
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.9\textwidth]{https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/3-figures/3-2.png}
+\caption{图3.14 alt text}
+\end{figure}
 
 不过，GLM 预训练任务更多的优势还是展现在预训练模型时代，迈入 LLM
 时代后，针对于超大规模、体量的预训练，CLM 展现出远超 MLM
@@ -1094,10 +1093,10 @@ Llama-3-8B，并支持 GLM-4 中所有工具的功能。
 
 图3.15展示了 GLM 系列模型在基准集上的表现演进：
 
-\begin{verbatim}
-<img src="https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/3-figures/3-3.png" alt="alt text" width="90%" />
-<p>图3.15 alt text</p>
-\end{verbatim}
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.9\textwidth]{https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/3-figures/3-3.png}
+\caption{图3.15 alt text}
+\end{figure}
 
 \textbf{参考资料}
 

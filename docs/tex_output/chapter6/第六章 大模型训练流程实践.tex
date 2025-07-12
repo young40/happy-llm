@@ -125,10 +125,10 @@ BERT、GPT、LLaMA、T5、ViT 等上百种主流模型架构的统一支持。�
 Transformers，开发者无需重复实现基础网络结构，通过 AutoModel
 类即可一键加载任意预训练，图6.1 为 Hugging Face Transformers 课程首页：
 
-\begin{verbatim}
-<img src="https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/6-images/1-1.png" alt="alt text" width="90%" />
-<p>图6.1 Hugging Face Transformers</p>
-\end{verbatim}
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.9\textwidth]{https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/6-images/1-1.png}
+\caption{图6.1 Hugging Face Transformers}
+\end{figure}
 
 同时，框架内置的 Trainer 类封装了分布式训练的核心逻辑，支持 PyTorch 原生
 DDP、DeepSpeed、Megatron-LM
@@ -145,10 +145,10 @@ Deepspeed、peft、wandb、Swanlab
 Transformers、Dataset、Evaluate
 等多个框架实现对预训练模型、数据集及评估函数的集成，从而帮助开发者可以便捷地使用任一预训练模型，在开源模型及数据集的基础上便捷地实现个人模型的开发与应用。
 
-\begin{verbatim}
-<img src="https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/6-images/1-2.png" alt="alt text" width="90%" />
-<p>图6.2 Hugging Face Transformers 模型社区</p>
-\end{verbatim}
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.9\textwidth]{https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/6-images/1-2.png}
+\caption{图6.2 Hugging Face Transformers 模型社区}
+\end{figure}
 
 在 LLM
 时代，模型结构的调整和重新预训练越来越少，开发者更多的业务应用在于使用预训练好的
@@ -170,19 +170,19 @@ Transformers 社区开放其预训练权重与模型调用 Demo。通过使用 T
 LLM，可以使用一个已有的模型架构来直接初始化。这里，我们以
 \href{https://huggingface.co/Qwen/Qwen2.5-1.5B/tree/main}{Qwen-2.5-1.5B}的模型架构为例：
 
-\begin{verbatim}
-<img src="https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/6-images/1-3.png" alt="alt text" width="90%" />
-<p>图6.3 Qwen-2.5-1.5B</p>
-\end{verbatim}
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.9\textwidth]{https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/6-images/1-3.png}
+\caption{图6.3 Qwen-2.5-1.5B}
+\end{figure}
 
 该界面即为 HuggingFace 社区中的 Qwen-2.5-1.5B 模型参数，其中的
 \texttt{config.json}
 文件即是模型的配置信息，包括了模型的架构、隐藏层大小、模型层数等，如图6.4所示：
 
-\begin{verbatim}
-<img src="https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/6-images/1-4.png" alt="alt text" width="90%" />
-<p>图6.4 Qwen-2.5-1.5B config.json 文件</p>
-\end{verbatim}
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.9\textwidth]{https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/6-images/1-4.png}
+\caption{图6.4 Qwen-2.5-1.5B config.json 文件}
+\end{figure}
 
 我们可以沿用该模型的配置信息，初始化一个 Qwen-2.5-1.5B
 模型来进行训练，也可以在该配置信息的基础上进行更改，如修改隐藏层大小、注意力头数等，来定制一个模型结构。HuggingFace
@@ -202,10 +202,10 @@ LLM，可以使用一个已有的模型架构来直接初始化。这里，我�
 ``Qwen/Qwen2.5-1.5B''即为要下载模型的标识符，对于其他模型，可以直接复制
 HuggingFace 上的模型名即可：
 
-\begin{verbatim}
-<img src="https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/6-images/1-5.png" alt="alt text" width="90%" />
-<p>图6.5 模型下载标识</p>
-\end{verbatim}
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.9\textwidth]{https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/6-images/1-5.png}
+\caption{图6.5 模型下载标识}
+\end{figure}
 
 下载完成后，可以使用 AutoConfig 类直接加载下载好的配置文件：
 
@@ -238,10 +238,10 @@ HuggingFace 上的模型名即可：
 AutoModelForSequenceClassification 类来加载。查看该
 model，图6.6可以看到其架构和定义的配置文件相同：
 
-\begin{verbatim}
-<img src="https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/6-images/1-6.png" alt="alt text" width="70%" />
-<p>图6.6 模型结构输出结果</p>
-\end{verbatim}
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.7\textwidth]{https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/6-images/1-6.png}
+\caption{图6.6 模型结构输出结果}
+\end{figure}
 
 该 model 就是一个从零初始化的 Qwen-2.5-1.5B
 模型了。一般情况下，我们很少从零初始化 LLM
@@ -300,10 +300,10 @@ ds 是一个 DatasetDict 对象，加载的数据会默认保存在 \texttt{trai
 \end{Highlighting}
 \end{Shaded}
 
-\begin{verbatim}
-<img src="https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/6-images/1-7.png" alt="alt text" width="100%" />
-<p>图6.7 数据集展示</p>
-\end{verbatim}
+\begin{figure}[htbp]\centering
+\includegraphics[width=1.0\textwidth]{https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/6-images/1-7.png}
+\caption{图6.7 数据集展示}
+\end{figure}
 
 可以通过 feature
 属性查看数据集的特征（也就是列），这里需要保存一下数据集的列名，因为后续数据处理时，再将文本
@@ -1100,10 +1100,10 @@ LLM 完成目标任务，是非常重要的。
 具体而言，其在预训练模型每层中插入用于下游任务的参数，即 Adapter
 模块，在微调时冻结模型主体，仅训练特定于任务的参数，如图6.8所示。
 
-\begin{verbatim}
-<img src="https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/6-images/3-1.png" alt="alt text" width="90%" />
-<p>图6.8 Adapt Tuning</p>
-\end{verbatim}
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.9\textwidth]{https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/6-images/3-1.png}
+\caption{图6.8 Adapt Tuning}
+\end{figure}
 
 每个 Adapter 模块由两个前馈子层组成，第一个前馈子层将 Transformer
 块的输出作为输入，将原始输入维度 \(d\) 投影到 \(m\)，通过控制 \(m\)
@@ -1186,10 +1186,10 @@ LoRA 假设权重更新的过程中也有一个较低的本征秩，对于预训
 
 训练思路如图6.9所示：
 
-\begin{verbatim}
-<img src="https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/6-images/3-2.jpg" alt="alt text" width="90%" />
-<p>图6.9 LoRA</p>
-\end{verbatim}
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.9\textwidth]{https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/6-images/3-2.jpg}
+\caption{图6.9 LoRA}
+\end{figure}
 
 \paragraph{（2）应用于
 Transformer}\label{ux5e94ux7528ux4e8e-transformer}

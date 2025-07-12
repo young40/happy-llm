@@ -339,10 +339,10 @@ NLP
 领域的全新变革。那么，通过什么样的步骤，我们才可以训练出一个具有涌现能力的
 LLM 呢？训练一个 LLM，与训练传统的预训练模型，又有什么区别？
 
-\begin{verbatim}
-<img src="https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/4-figures/2-0.jpg" alt="alt text" width="90%" / />
-<p>图4.1 训练 LLM 的三个阶段</p>
-\end{verbatim}
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.8\textwidth]{}
+\caption{图4.1 训练 LLM 的三个阶段}
+\end{figure}
 
 一般而言，训练一个完整的 LLM 需要经过图1中的三个阶段------Pretrain、SFT
 和 RLHF。在这一节，我们将详细论述训练 LLM
@@ -416,10 +416,10 @@ GPU 内存容纳，但是由于增大训练的 batch\_size
 会增大显存开销，无法使用较大的 batch\_size
 进行训练；同时，训练数据量非常大，使用单张 GPU 训练时长难以接受。
 
-\begin{verbatim}
-<img src="https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/4-figures/2-1.jpg" alt="alt text" width="60%" / />
-<p>图4.2 模型、数据并行</p>
-\end{verbatim}
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.8\textwidth]{}
+\caption{图4.2 模型、数据并行}
+\end{figure}
 
 因此，如图4.2所示可以让模型实例在不同 GPU
 和不同批数据上运行，每一次前向传递完成之后，收集所有实例的梯度并计算梯度更新，更新模型参数之后再传递到所有实例。也就是在数据并行的情况下，每张
@@ -430,10 +430,10 @@ GPU
 内存往往就无法存放完整的模型参数。如图4.3所示，在这种情况下，可以将模型拆分到多个
 GPU 上，每个 GPU 上存放不同的层或不同的部分，从而实现模型并行。
 
-\begin{verbatim}
-<img src="https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/4-figures/2-2.jpg" alt="alt text" width="30%" / />
-<p>图4.3 模型并行</p>
-\end{verbatim}
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.8\textwidth]{}
+\caption{图4.3 模型并行}
+\end{figure}
 
 在数据并行和模型并行的思想基础上，还演化出了多种更高效的分布式方式，例如张量并行、3D
 并行、ZeRO（Zero Redundancy
@@ -738,10 +738,10 @@ ChatGPT 相较于 GPT-3 的最核心突破。事实上，从功能上出发，�
 如图4.4所示，ChatGPT 在技术报告中将对齐分成三个阶段，后面两个阶段训练 RM
 和 PPO 训练，就是 RLHF 的步骤：
 
-\begin{verbatim}
-<img src="https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/4-figures/2-3.png" alt="alt text" width="100%" / />
-<p>图4.4 ChatGPT 训练三个的阶段</p>
-\end{verbatim}
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.8\textwidth]{}
+\caption{图4.4 ChatGPT 训练三个的阶段}
+\end{figure}
 
 RLHF 的思路是，引入强化学习的技术，通过实时的人类反馈令 LLM
 能够给出更令人类满意的回复。强化学习是有别于监督学习的另一种机器学习方法，主要讨论的问题是智能体怎么在复杂、不确定的环境中最大化它能获得的奖励。强化学习主要由两部分构成：智能体和环境。在强化学习过程中，智能体会不断行动并从环境获取反馈，根据反馈来调整自己行动的策略。应用到
@@ -808,10 +808,10 @@ ref model，均是从 SFT 之后的 LLM 初始化的。两个 RM 分别是进行
 critic model 和不进行参数更新的 reward model，均是从上一步训练的 RM
 初始化的。
 
-\begin{verbatim}
-<img src="https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/4-figures/2-4.jpg" alt="alt text" width="100%" / />
-<p>图4.5 PPO 训练流程</p>
-\end{verbatim}
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.8\textwidth]{}
+\caption{图4.5 PPO 训练流程}
+\end{figure}
 
 如上图，使用 PPO 算法的强化学习训练过程如下：
 
