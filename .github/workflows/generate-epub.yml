@@ -259,7 +259,7 @@ jobs:
         
         # 生成EPUB
         pandoc \
-          --from markdown+raw_html \
+          --from markdown+raw_html+tex_math_dollars+raw_tex \
           --to epub \
           --metadata-file=metadata.yaml \
           --css=epub-style.css \
@@ -268,6 +268,7 @@ jobs:
           --toc-depth=3 \
           --number-sections \
           --epub-chapter-level=1 \
+          --katex \
           --verbose \
           -o "Happy-LLM-教程.epub" \
           temp_epub/*.md
