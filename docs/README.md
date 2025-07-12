@@ -1,18 +1,18 @@
 <div align='center'>
-<img src="./images/head.jpg" alt="Happy-LLM Logo" width="100%" />
+<img src="./images/head.jpg" alt="Happy-LLM Logo" width="100%" / />
 <h1>Happy-LLM</h1>
 </div>
 
 <div align="center">
-<img src="https://img.shields.io/github/stars/datawhalechina/happy-llm?style=flat&logo=github" alt="GitHub stars" />
-<img src="https://img.shields.io/github/forks/datawhalechina/happy-llm?style=flat&logo=github" alt="GitHub forks" />
-<img src="https://img.shields.io/badge/language-Chinese-brightgreen?style=flat" alt="Language" />
-<a href="https://github.com/datawhalechina/happy-llm"><img src="https://img.shields.io/badge/GitHub-Project-blue?style=flat&logo=github" alt="GitHub Project" /></a>
-<a href="https://swanlab.cn/@kmno4/Happy-LLM/overview"><img src="https://raw.githubusercontent.com/SwanHubX/assets/main/badge1.svg" alt="SwanLab" /></a>
+<img src="https://img.shields.io/github/stars/datawhalechina/happy-llm?style=flat&logo=github" alt="GitHub stars" / />
+<img src="https://img.shields.io/github/forks/datawhalechina/happy-llm?style=flat&logo=github" alt="GitHub forks" / />
+<img src="https://img.shields.io/badge/language-Chinese-brightgreen?style=flat" alt="Language" / />
+<a href="https://github.com/datawhalechina/happy-llm"><img src="https://img.shields.io/badge/GitHub-Project-blue?style=flat&logo=github" alt="GitHub Project" / /></a>
+<a href="https://swanlab.cn/@kmno4/Happy-LLM/overview"><img src="https://raw.githubusercontent.com/SwanHubX/assets/main/badge1.svg" alt="SwanLab" / /></a>
 </div>
 
 <div align="center">
-<a href="https://trendshift.io/repositories/14175" target="_blank"><img src="https://trendshift.io/api/badge/repositories/14175" alt="datawhalechina%2Fhappy-llm | Trendshift" style="width: 250px; height: 55px;" width="250" height="55" /></a>
+<a href="https://trendshift.io/repositories/14175" target="_blank"><img src="https://trendshift.io/api/badge/repositories/14175" alt="datawhalechina%2Fhappy-llm | Trendshift" style="width: 250px; height: 55px;" width="250" height="55" / /></a>
 </div>
 
 <div align="center">
@@ -99,14 +99,14 @@
 
 <div align=center style="margin-top: 30px;">
 <a href="https://github.com/datawhalechina/happy-llm/graphs/contributors">
-<img src="https://contrib.rocks/image?repo=datawhalechina/happy-llm" alt="Contributors" />
+<img src="https://contrib.rocks/image?repo=datawhalechina/happy-llm" alt="Contributors" / />
 </a>
 </div>
 
 ## Star History
 
 <div align='center'>
-<img src="./images/star-history-2025710.png" alt="Datawhale" width="90%" />
+<img src="./images/star-history-2025710.png" alt="Datawhale" width="90%" / />
 </div>
 
 <div align="center">
@@ -116,7 +116,7 @@
 ## 关于 Datawhale
 
 <div align='center'>
-<img src="./images/datawhale.png" alt="Datawhale" width="30%" />
+<img src="./images/datawhale.png" alt="Datawhale" width="30%" / />
 <p>扫描二维码关注 Datawhale 公众号，获取更多优质开源内容</p>
 </div>
 

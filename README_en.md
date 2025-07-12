@@ -1,14 +1,14 @@
 <div align='center'>
-    <img src="./images/head.jpg" alt="alt text" width="100%">
+    <img src="./images/head.jpg" alt="alt text" width="100%" />
     <h1>Happy-LLM</h1>
 </div>
 
 <div align="center">
-  <img src="https://img.shields.io/github/stars/datawhalechina/happy-llm?style=flat&logo=github" alt="GitHub stars"/>
-  <img src="https://img.shields.io/github/forks/datawhalechina/happy-llm?style=flat&logo=github" alt="GitHub forks"/>
-  <img src="https://img.shields.io/badge/language-Chinese-brightgreen?style=flat" alt="Language"/>
-  <a href="https://github.com/datawhalechina/happy-llm"><img src="https://img.shields.io/badge/GitHub-Project-blue?style=flat&logo=github" alt="GitHub Project"></a>
-  <a href="https://swanlab.cn/@kmno4/Happy-LLM/overview"><img src="https://raw.githubusercontent.com/SwanHubX/assets/main/badge1.svg" alt="SwanLab"></a>
+  <img src="https://img.shields.io/github/stars/datawhalechina/happy-llm?style=flat&logo=github" alt="GitHub stars" />
+  <img src="https://img.shields.io/github/forks/datawhalechina/happy-llm?style=flat&logo=github" alt="GitHub forks" />
+  <img src="https://img.shields.io/badge/language-Chinese-brightgreen?style=flat" alt="Language" />
+  <a href="https://github.com/datawhalechina/happy-llm"><img src="https://img.shields.io/badge/GitHub-Project-blue?style=flat&logo=github" alt="GitHub Project" /></a>
+  <a href="https://swanlab.cn/@kmno4/Happy-LLM/overview"><img src="https://raw.githubusercontent.com/SwanHubX/assets/main/badge1.svg" alt="SwanLab" /></a>
 </div>
 <div align="center">
 
@@ -102,14 +102,14 @@ We welcome any form of contribution!
 
 <div align=center style="margin-top: 30px;">
   <a href="https://github.com/datawhalechina/happy-llm/graphs/contributors">
-    <img src="https://contrib.rocks/image?repo=datawhalechina/happy-llm" />
+    <img src="https://contrib.rocks/image?repo=datawhalechina/happy-llm" alt="Contributors" />
   </a>
 </div>
 
 ## Star History
 
 <div align='center'>
-    <img src="./images/star-history-2025710.png" alt="Datawhale" width="90%">
+    <img src="./images/star-history-2025710.png" alt="Datawhale" width="90%" />
 </div>
 
 <div align="center">
@@ -119,7 +119,7 @@ We welcome any form of contribution!
 ## About Datawhale
 
 <div align='center'>
-    <img src="./images/datawhale.png" alt="Datawhale" width="30%">
+    <img src="./images/datawhale.png" alt="Datawhale" width="30%" />
     <p>Scan the QR code to follow Datawhale WeChat Official Account for more quality open source content</p>
 </div>
 
