@@ -129,41 +129,22 @@ jobs:
           - 第六章 大模型训练流程实践
           - 第七章 大模型应用
           
-          ### 📖 阅读建议
+          ### 📖 特性
           - 支持目录导航
-          - 包含代码高亮
-          - 适配中文显示
+          - 代码高亮显示
+          - 适配中文排版
           - 包含图片和表格
           
-          ### 🔧 技术细节
-          - 使用pandoc转换
-          - 自定义CSS样式
-          - 支持中文排版
-          - 自动生成目录
-          - 从合并的tex文件直接生成
-          
-          ### 📋 更新日志
-          - 优化了图片显示效果
-          - 改进了代码块样式
-          - 增强了阅读体验
-          - 简化了构建流程
-          
-          ### 🚀 快速开始
-          1. 下载附件中的EPUB文件
+          ### 🚀 使用方法
+          1. 下载EPUB文件
           2. 使用支持EPUB的阅读器打开
-          3. 推荐使用Calibre、Apple Books或Kindle阅读
+          3. 推荐：Calibre、Apple Books、Kindle
           
-          ### 📞 反馈与支持
-          - GitHub Issues: [报告问题](https://github.com/datawhalechina/happy-llm/issues)
-          - 讨论区: [参与讨论](https://github.com/datawhalechina/happy-llm/discussions)
+          ### 📞 反馈
+          - [GitHub Issues](https://github.com/datawhalechina/happy-llm/issues)
+          - [讨论区](https://github.com/datawhalechina/happy-llm/discussions)
           
           ---
-          
-          *此文件由GitHub Actions自动生成于 ${{ github.event.head_commit.timestamp }}*
-          
-          **构建信息:**
-          - 构建编号: #${{ github.run_number }}
-          - 提交: ${{ github.sha }}
-          - 分支: ${{ github.ref_name }}
+          *自动生成于 ${{ github.event.head_commit.timestamp }}*
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
