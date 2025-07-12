@@ -220,10 +220,10 @@ jobs:
         
         for file_pair in "${files[@]}"; do
           IFS=':' read -r source target <<< "$file_pair"
-          if [[ -f "$source" ]]; then
+          if [ -f "$source" ]; then
             cp "$source" "temp_epub/$target"
             echo "✓ 复制: $(basename "$source")"
-            ((copied_count++))
+            copied_count=$((copied_count + 1))
           else
             echo "⚠️  警告: $source 不存在"
             missing_files+=("$source")
@@ -232,25 +232,25 @@ jobs:
         
         echo "📊 成功复制 $copied_count 个文件"
         
-        if [[ ${#missing_files[@]} -gt 0 ]]; then
+        if [ ${#missing_files[@]} -gt 0 ]; then
           echo "⚠️  缺失的文件:"
           printf '%s\n' "${missing_files[@]}"
         fi
         
-        if [[ $copied_count -eq 0 ]]; then
+        if [ $copied_count -eq 0 ]; then
           echo "❌ 错误: 没有找到任何markdown文件"
           exit 1
         fi
         
         echo "📁 文件列表:"
-        ls -la temp_epub/ || true
+        ls -la temp_epub/ 2>/dev/null || echo "无法列出文件列表"
         
     - name: Generate EPUB
       run: |
         echo "🔄 开始生成EPUB文件..."
         
         # 检查封面图片
-        if [[ ! -f "docs/images/head.jpg" ]]; then
+        if [ ! -f "docs/images/head.jpg" ]; then
           echo "⚠️  警告: 封面图片不存在，将使用默认封面"
           cover_option=""
         else
@@ -272,12 +272,12 @@ jobs:
           -o "Happy-LLM-教程.epub" \
           temp_epub/*.md
         
-        if [[ $? -eq 0 ]]; then
+        if [ $? -eq 0 ]; then
           echo "✅ EPUB文件生成成功!"
           ls -lh "Happy-LLM-教程.epub"
           
           # 验证文件
-          if [[ -f "Happy-LLM-教程.epub" ]]; then
+          if [ -f "Happy-LLM-教程.epub" ]; then
             file_size=$(stat -c%s "Happy-LLM-教程.epub" 2>/dev/null || stat -f%z "Happy-LLM-教程.epub" 2>/dev/null || echo "unknown")
             echo "📏 文件大小: $file_size bytes"
           else
