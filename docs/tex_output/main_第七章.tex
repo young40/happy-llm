@@ -1,0 +1,1239 @@
+\documentclass[12pt,a4paper]{book}
+\usepackage[UTF8]{ctex}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{bookmark}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{tocloft}
+
+% 页面设置
+\geometry{left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+
+% 代码块设置
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    numbers=left,
+    numberstyle=\tiny,
+    keywordstyle=\color{blue},
+    commentstyle=\color{green!60!black},
+    stringstyle=\color{red},
+    backgroundcolor=\color{gray!10},
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2
+}
+
+% 超链接设置
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+    citecolor=green,
+    bookmarks=true,
+    bookmarksopen=true,
+    pdfstartview=FitH
+}
+
+% 页眉页脚设置
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE,RO]{\thepage}
+\fancyhead[RE]{\leftmark}
+\fancyhead[LO]{\rightmark}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% 章节标题格式
+\titleformat{\chapter}{\Large\bfseries}{\thechapter}{1em}{}
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+
+% 目录格式
+\renewcommand{\cftchapfont}{\bfseries}
+\renewcommand{\cftsecfont}{\normalsize}
+
+\begin{document}
+
+% 标题页
+\begin{titlepage}
+    \centering
+    \vspace*{2cm}
+    
+    {\Huge\bfseries 动手学大语言模型}\\[2cm]
+    
+    {\Large 从理论到实践}\\[1cm]
+    
+    {\large Datawhale 开源学习社区}\\[2cm]
+    
+    \vfill
+    
+    {\large \today}
+\end{titlepage}
+
+% 版权页
+\newpage
+\thispagestyle{empty}
+\vspace*{2cm}
+\begin{center}
+    \textbf{版权声明}
+    
+    \vspace{1cm}
+    
+    本书由 Datawhale 开源学习社区编写，采用开源协议发布。
+    
+    欢迎读者在遵守开源协议的前提下自由使用、修改和分发本书内容。
+    
+    \vspace{1cm}
+    
+    GitHub: https://github.com/datawhalechina/happy-llm
+\end{center}
+
+% 目录
+\tableofcontents
+\newpage
+
+% 大模型应用
+\chapter{大模型应用}
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\documentclass[
+]{article}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{5}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\newenvironment{Shaded}{}{}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\BuiltInTok}[1]{\textcolor[rgb]{0.00,0.50,0.00}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{#1}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{#1}}
+\newcommand{\ImportTok}[1]{\textcolor[rgb]{0.00,0.50,0.00}{\textbf{#1}}}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{#1}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\author{}
+\date{}
+
+\begin{document}
+
+{
+\setcounter{tocdepth}{3}
+\tableofcontents
+}
+\section{大模型应用}\label{ux5927ux6a21ux578bux5e94ux7528}
+
+\subsection{7.1 LLM 的评测}\label{llm-ux7684ux8bc4ux6d4b}
+
+近年来，随着人工智能领域的迅猛发展，大规模预训练语言模型（简称大模型）成为了推动技术进步的核心力量。这些大模型在自然语言处理等任务中展现出了令人惊叹的能力。然而，要准确衡量一个大模型的性能，必须依靠科学而合理的评测。
+
+什么是大模型评测？大模型评测就是通过各种标准化的方法和数据集，对大模型在不同任务上的表现进行量化和比较。这些评测不仅包括模型在特定任务上的准确性，还涉及模型的泛化能力、推理速度、资源消耗等多个方面。通过评测，我们能够更全面地了解大模型的实际表现，以及它们在现实世界中的应用潜力。
+
+大模型的开发成本高昂，涉及大量的计算资源和数据，因此评测对于确保模型的实际价值至关重要。首先，评测能够揭示模型在各种任务中的表现，帮助研究人员和企业判断模型的适用性和可靠性。其次，评测可以暴露模型的潜在弱点，例如偏见、鲁棒性问题等，从而为进一步优化和改进提供依据。此外，公平、公开的评测还为学术界和工业界提供了一个共同的标准，促进了技术的交流与进步。
+
+\subsubsection{7.1.1 LLM
+的评测数据集}\label{llm-ux7684ux8bc4ux6d4bux6570ux636eux96c6}
+
+在大模型的评测过程中，使用标准化的评测集至关重要。目前，主流的大模型评测集主要从以下几个方面进行评估，每个评测集都有其独特的用途和典型应用场景：
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{通用评测集}：
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{MMLU（Massive Multitask Language
+    Understanding）}：MMLU评测模型在多种任务中的理解能力，包括各类学科和知识领域。具体包含了历史、数学、物理、生物、法律等任务类型，全面考察模型在不同学科的知识储备和语言理解能力。
+  \end{itemize}
+\item
+  \textbf{工具使用评测集}：
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{BFCL
+    V2}：用于评测模型在复杂工具使用任务中的表现，特别是在执行多步骤操作时的正确性和效率。这些任务通常涉及与数据库交互或执行特定指令，以模拟实际工具使用场景。
+  \end{itemize}
+\item
+  \textbf{数学评测集}：
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{GSM8K}：GSM8K是一个包含小学数学问题的数据集，用于测试模型的数学推理和逻辑分析能力。具体任务包括算术运算、简单方程求解、数字推理等。GSM8K中的问题虽然看似简单，但模型需要理解问题语义并进行正确的数学运算，体现了逻辑推理和语言理解的双重挑战。
+  \item
+    \textbf{MATH}：MATH数据集用于测试模型在更复杂的数学问题上的表现，包括代数和几何。
+  \end{itemize}
+\item
+  \textbf{推理评测集}：
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{ARC Challenge}：ARC
+    Challenge评测模型在科学推理任务中的表现，尤其是常识性和科学性问题的解答，典型应用场景包括科学考试题解答和百科问答系统的开发。
+  \item
+    \textbf{GPQA}：用于评测模型在零样本条件下对开放性问题的回答能力，通常应用于客服聊天机器人和知识问答系统中，帮助模型在缺乏特定领域数据的情况下给出合理的回答。
+  \item
+    \textbf{HellaSwag}：评测模型在复杂语境下选择最符合逻辑的答案的能力，适用于故事续写、对话生成等需要高水平理解和推理的场景。
+  \end{itemize}
+\item
+  \textbf{长文本理解评测集}：
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{InfiniteBench/En.MC}：评测模型在处理长文本阅读理解方面的能力，尤其是对科学文献的理解，适用于学术文献自动摘要、长篇报道分析等应用场景。
+  \item
+    \textbf{NIH/Multi-needle}：用于测试模型在多样本长文档环境中的理解和总结能力，应用于政府报告解读、企业内部长文档分析等需要处理海量信息的场景。
+  \end{itemize}
+\item
+  \textbf{多语言评测集}：
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{MGSM}：用于评估模型在不同语言下的数学问题解决能力，考察模型的多语言适应性，尤其适用于国际化环境中的数学教育和跨语言技术支持场景。
+  \end{itemize}
+\end{enumerate}
+
+这些评测集的多样性帮助我们全面评估大模型在不同任务和应用场景中的表现，确保模型在处理多样化任务时能够保持高效和精准的表现。例如，在MMLU评测中，某些大模型在历史、物理等学科任务中表现优异，展现出对多领域知识的深度理解；在GSM8K数学评测中，最新的大模型在算术和方程求解方面表现接近甚至超越了一些人类基准，显示出在复杂数学推理任务中的潜力。这些实际评测结果展示了模型在各类复杂任务中的进步和应用潜力。
+
+\subsubsection{7.1.2
+主流的评测榜单}\label{ux4e3bux6d41ux7684ux8bc4ux6d4bux699cux5355}
+
+大模型的评测不仅限于使用特定的数据集，许多机构还会根据评测结果发布模型排行榜，这些榜单为学术界和工业界提供了重要的参考，帮助他们了解当前最前沿的技术和模型。以下是一些主流的评测榜单：
+
+\paragraph{Open LLM Leaderboard}\label{open-llm-leaderboard}
+
+Open LLM Leaderboard 为由 Hugging Face
+提供的开放式榜单，汇集了多个开源大模型的评测结果，帮助用户了解不同模型在各种任务上的表现。该榜单通过多个标准化测试集来评估模型的性能，并通过持续更新的方式反映最新的技术进展，为研究者和开发者提供了高价值的对比参考，如图7.1所示。
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.9\textwidth]{https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/7-images/7-1-Open%20LLM%20Leaderboard.png}
+\caption{图 7.1 Open LLM Leaderboard}
+\end{figure}
+
+\paragraph{Lmsys Chatbot Arena
+Leaderboard}\label{lmsys-chatbot-arena-leaderboard}
+
+由lmsys提供的聊天机器人评测榜单，通过多维度的评估，展示各类大模型在对话任务中的能力。该榜单采用真实用户与模型交互的方式来评测对话质量，重点考察模型的自然语言生成能力、上下文理解能力以及用户满意度，是当前评估聊天机器人性能的重要工具，如图7.2所示。
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.9\textwidth]{https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/7-images/7-1-lmsys%20Chatbot%20Arena%20Leaderboard.png}
+\caption{图7.2 Lmsys Chatbot Arena Leaderboard}
+\end{figure}
+
+\paragraph{OpenCompass}\label{opencompass}
+
+OpenCompass
+是国内的评测榜单，针对大模型在多种语言和任务上的表现进行评估，提供了中国市场特定应用的参考。该榜单结合了中文语言理解和多语言能力的测试，以适应本地化需求，并特别关注大模型在中文语境下的准确性、鲁棒性和适应性，为国内企业和研究者选择合适的模型提供了重要参考。
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.9\textwidth]{https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/7-images/7-1-opencompass.png}
+\caption{图7.3 OpenCompass}
+\end{figure}
+
+\subsubsection{7.1.3
+特定的评测榜单}\label{ux7279ux5b9aux7684ux8bc4ux6d4bux699cux5355}
+
+另外，还有针对不同领域特定任务的大模型评测榜单，如图7.4所示。这些榜单专注于特定应用领域，帮助用户了解大模型在某一垂直领域的能力：
+
+\begin{itemize}
+\item
+  金融榜：基于CFBenchmark评测集，评估大模型在金融自然语言处理、金融预测计算、金融分析与安全检查等多项基础任务中的能力。由同济大学与上海人工智能实验室及东方财经提供。
+\item
+  安全榜：基于Flames评测集，评估大模型在公平、安全、数据保护以及合法五大维度的抗性，帮助深入了解模型在安全性上的表现。由上海人工智能实验室与复旦大学提供。
+\item
+  通识榜：基于BotChat评测集，评估大语言模型生成日常多轮对话能力的综合程度，判断模型在对话中是否具备类人水平。由上海人工智能实验室提供。
+\item
+  法律榜：基于LawBench评测集，评估模型在法律领域的理解、推理和应用能力，涵盖法律问题回答、文本生成、法律判例分析等任务。由南京大学提供。
+\item
+  医疗榜：基于MedBench评测集，评估大语言模型在医学知识问答、安全伦理理解等方面的表现。由上海人工智能实验室提供。
+\end{itemize}
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.9\textwidth]{https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/7-images/7-1-垂直领域榜单.png}
+\caption{图7.4 垂直领域榜单}
+\end{figure}
+
+\subsection{7.2 RAG}\label{rag}
+
+\subsubsection{7.2.1 RAG
+的基本原理}\label{rag-ux7684ux57faux672cux539fux7406}
+
+大语言模型（LLM）在生成内容时，虽然具备强大的语言理解和生成能力，但也面临着一些挑战。例如，LLM有时会生成不准确或误导性的内容，这被称为大模型``幻觉''。此外，模型所依赖的训练数据可能过时，尤其在面对最新的信息时，生成结果的准确性和时效性难以保证。对于特定领域的专业知识，LLM
+的处理效率也较低，无法深入理解复杂的领域知识。因此，如何提升大模型的生成质量和效率，成为了当前研究的重要方向。
+
+在这样的背景下，检索增强生成（Retrieval-Augmented
+Generation，RAG）技术应运而生，成为AI领域中的一大创新趋势。RAG
+在生成答案之前，首先从外部的大规模文档数据库中检索出相关信息，并将这些信息融入到生成过程之中，从而指导和优化语言模型的输出。这一流程不仅极大地提升了内容生成的准确性和相关性，还使得生成的内容更加符合实时性要求。
+
+RAG
+的核心原理在于将``检索''与``生成''结合：当用户提出查询时，系统首先通过检索模块找到与问题相关的文本片段，然后将这些片段作为附加信息传递给语言模型，模型据此生成更为精准和可靠的回答。通过这种方式，RAG
+有效缓解了大语言模型的``幻觉''问题，因为生成的内容建立在真实文档的基础上，使得答案更具可追溯性和可信度。同时，由于引入了最新的信息源，RAG
+技术大大加快了知识更新速度，使得系统可以及时吸收和反映最新的领域动态。
+
+\subsubsection{7.2.2 搭建一个 RAG
+框架}\label{ux642dux5efaux4e00ux4e2a-rag-ux6846ux67b6}
+
+接下来我会带领大家一步一步实现一个简单的RAG模型，这个模型是基于RAG的一个简化版本，我们称之为
+Tiny-RAG 。Tiny-RAG只保留了 RAG
+的核心功能，即检索和生成，其目的是帮助大家更好地理解 RAG
+模型的原理和实现。
+
+\paragraph{Step 1:
+RAG流程介绍}\label{step-1-ragux6d41ux7a0bux4ecbux7ecd}
+
+RAG通过在语言模型生成答案之前，先从广泛的文档数据库中检索相关信息，然后利用这些信息来引导生成过程，从而极大地提升了内容的准确性和相关性。RAG有效地缓解了幻觉问题，提高了知识更新的速度，并增强了内容生成的可追溯性，使得大型语言模型在实际应用中变得更加实用和可信。
+
+RAG的基本结构有哪些呢？
+
+\begin{itemize}
+\tightlist
+\item
+  向量化模块：用来将文档片段向量化。
+\item
+  文档加载和切分模块：用来加载文档并切分成文档片段。
+\item
+  数据库：存放文档片段及其对应的向量表示。
+\item
+  检索模块：根据 Query（问题）检索相关的文档片段。
+\item
+  大模型模块：根据检索到的文档回答用户的问题。
+\end{itemize}
+
+上述也就是 TinyRAG 的所有模块内容，如图7.5所示。
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.9\textwidth]{https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/7-images/7-2-tinyrag.png}
+\caption{图7.5 TinyRAG 项目结构}
+\end{figure}
+
+接下来，让我们梳理一下RAG的流程是什么样的呢？
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{索引}：将文档库分割成较短的片段，并通过编码器构建向量索引。
+\item
+  \textbf{检索}：根据问题和片段的相似度检索相关文档片段。
+\item
+  \textbf{生成}：以检索到的上下文为条件，生成问题的回答。
+\end{itemize}
+
+如下图7.6所示的流程图，图片出处
+\textbf{\emph{\href{https://arxiv.org/pdf/2312.10997.pdf}{Retrieval-Augmented
+Generation for Large Language Models: A Survey}}}
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.9\textwidth]{https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/7-images/7-2-rag.png}
+\caption{图7.6 RAG 流程图}
+\end{figure}
+
+\paragraph{Step 2: 向量化}\label{step-2-ux5411ux91cfux5316}
+
+首先我们来动手实现一个向量化的类，这是RAG架构的基础。向量化类主要用来将文档片段向量化，将一段文本映射为一个向量。
+
+首先我们要设置一个 \texttt{BaseEmbeddings}
+基类，这样我们在使用其他模型时，只需要继承这个基类，然后在此基础上进行修改即可，方便代码扩展。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{class}\NormalTok{ BaseEmbeddings:}
+    \CommentTok{"""}
+\CommentTok{    Base class for embeddings}
+\CommentTok{    """}
+    \KeywordTok{def} \FunctionTok{\_\_init\_\_}\NormalTok{(}\VariableTok{self}\NormalTok{, path: }\BuiltInTok{str}\NormalTok{, is\_api: }\BuiltInTok{bool}\NormalTok{) }\OperatorTok{{-}\textgreater{}} \VariableTok{None}\NormalTok{:}
+        \CommentTok{"""}
+\CommentTok{        初始化嵌入基类}
+\CommentTok{        Args:}
+\CommentTok{            path (str): 模型或数据的路径}
+\CommentTok{            is\_api (bool): 是否使用API方式。True表示使用在线API服务，False表示使用本地模型}
+\CommentTok{        """}
+        \VariableTok{self}\NormalTok{.path }\OperatorTok{=}\NormalTok{ path}
+        \VariableTok{self}\NormalTok{.is\_api }\OperatorTok{=}\NormalTok{ is\_api}
+    
+    \KeywordTok{def}\NormalTok{ get\_embedding(}\VariableTok{self}\NormalTok{, text: }\BuiltInTok{str}\NormalTok{, model: }\BuiltInTok{str}\NormalTok{) }\OperatorTok{{-}\textgreater{}}\NormalTok{ List[}\BuiltInTok{float}\NormalTok{]:}
+        \CommentTok{"""}
+\CommentTok{        获取文本的嵌入向量表示}
+\CommentTok{        Args:}
+\CommentTok{            text (str): 输入文本}
+\CommentTok{            model (str): 使用的模型名称}
+\CommentTok{        Returns:}
+\CommentTok{            List[float]: 文本的嵌入向量}
+\CommentTok{        Raises:}
+\CommentTok{            NotImplementedError: 该方法需要在子类中实现}
+\CommentTok{        """}
+        \ControlFlowTok{raise} \PreprocessorTok{NotImplementedError}
+    
+    \AttributeTok{@classmethod}
+    \KeywordTok{def}\NormalTok{ cosine\_similarity(cls, vector1: List[}\BuiltInTok{float}\NormalTok{], vector2: List[}\BuiltInTok{float}\NormalTok{]) }\OperatorTok{{-}\textgreater{}} \BuiltInTok{float}\NormalTok{:}
+        \CommentTok{"""}
+\CommentTok{        计算两个向量之间的余弦相似度}
+\CommentTok{        Args:}
+\CommentTok{            vector1 (List[float]): 第一个向量}
+\CommentTok{            vector2 (List[float]): 第二个向量}
+\CommentTok{        Returns:}
+\CommentTok{            float: 两个向量的余弦相似度，范围在[{-}1,1]之间}
+\CommentTok{        """}
+        \CommentTok{\# 将输入列表转换为numpy数组，并指定数据类型为float32}
+\NormalTok{        v1 }\OperatorTok{=}\NormalTok{ np.array(vector1, dtype}\OperatorTok{=}\NormalTok{np.float32)}
+\NormalTok{        v2 }\OperatorTok{=}\NormalTok{ np.array(vector2, dtype}\OperatorTok{=}\NormalTok{np.float32)}
+
+        \CommentTok{\# 检查向量中是否包含无穷大或NaN值}
+        \ControlFlowTok{if} \KeywordTok{not}\NormalTok{ np.}\BuiltInTok{all}\NormalTok{(np.isfinite(v1)) }\KeywordTok{or} \KeywordTok{not}\NormalTok{ np.}\BuiltInTok{all}\NormalTok{(np.isfinite(v2)):}
+            \ControlFlowTok{return} \FloatTok{0.0}
+
+        \CommentTok{\# 计算向量的点积}
+\NormalTok{        dot\_product }\OperatorTok{=}\NormalTok{ np.dot(v1, v2)}
+        \CommentTok{\# 计算向量的范数（长度）}
+\NormalTok{        norm\_v1 }\OperatorTok{=}\NormalTok{ np.linalg.norm(v1)}
+\NormalTok{        norm\_v2 }\OperatorTok{=}\NormalTok{ np.linalg.norm(v2)}
+        
+        \CommentTok{\# 计算分母（两个向量范数的乘积）}
+\NormalTok{        magnitude }\OperatorTok{=}\NormalTok{ norm\_v1 }\OperatorTok{*}\NormalTok{ norm\_v2}
+        \CommentTok{\# 处理分母为0的特殊情况}
+        \ControlFlowTok{if}\NormalTok{ magnitude }\OperatorTok{==} \DecValTok{0}\NormalTok{:}
+            \ControlFlowTok{return} \FloatTok{0.0}
+            
+        \CommentTok{\# 返回余弦相似度}
+        \ControlFlowTok{return}\NormalTok{ dot\_product }\OperatorTok{/}\NormalTok{ magnitude}
+\end{Highlighting}
+\end{Shaded}
+
+\texttt{BaseEmbeddings}基类有两个主要方法：\texttt{get\_embedding}和\texttt{cosine\_similarity}。\texttt{get\_embedding}用于获取文本的向量表示，\texttt{cosine\_similarity}用于计算两个向量之间的余弦相似度。在初始化类时设置了模型的路径和是否是API模型，例如使用OpenAI的Embedding
+API需要设置\texttt{self.is\_api=True}。
+
+继承\texttt{BaseEmbeddings}类只需要实现\texttt{get\_embedding}方法，\texttt{cosine\_similarity}方法会被继承下来。这就是编写基类的好处。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{class}\NormalTok{ OpenAIEmbedding(BaseEmbeddings):}
+    \CommentTok{"""}
+\CommentTok{    class for OpenAI embeddings}
+\CommentTok{    """}
+    \KeywordTok{def} \FunctionTok{\_\_init\_\_}\NormalTok{(}\VariableTok{self}\NormalTok{, path: }\BuiltInTok{str} \OperatorTok{=} \StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{, is\_api: }\BuiltInTok{bool} \OperatorTok{=} \VariableTok{True}\NormalTok{) }\OperatorTok{{-}\textgreater{}} \VariableTok{None}\NormalTok{:}
+        \BuiltInTok{super}\NormalTok{().}\FunctionTok{\_\_init\_\_}\NormalTok{(path, is\_api)}
+        \ControlFlowTok{if} \VariableTok{self}\NormalTok{.is\_api:}
+            \VariableTok{self}\NormalTok{.client }\OperatorTok{=}\NormalTok{ OpenAI()}
+            \CommentTok{\# 从环境变量中获取 硅基流动 密钥}
+            \VariableTok{self}\NormalTok{.client.api\_key }\OperatorTok{=}\NormalTok{ os.getenv(}\StringTok{"OPENAI\_API\_KEY"}\NormalTok{)}
+            \CommentTok{\# 从环境变量中获取 硅基流动 的基础URL}
+            \VariableTok{self}\NormalTok{.client.base\_url }\OperatorTok{=}\NormalTok{ os.getenv(}\StringTok{"OPENAI\_BASE\_URL"}\NormalTok{)}
+    
+    \KeywordTok{def}\NormalTok{ get\_embedding(}\VariableTok{self}\NormalTok{, text: }\BuiltInTok{str}\NormalTok{, model: }\BuiltInTok{str} \OperatorTok{=} \StringTok{"BAAI/bge{-}m3"}\NormalTok{) }\OperatorTok{{-}\textgreater{}}\NormalTok{ List[}\BuiltInTok{float}\NormalTok{]:}
+        \CommentTok{"""}
+\CommentTok{        此处默认使用轨迹流动的免费嵌入模型 BAAI/bge{-}m3}
+\CommentTok{        """}
+        \ControlFlowTok{if} \VariableTok{self}\NormalTok{.is\_api:}
+\NormalTok{            text }\OperatorTok{=}\NormalTok{ text.replace(}\StringTok{"}\CharTok{\textbackslash{}n}\StringTok{"}\NormalTok{, }\StringTok{" "}\NormalTok{)}
+            \ControlFlowTok{return} \VariableTok{self}\NormalTok{.client.embeddings.create(}\BuiltInTok{input}\OperatorTok{=}\NormalTok{[text], model}\OperatorTok{=}\NormalTok{model).data[}\DecValTok{0}\NormalTok{].embedding}
+        \ControlFlowTok{else}\NormalTok{:}
+            \ControlFlowTok{raise} \PreprocessorTok{NotImplementedError}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{quote}
+注：此处我们默认使用国内用户可访问的\href{https://cloud.siliconflow.cn/i/ybUFvmqK}{硅基流动大模型API服务平台}。
+\end{quote}
+
+\paragraph{Step 3:
+文档加载和切分}\label{step-3-ux6587ux6863ux52a0ux8f7dux548cux5207ux5206}
+
+接下来我们来实现一个文档加载和切分的类，这个类主要用于加载文档并将其切分成文档片段。
+
+文档可以是文章、书籍、对话、代码等文本内容，例如pdf文件、md文件、txt文件等。完整代码可以在
+\textbf{\emph{\href{./RAG/utils.py}{RAG/utils.py}}}
+文件中找到。该代码支持加载pdf、md、txt等类型的文件，只需编写相应的函数即可。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def}\NormalTok{ read\_file\_content(cls, file\_path: }\BuiltInTok{str}\NormalTok{):}
+    \CommentTok{\# 根据文件扩展名选择读取方法}
+    \ControlFlowTok{if}\NormalTok{ file\_path.endswith(}\StringTok{\textquotesingle{}.pdf\textquotesingle{}}\NormalTok{):}
+        \ControlFlowTok{return}\NormalTok{ cls.read\_pdf(file\_path)}
+    \ControlFlowTok{elif}\NormalTok{ file\_path.endswith(}\StringTok{\textquotesingle{}.md\textquotesingle{}}\NormalTok{):}
+        \ControlFlowTok{return}\NormalTok{ cls.read\_markdown(file\_path)}
+    \ControlFlowTok{elif}\NormalTok{ file\_path.endswith(}\StringTok{\textquotesingle{}.txt\textquotesingle{}}\NormalTok{):}
+        \ControlFlowTok{return}\NormalTok{ cls.read\_text(file\_path)}
+    \ControlFlowTok{else}\NormalTok{:}
+        \ControlFlowTok{raise} \PreprocessorTok{ValueError}\NormalTok{(}\StringTok{"Unsupported file type"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+文档读取后需要进行切分。我们可以设置一个最大的Token长度，然后根据这个最大长度来切分文档。切分文档时最好以句子为单位（按\texttt{\textbackslash{}n}粗切分），并保证片段之间有一些重叠内容，以提高检索的准确性。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def}\NormalTok{ get\_chunk(cls, text: }\BuiltInTok{str}\NormalTok{, max\_token\_len: }\BuiltInTok{int} \OperatorTok{=} \DecValTok{600}\NormalTok{, cover\_content: }\BuiltInTok{int} \OperatorTok{=} \DecValTok{150}\NormalTok{):}
+\NormalTok{    chunk\_text }\OperatorTok{=}\NormalTok{ []}
+
+\NormalTok{    curr\_len }\OperatorTok{=} \DecValTok{0}
+\NormalTok{    curr\_chunk }\OperatorTok{=} \StringTok{\textquotesingle{}\textquotesingle{}}
+
+\NormalTok{    token\_len }\OperatorTok{=}\NormalTok{ max\_token\_len }\OperatorTok{{-}}\NormalTok{ cover\_content}
+\NormalTok{    lines }\OperatorTok{=}\NormalTok{ text.splitlines()  }\CommentTok{\# 假设以换行符分割文本为行}
+
+    \ControlFlowTok{for}\NormalTok{ line }\KeywordTok{in}\NormalTok{ lines:}
+        \CommentTok{\# 保留空格，只移除行首行尾空格}
+\NormalTok{        line }\OperatorTok{=}\NormalTok{ line.strip()}
+\NormalTok{        line\_len }\OperatorTok{=} \BuiltInTok{len}\NormalTok{(enc.encode(line))}
+        
+        \ControlFlowTok{if}\NormalTok{ line\_len }\OperatorTok{\textgreater{}}\NormalTok{ max\_token\_len:}
+            \CommentTok{\# 如果单行长度就超过限制，则将其分割成多个块}
+            \CommentTok{\# 先保存当前块（如果有内容）}
+            \ControlFlowTok{if}\NormalTok{ curr\_chunk:}
+\NormalTok{                chunk\_text.append(curr\_chunk)}
+\NormalTok{                curr\_chunk }\OperatorTok{=} \StringTok{\textquotesingle{}\textquotesingle{}}
+\NormalTok{                curr\_len }\OperatorTok{=} \DecValTok{0}
+            
+            \CommentTok{\# 将长行按token长度分割}
+\NormalTok{            line\_tokens }\OperatorTok{=}\NormalTok{ enc.encode(line)}
+\NormalTok{            num\_chunks }\OperatorTok{=}\NormalTok{ (}\BuiltInTok{len}\NormalTok{(line\_tokens) }\OperatorTok{+}\NormalTok{ token\_len }\OperatorTok{{-}} \DecValTok{1}\NormalTok{) }\OperatorTok{//}\NormalTok{ token\_len}
+            
+            \ControlFlowTok{for}\NormalTok{ i }\KeywordTok{in} \BuiltInTok{range}\NormalTok{(num\_chunks):}
+\NormalTok{                start\_token }\OperatorTok{=}\NormalTok{ i }\OperatorTok{*}\NormalTok{ token\_len}
+\NormalTok{                end\_token }\OperatorTok{=} \BuiltInTok{min}\NormalTok{(start\_token }\OperatorTok{+}\NormalTok{ token\_len, }\BuiltInTok{len}\NormalTok{(line\_tokens))}
+                
+                \CommentTok{\# 解码token片段回文本}
+\NormalTok{                chunk\_tokens }\OperatorTok{=}\NormalTok{ line\_tokens[start\_token:end\_token]}
+\NormalTok{                chunk\_part }\OperatorTok{=}\NormalTok{ enc.decode(chunk\_tokens)}
+                
+                \CommentTok{\# 添加覆盖内容（除了第一个块）}
+                \ControlFlowTok{if}\NormalTok{ i }\OperatorTok{\textgreater{}} \DecValTok{0} \KeywordTok{and}\NormalTok{ chunk\_text:}
+\NormalTok{                    prev\_chunk }\OperatorTok{=}\NormalTok{ chunk\_text[}\OperatorTok{{-}}\DecValTok{1}\NormalTok{]}
+\NormalTok{                    cover\_part }\OperatorTok{=}\NormalTok{ prev\_chunk[}\OperatorTok{{-}}\NormalTok{cover\_content:] }\ControlFlowTok{if} \BuiltInTok{len}\NormalTok{(prev\_chunk) }\OperatorTok{\textgreater{}}\NormalTok{ cover\_content }\ControlFlowTok{else}\NormalTok{ prev\_chunk}
+\NormalTok{                    chunk\_part }\OperatorTok{=}\NormalTok{ cover\_part }\OperatorTok{+}\NormalTok{ chunk\_part}
+                
+\NormalTok{                chunk\_text.append(chunk\_part)}
+            
+            \CommentTok{\# 重置当前块状态}
+\NormalTok{            curr\_chunk }\OperatorTok{=} \StringTok{\textquotesingle{}\textquotesingle{}}
+\NormalTok{            curr\_len }\OperatorTok{=} \DecValTok{0}
+            
+        \ControlFlowTok{elif}\NormalTok{ curr\_len }\OperatorTok{+}\NormalTok{ line\_len }\OperatorTok{+} \DecValTok{1} \OperatorTok{\textless{}=}\NormalTok{ token\_len:  }\CommentTok{\# +1 for newline}
+            \CommentTok{\# 当前行可以加入当前块}
+            \ControlFlowTok{if}\NormalTok{ curr\_chunk:}
+\NormalTok{                curr\_chunk }\OperatorTok{+=} \StringTok{\textquotesingle{}}\CharTok{\textbackslash{}n}\StringTok{\textquotesingle{}}
+\NormalTok{                curr\_len }\OperatorTok{+=} \DecValTok{1}
+\NormalTok{            curr\_chunk }\OperatorTok{+=}\NormalTok{ line}
+\NormalTok{            curr\_len }\OperatorTok{+=}\NormalTok{ line\_len}
+        \ControlFlowTok{else}\NormalTok{:}
+            \CommentTok{\# 当前行无法加入当前块，开始新块}
+            \ControlFlowTok{if}\NormalTok{ curr\_chunk:}
+\NormalTok{                chunk\_text.append(curr\_chunk)}
+            
+            \CommentTok{\# 开始新块，添加覆盖内容}
+            \ControlFlowTok{if}\NormalTok{ chunk\_text:}
+\NormalTok{                prev\_chunk }\OperatorTok{=}\NormalTok{ chunk\_text[}\OperatorTok{{-}}\DecValTok{1}\NormalTok{]}
+\NormalTok{                cover\_part }\OperatorTok{=}\NormalTok{ prev\_chunk[}\OperatorTok{{-}}\NormalTok{cover\_content:] }\ControlFlowTok{if} \BuiltInTok{len}\NormalTok{(prev\_chunk) }\OperatorTok{\textgreater{}}\NormalTok{ cover\_content }\ControlFlowTok{else}\NormalTok{ prev\_chunk}
+\NormalTok{                curr\_chunk }\OperatorTok{=}\NormalTok{ cover\_part }\OperatorTok{+} \StringTok{\textquotesingle{}}\CharTok{\textbackslash{}n}\StringTok{\textquotesingle{}} \OperatorTok{+}\NormalTok{ line}
+\NormalTok{                curr\_len }\OperatorTok{=} \BuiltInTok{len}\NormalTok{(enc.encode(cover\_part)) }\OperatorTok{+} \DecValTok{1} \OperatorTok{+}\NormalTok{ line\_len}
+            \ControlFlowTok{else}\NormalTok{:}
+\NormalTok{                curr\_chunk }\OperatorTok{=}\NormalTok{ line}
+\NormalTok{                curr\_len }\OperatorTok{=}\NormalTok{ line\_len}
+
+    \CommentTok{\# 添加最后一个块（如果有内容）}
+    \ControlFlowTok{if}\NormalTok{ curr\_chunk:}
+\NormalTok{        chunk\_text.append(curr\_chunk)}
+
+    \ControlFlowTok{return}\NormalTok{ chunk\_text}
+\end{Highlighting}
+\end{Shaded}
+
+\paragraph{Step 4:
+数据库与向量检索}\label{step-4-ux6570ux636eux5e93ux4e0eux5411ux91cfux68c0ux7d22}
+
+完成文档切分和Embedding模型加载后，需要设计一个向量数据库来存放文档片段和对应的向量表示，以及设计一个检索模块用于根据Query检索相关文档片段。
+
+向量数据库的功能包括：
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{persist}：数据库持久化保存。
+\item
+  \texttt{load\_vector}：从本地加载数据库。
+\item
+  \texttt{get\_vector}：获取文档的向量表示。
+\item
+  \texttt{query}：根据问题检索相关文档片段。
+\end{itemize}
+
+完整代码可以在
+\textbf{\emph{\href{./RAG/VectorBase.py}{/VectorBase.py}}} 文件中找到。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{class}\NormalTok{ VectorStore:}
+    \KeywordTok{def} \FunctionTok{\_\_init\_\_}\NormalTok{(}\VariableTok{self}\NormalTok{, document: List[}\BuiltInTok{str}\NormalTok{] }\OperatorTok{=}\NormalTok{ [}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{]) }\OperatorTok{{-}\textgreater{}} \VariableTok{None}\NormalTok{:}
+        \VariableTok{self}\NormalTok{.document }\OperatorTok{=}\NormalTok{ document}
+
+    \KeywordTok{def}\NormalTok{ get\_vector(}\VariableTok{self}\NormalTok{, EmbeddingModel: BaseEmbeddings) }\OperatorTok{{-}\textgreater{}}\NormalTok{ List[List[}\BuiltInTok{float}\NormalTok{]]:}
+        \CommentTok{\# 获得文档的向量表示}
+        \ControlFlowTok{pass}
+
+    \KeywordTok{def}\NormalTok{ persist(}\VariableTok{self}\NormalTok{, path: }\BuiltInTok{str} \OperatorTok{=} \StringTok{\textquotesingle{}storage\textquotesingle{}}\NormalTok{):}
+        \CommentTok{\# 数据库持久化保存}
+        \ControlFlowTok{pass}
+
+    \KeywordTok{def}\NormalTok{ load\_vector(}\VariableTok{self}\NormalTok{, path: }\BuiltInTok{str} \OperatorTok{=} \StringTok{\textquotesingle{}storage\textquotesingle{}}\NormalTok{):}
+        \CommentTok{\# 从本地加载数据库}
+        \ControlFlowTok{pass}
+
+    \KeywordTok{def}\NormalTok{ query(}\VariableTok{self}\NormalTok{, query: }\BuiltInTok{str}\NormalTok{, EmbeddingModel: BaseEmbeddings, k: }\BuiltInTok{int} \OperatorTok{=} \DecValTok{1}\NormalTok{) }\OperatorTok{{-}\textgreater{}}\NormalTok{ List[}\BuiltInTok{str}\NormalTok{]:}
+        \CommentTok{\# 根据问题检索相关文档片段}
+        \ControlFlowTok{pass}
+\end{Highlighting}
+\end{Shaded}
+
+\texttt{query}
+方法用于将用户提出的问题向量化，然后在数据库中检索相关文档片段并返回结果。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def}\NormalTok{ query(}\VariableTok{self}\NormalTok{, query: }\BuiltInTok{str}\NormalTok{, EmbeddingModel: BaseEmbeddings, k: }\BuiltInTok{int} \OperatorTok{=} \DecValTok{1}\NormalTok{) }\OperatorTok{{-}\textgreater{}}\NormalTok{ List[}\BuiltInTok{str}\NormalTok{]:}
+\NormalTok{    query\_vector }\OperatorTok{=}\NormalTok{ EmbeddingModel.get\_embedding(query)}
+\NormalTok{    result }\OperatorTok{=}\NormalTok{ np.array([}\VariableTok{self}\NormalTok{.get\_similarity(query\_vector, vector) }\ControlFlowTok{for}\NormalTok{ vector }\KeywordTok{in} \VariableTok{self}\NormalTok{.vectors])}
+    \ControlFlowTok{return}\NormalTok{ np.array(}\VariableTok{self}\NormalTok{.document)[result.argsort()[}\OperatorTok{{-}}\NormalTok{k:][::}\OperatorTok{{-}}\DecValTok{1}\NormalTok{]].tolist()}
+\end{Highlighting}
+\end{Shaded}
+
+\paragraph{Step 5:
+大模型模块}\label{step-5-ux5927ux6a21ux578bux6a21ux5757}
+
+接下来是大模型模块，用于根据检索到的文档回答用户的问题。
+
+首先实现一个基类，这样可以方便扩展其他模型。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{class}\NormalTok{ BaseModel:}
+    \KeywordTok{def} \FunctionTok{\_\_init\_\_}\NormalTok{(}\VariableTok{self}\NormalTok{, path: }\BuiltInTok{str} \OperatorTok{=} \StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{) }\OperatorTok{{-}\textgreater{}} \VariableTok{None}\NormalTok{:}
+        \VariableTok{self}\NormalTok{.path }\OperatorTok{=}\NormalTok{ path}
+
+    \KeywordTok{def}\NormalTok{ chat(}\VariableTok{self}\NormalTok{, prompt: }\BuiltInTok{str}\NormalTok{, history: List[}\BuiltInTok{dict}\NormalTok{], content: }\BuiltInTok{str}\NormalTok{) }\OperatorTok{{-}\textgreater{}} \BuiltInTok{str}\NormalTok{:}
+        \ControlFlowTok{pass}
+
+    \KeywordTok{def}\NormalTok{ load\_model(}\VariableTok{self}\NormalTok{):}
+        \ControlFlowTok{pass}
+\end{Highlighting}
+\end{Shaded}
+
+\texttt{BaseModel}
+包含两个方法：\texttt{chat}和\texttt{load\_model}。对于本地化运行的开源模型需要实现\texttt{load\_model}，而API模型则不需要。在此处我们还是使用国内用户可访问的硅基流动大模型API服务平台，使用API服务的好处就是用户不需要本地的计算资源，可以大大降低学习者的学习门槛。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{from}\NormalTok{ openai }\ImportTok{import}\NormalTok{ OpenAI}
+
+\KeywordTok{class}\NormalTok{ OpenAIChat(BaseModel):}
+    \KeywordTok{def} \FunctionTok{\_\_init\_\_}\NormalTok{(}\VariableTok{self}\NormalTok{, model: }\BuiltInTok{str} \OperatorTok{=} \StringTok{"Qwen/Qwen2.5{-}32B{-}Instruct"}\NormalTok{) }\OperatorTok{{-}\textgreater{}} \VariableTok{None}\NormalTok{:}
+        \VariableTok{self}\NormalTok{.model }\OperatorTok{=}\NormalTok{ model}
+
+    \KeywordTok{def}\NormalTok{ chat(}\VariableTok{self}\NormalTok{, prompt: }\BuiltInTok{str}\NormalTok{, history: List[}\BuiltInTok{dict}\NormalTok{], content: }\BuiltInTok{str}\NormalTok{) }\OperatorTok{{-}\textgreater{}} \BuiltInTok{str}\NormalTok{:}
+\NormalTok{        client }\OperatorTok{=}\NormalTok{ OpenAI()}
+\NormalTok{        client.api\_key }\OperatorTok{=}\NormalTok{ os.getenv(}\StringTok{"OPENAI\_API\_KEY"}\NormalTok{)   }
+\NormalTok{        client.base\_url }\OperatorTok{=}\NormalTok{ os.getenv(}\StringTok{"OPENAI\_BASE\_URL"}\NormalTok{)}
+\NormalTok{        history.append(\{}\StringTok{\textquotesingle{}role\textquotesingle{}}\NormalTok{: }\StringTok{\textquotesingle{}user\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}content\textquotesingle{}}\NormalTok{: RAG\_PROMPT\_TEMPLATE.}\BuiltInTok{format}\NormalTok{(question}\OperatorTok{=}\NormalTok{prompt, context}\OperatorTok{=}\NormalTok{content)\})}
+\NormalTok{        response }\OperatorTok{=}\NormalTok{ client.chat.completions.create(}
+\NormalTok{                model}\OperatorTok{=}\VariableTok{self}\NormalTok{.model,}
+\NormalTok{                messages}\OperatorTok{=}\NormalTok{history,}
+\NormalTok{                max\_tokens}\OperatorTok{=}\DecValTok{2048}\NormalTok{,}
+\NormalTok{                temperature}\OperatorTok{=}\FloatTok{0.1}
+\NormalTok{            )}
+        \ControlFlowTok{return}\NormalTok{ response.choices[}\DecValTok{0}\NormalTok{].message.content}
+\end{Highlighting}
+\end{Shaded}
+
+设计一个专用于RAG的大模型提示词，如下：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{RAG\_PROMPT\_TEMPLATE}\OperatorTok{=}\StringTok{"""}
+\StringTok{使用以上下文来回答用户的问题。如果你不知道答案，就说你不知道。总是使用中文回答。}
+\StringTok{问题: }\SpecialCharTok{\{question\}}
+\StringTok{可参考的上下文：}
+\StringTok{···}
+\SpecialCharTok{\{context\}}
+\StringTok{···}
+\StringTok{如果给定的上下文无法让你做出回答，请回答数据库中没有这个内容，你不知道。}
+\StringTok{有用的回答:}
+\StringTok{"""}
+\end{Highlighting}
+\end{Shaded}
+
+这样我们就可以利用InternLM2模型来做RAG啦！
+
+\paragraph{Step 6: Tiny-RAG Demo}\label{step-6-tiny-rag-demo}
+
+接下来，我们来看看Tiny-RAG的Demo吧！
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{from}\NormalTok{ VectorBase }\ImportTok{import}\NormalTok{ VectorStore}
+\ImportTok{from}\NormalTok{ utils }\ImportTok{import}\NormalTok{ ReadFiles}
+\ImportTok{from}\NormalTok{ LLM }\ImportTok{import}\NormalTok{ OpenAIChat}
+\ImportTok{from}\NormalTok{ Embeddings }\ImportTok{import}\NormalTok{ OpenAIEmbedding}
+
+\CommentTok{\# 没有保存数据库}
+\NormalTok{docs }\OperatorTok{=}\NormalTok{ ReadFiles(}\StringTok{\textquotesingle{}./data\textquotesingle{}}\NormalTok{).get\_content(max\_token\_len}\OperatorTok{=}\DecValTok{600}\NormalTok{, cover\_content}\OperatorTok{=}\DecValTok{150}\NormalTok{) }\CommentTok{\# 获得data目录下的所有文件内容并分割}
+\NormalTok{vector }\OperatorTok{=}\NormalTok{ VectorStore(docs)}
+\NormalTok{embedding }\OperatorTok{=}\NormalTok{ OpenAIEmbedding() }\CommentTok{\# 创建EmbeddingModel}
+\NormalTok{vector.get\_vector(EmbeddingModel}\OperatorTok{=}\NormalTok{embedding)}
+\NormalTok{vector.persist(path}\OperatorTok{=}\StringTok{\textquotesingle{}storage\textquotesingle{}}\NormalTok{) }\CommentTok{\# 将向量和文档内容保存到storage目录下，下次再用就可以直接加载本地的数据库}
+
+\CommentTok{\# vector.load\_vector(\textquotesingle{}./storage\textquotesingle{}) \# 加载本地的数据库}
+
+\NormalTok{question }\OperatorTok{=} \StringTok{\textquotesingle{}RAG的原理是什么？\textquotesingle{}}
+
+\NormalTok{content }\OperatorTok{=}\NormalTok{ vector.query(question, EmbeddingModel}\OperatorTok{=}\NormalTok{embedding, k}\OperatorTok{=}\DecValTok{1}\NormalTok{)[}\DecValTok{0}\NormalTok{]}
+\NormalTok{chat }\OperatorTok{=}\NormalTok{ OpenAIChat(model}\OperatorTok{=}\StringTok{\textquotesingle{}Qwen/Qwen2.5{-}32B{-}Instruct\textquotesingle{}}\NormalTok{)}
+\BuiltInTok{print}\NormalTok{(chat.chat(question, [], content))}
+\end{Highlighting}
+\end{Shaded}
+
+也可以从本地加载已处理好的数据库：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{from}\NormalTok{ VectorBase }\ImportTok{import}\NormalTok{ VectorStore}
+\ImportTok{from}\NormalTok{ utils }\ImportTok{import}\NormalTok{ ReadFiles}
+\ImportTok{from}\NormalTok{ LLM }\ImportTok{import}\NormalTok{ OpenAIChat}
+\ImportTok{from}\NormalTok{ Embeddings }\ImportTok{import}\NormalTok{ OpenAIEmbedding}
+
+\CommentTok{\# 保存数据库之后}
+\NormalTok{vector }\OperatorTok{=}\NormalTok{ VectorStore()}
+
+\NormalTok{vector.load\_vector(}\StringTok{\textquotesingle{}./storage\textquotesingle{}}\NormalTok{) }\CommentTok{\# 加载本地的数据库}
+
+\NormalTok{question }\OperatorTok{=} \StringTok{\textquotesingle{}RAG的原理是什么？\textquotesingle{}}
+
+\NormalTok{embedding }\OperatorTok{=}\NormalTok{ ZhipuEmbedding() }\CommentTok{\# 创建EmbeddingModel}
+
+\NormalTok{content }\OperatorTok{=}\NormalTok{ vector.query(question, EmbeddingModel}\OperatorTok{=}\NormalTok{embedding, k}\OperatorTok{=}\DecValTok{1}\NormalTok{)[}\DecValTok{0}\NormalTok{]}
+\NormalTok{chat }\OperatorTok{=}\NormalTok{ OpenAIChat(model}\OperatorTok{=}\StringTok{\textquotesingle{}Qwen/Qwen2.5{-}32B{-}Instruct\textquotesingle{}}\NormalTok{)}
+\BuiltInTok{print}\NormalTok{(chat.chat(question, [], content))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{quote}
+注：7.2 章节的所有代码均可在
+\href{https://github.com/datawhalechina/happy-llm/tree/main/docs/chapter7/RAG}{Happy-LLM
+Chapter7 RAG} 中找到。
+\end{quote}
+
+\subsection{7.3 Agent}\label{agent}
+
+\subsubsection{7.3.1 什么是 LLM
+Agent？}\label{ux4ec0ux4e48ux662f-llm-agent}
+
+简单来说，大模型Agent是一个以LLM为核心``大脑''，并赋予其自主规划、记忆和使用工具能力的系统。
+它不再仅仅是被动地响应用户的提示（Prompt），而是能够：
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  理解目标（Goal Understanding）：
+  接收一个相对复杂或高层次的目标（例如，``帮我规划一个周末去北京的旅游行程并预订机票酒店''）。
+\item
+  自主规划（Planning）：
+  将大目标分解成一系列可执行的小步骤（例如，``搜索北京景点''、``查询天气''、``比较机票价格''、``查找合适的酒店''、``调用预订API''等）。
+\item
+  记忆（Memory）：
+  拥有短期记忆（记住当前任务的上下文）和长期记忆（从过去的交互或外部知识库中学习和检索信息）。
+\item
+  工具使用（Tool Use）：
+  调用外部API、插件或代码执行环境来获取信息（如搜索引擎、数据库）、执行操作（如发送邮件、预订服务）或进行计算。
+\item
+  反思与迭代（Reflection \& Iteration）：
+  （在更高级的Agent中）能够评估自己的行为和结果，从中学习并调整后续计划。
+\end{enumerate}
+
+传统的LLM像一个知识渊博但只能纸上谈兵的图书馆员，而 LLM Agent
+则更像一个全能的私人助理，不仅懂得多，还能跑腿办事，甚至能主动思考最优方案。
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.9\textwidth]{https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/7-images/7-3-Agent工作原理.png}
+\caption{图7.7 Agent 工作原理}
+\end{figure}
+
+LLM Agent
+通过将大型语言模型的强大语言理解和生成能力与规划、记忆和工具使用等关键模块相结合，实现了超越传统大模型的自主性和复杂任务处理能力，这种能力使得
+LLM Agent
+在许多垂直领域（如法律、医疗、金融等）都具有广泛的应用潜力，如图7.7所示
+Agent 工作原理。
+
+\subsubsection{7.3.2 LLM Agent
+的类型}\label{llm-agent-ux7684ux7c7bux578b}
+
+虽然LLM
+Agent的概念还在快速发展中，但根据其设计理念和能力侧重，我们可以大致将其分为几类：
+
+任务导向型Agent（Task-Oriented Agents）： - 特点：
+专注于完成特定领域的、定义明确的任务，例如客户服务、代码生成、数据分析等。
+- 工作方式：
+通常有预设的流程和可调用的特定工具集。LLM主要负责理解用户意图、填充任务槽位、生成回应或调用合适-
+的工具。 - 例子：
+专门用于预订餐厅的聊天机器人、辅助编程的代码助手（如GitHub
+Copilot在某些高级功能上体现了Agent特性）。
+
+规划与推理型Agent（Planning \& Reasoning Agents）： - 特点：
+强调自主分解复杂任务、制定多步计划，并根据环境反馈进行调整的能力。它们通常需要更强的推理能力。
+- 工作方式： 常采用特定的思维框架，如ReAct
+(Reason+Act)，让模型先进行``思考''（Reasoning）分析当前情况和所需行动，然后执行``行动''（Action）调用工具，再根据工具返回结果进行下一轮思考。Chain-of-Thought
+(CoT) 等提示工程技术也是其推理的基础。 - 例子：
+需要整合网络搜索、计算器、数据库查询等多种工具来回答复杂问题的研究型Agent，或者能够自主完成``写一篇关于XX主题的报告，并配上相关数据图表''这类任务的Agent。
+
+多Agent系统（Multi-Agent Systems）： - 特点：
+由多个具有不同角色或能力的Agent协同工作，共同完成一个更宏大的目标。 -
+工作方式：
+Agent之间可以进行通信、协作、辩论甚至竞争。例如，一个Agent负责规划，一个负责执行，一个负责审查。
+- 例子：
+模拟软件开发团队（产品经理Agent、程序员Agent、测试员Agent）来自动生成和测试代码；模拟一个公司组织结构来完成商业策划。AutoGen、ChatDev等框架支持这类系统的构建。
+
+探索与学习型Agent（Exploration \& Learning Agents）： - 特点：
+这类Agent不仅执行任务，还能在与环境的交互中主动学习新知识、新技能或优化自身策略，类似于强化学习中的Agent概念。
+- 工作方式：
+可能包含更复杂的记忆和反思机制，能够根据成功或失败的经验调整未来的规划和行动。
+- 例子：
+能在未知软件环境中自主探索学习如何操作的Agent，或者在玩游戏时不断提升策略的Agent。
+
+\subsubsection{7.3.3 动手构造一个
+Tiny-Agent}\label{ux52a8ux624bux6784ux9020ux4e00ux4e2a-tiny-agent}
+
+我们来基于 \texttt{openai} 库和其 \texttt{tool\_calls}
+功能，动手构造一个 Tiny-Agent，这个 Agent 是一个简单的任务导向型
+Agent，它能够根据用户的输入，回答一些简单的问题。
+
+最终的实现效果如图7.8所示：
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=1.0\textwidth]{https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/7-images/7-3-tinyagent-example.png}
+\caption{图7.8 效果示意图}
+\end{figure}
+
+\paragraph{Step 1 :
+初始化客户端和模型}\label{step-1-ux521dux59cbux5316ux5ba2ux6237ux7aefux548cux6a21ux578b}
+
+首先，我们需要一个能够调用大模型的客户端。这里我们使用 \texttt{openai}
+库，并配置其指向一个兼容 OpenAI API 的服务终端，例如
+\href{https://cloud.siliconflow.cn/i/ybUFvmqK}{SiliconFlow}。同时，指定要使用的模型，如
+\texttt{Qwen/Qwen2.5-32B-Instruct}。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{from}\NormalTok{ openai }\ImportTok{import}\NormalTok{ OpenAI}
+
+\CommentTok{\# 初始化 OpenAI 客户端}
+\NormalTok{client }\OperatorTok{=}\NormalTok{ OpenAI(}
+\NormalTok{    api\_key}\OperatorTok{=}\StringTok{"YOUR\_API\_KEY"}\NormalTok{,  }\CommentTok{\# 替换为你的 API Key}
+\NormalTok{    base\_url}\OperatorTok{=}\StringTok{"https://api.siliconflow.cn/v1"}\NormalTok{, }\CommentTok{\# 使用 SiliconFlow 的 API 地址}
+\NormalTok{)}
+
+\CommentTok{\# 指定模型名称}
+\NormalTok{model\_name }\OperatorTok{=} \StringTok{"Qwen/Qwen2.5{-}32B{-}Instruct"}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{quote}
+\textbf{注意:} 你需要将 \texttt{YOUR\_API\_KEY} 替换为你从
+\href{https://cloud.siliconflow.cn/i/ybUFvmqK}{SiliconFlow}
+或其他服务商获取的有效 API Key。
+\end{quote}
+
+\paragraph{Step 2:
+定义工具函数}\label{step-2-ux5b9aux4e49ux5de5ux5177ux51fdux6570}
+
+我们在 \texttt{src/tools.py} 文件中定义 Agent
+可以使用的工具函数。每个函数都需要有清晰的文档字符串（docstring），描述其功能和参数，因为这将用于自动生成工具的
+JSON Schema。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# src/tools.py}
+\ImportTok{from}\NormalTok{ datetime }\ImportTok{import}\NormalTok{ datetime}
+
+\CommentTok{\# 获取当前日期和时间}
+\KeywordTok{def}\NormalTok{ get\_current\_datetime() }\OperatorTok{{-}\textgreater{}} \BuiltInTok{str}\NormalTok{:}
+    \CommentTok{"""}
+\CommentTok{    获取当前日期和时间。}
+\CommentTok{    :return: 当前日期和时间的字符串表示。}
+\CommentTok{    """}
+\NormalTok{    current\_datetime }\OperatorTok{=}\NormalTok{ datetime.now()}
+\NormalTok{    formatted\_datetime }\OperatorTok{=}\NormalTok{ current\_datetime.strftime(}\StringTok{"\%Y{-}\%m{-}}\SpecialCharTok{\%d}\StringTok{ \%H:\%M:\%S"}\NormalTok{)}
+    \ControlFlowTok{return}\NormalTok{ formatted\_datetime}
+
+\KeywordTok{def}\NormalTok{ count\_letter\_in\_string(a: }\BuiltInTok{str}\NormalTok{, b: }\BuiltInTok{str}\NormalTok{):}
+    \CommentTok{"""}
+\CommentTok{    统计字符串中某个字母的出现次数。}
+\CommentTok{    :param a: 要搜索的字符串。}
+\CommentTok{    :param b: 要统计的字母。}
+\CommentTok{    :return: 字母在字符串中出现的次数。}
+\CommentTok{    """}
+    \ControlFlowTok{return} \BuiltInTok{str}\NormalTok{(a.count(b))}
+
+\KeywordTok{def}\NormalTok{ search\_wikipedia(query: }\BuiltInTok{str}\NormalTok{) }\OperatorTok{{-}\textgreater{}} \BuiltInTok{str}\NormalTok{:}
+    \CommentTok{"""}
+\CommentTok{    在维基百科中搜索指定查询的前三个页面摘要。}
+\CommentTok{    :param query: 要搜索的查询字符串。}
+\CommentTok{    :return: 包含前三个页面摘要的字符串。}
+\CommentTok{    """}
+\NormalTok{    page\_titles }\OperatorTok{=}\NormalTok{ wikipedia.search(query)}
+\NormalTok{    summaries }\OperatorTok{=}\NormalTok{ []}
+    \ControlFlowTok{for}\NormalTok{ page\_title }\KeywordTok{in}\NormalTok{ page\_titles[: }\DecValTok{3}\NormalTok{]:  }\CommentTok{\# 取前三个页面标题}
+        \ControlFlowTok{try}\NormalTok{:}
+            \CommentTok{\# 使用 wikipedia 模块的 page 函数，获取指定标题的维基百科页面对象。}
+\NormalTok{            wiki\_page }\OperatorTok{=}\NormalTok{ wikipedia.page(title}\OperatorTok{=}\NormalTok{page\_title, auto\_suggest}\OperatorTok{=}\VariableTok{False}\NormalTok{)}
+            \CommentTok{\# 获取页面摘要}
+\NormalTok{            summaries.append(}\SpecialStringTok{f"页面: }\SpecialCharTok{\{}\NormalTok{page\_title}\SpecialCharTok{\}}\CharTok{\textbackslash{}n}\SpecialStringTok{摘要: }\SpecialCharTok{\{}\NormalTok{wiki\_page}\SpecialCharTok{.}\NormalTok{summary}\SpecialCharTok{\}}\SpecialStringTok{"}\NormalTok{)}
+        \ControlFlowTok{except}\NormalTok{ (}
+\NormalTok{                wikipedia.exceptions.PageError,}
+\NormalTok{                wikipedia.exceptions.DisambiguationError,}
+\NormalTok{        ):}
+            \ControlFlowTok{pass}
+    \ControlFlowTok{if} \KeywordTok{not}\NormalTok{ summaries:}
+        \ControlFlowTok{return} \StringTok{"维基百科没有搜索到合适的结果"}
+    \ControlFlowTok{return} \StringTok{"}\CharTok{\textbackslash{}n\textbackslash{}n}\StringTok{"}\NormalTok{.join(summaries)}
+\CommentTok{\# ... (可能还有其他工具函数)}
+\end{Highlighting}
+\end{Shaded}
+
+为了让 OpenAI API 理解这些工具，我们需要将它们转换成特定的 JSON Schema
+格式。这可以通过 \texttt{src/utils.py} 中的 \texttt{function\_to\_json}
+辅助函数完成。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# src/utils.py (部分)}
+\ImportTok{import}\NormalTok{ inspect}
+
+\KeywordTok{def}\NormalTok{ function\_to\_json(func) }\OperatorTok{{-}\textgreater{}} \BuiltInTok{dict}\NormalTok{:}
+    \CommentTok{\# ... (函数实现细节)}
+    \CommentTok{\# 返回符合 OpenAI tool schema 的字典}
+    \ControlFlowTok{return}\NormalTok{ \{}
+        \StringTok{"type"}\NormalTok{: }\StringTok{"function"}\NormalTok{,}
+        \StringTok{"function"}\NormalTok{: \{}
+            \StringTok{"name"}\NormalTok{: func.}\VariableTok{\_\_name\_\_}\NormalTok{,}
+            \StringTok{"description"}\NormalTok{: inspect.getdoc(func),}
+            \StringTok{"parameters"}\NormalTok{: \{}
+                \StringTok{"type"}\NormalTok{: }\StringTok{"object"}\NormalTok{,}
+                \StringTok{"properties"}\NormalTok{: parameters,}
+                \StringTok{"required"}\NormalTok{: required,}
+\NormalTok{            \},}
+\NormalTok{        \},}
+\NormalTok{    \}}
+\end{Highlighting}
+\end{Shaded}
+
+\paragraph{Step 3: 构造 Agent
+类}\label{step-3-ux6784ux9020-agent-ux7c7b}
+
+我们在 \texttt{src/core.py} 文件中定义 \texttt{Agent}
+类。这个类负责管理对话历史、调用 OpenAI
+API、处理工具调用请求以及执行工具函数。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# src/core.py (部分)}
+\ImportTok{from}\NormalTok{ openai }\ImportTok{import}\NormalTok{ OpenAI}
+\ImportTok{import}\NormalTok{ json}
+\ImportTok{from}\NormalTok{ typing }\ImportTok{import}\NormalTok{ List, Dict, Any}
+\ImportTok{from}\NormalTok{ utils }\ImportTok{import}\NormalTok{ function\_to\_json}
+\CommentTok{\# 导入定义好的工具函数}
+\ImportTok{from}\NormalTok{ tools }\ImportTok{import}\NormalTok{ get\_current\_datetime, add, compare, count\_letter\_in\_string}
+
+\NormalTok{SYSTEM\_PROMPT }\OperatorTok{=} \StringTok{"""}
+\StringTok{你是一个叫不要葱姜蒜的人工智能助手。你的输出应该与用户的语言保持一致。}
+\StringTok{当用户的问题需要调用工具时，你可以从提供的工具列表中调用适当的工具函数。}
+\StringTok{"""}
+
+\KeywordTok{class}\NormalTok{ Agent:}
+    \KeywordTok{def} \FunctionTok{\_\_init\_\_}\NormalTok{(}\VariableTok{self}\NormalTok{, client: OpenAI, model: }\BuiltInTok{str} \OperatorTok{=} \StringTok{"Qwen/Qwen2.5{-}32B{-}Instruct"}\NormalTok{, tools: List}\OperatorTok{=}\NormalTok{[], verbose : }\BuiltInTok{bool} \OperatorTok{=} \VariableTok{True}\NormalTok{):}
+        \VariableTok{self}\NormalTok{.client }\OperatorTok{=}\NormalTok{ client}
+        \VariableTok{self}\NormalTok{.tools }\OperatorTok{=}\NormalTok{ tools}
+        \VariableTok{self}\NormalTok{.model }\OperatorTok{=}\NormalTok{ model}
+        \VariableTok{self}\NormalTok{.messages }\OperatorTok{=}\NormalTok{ [}
+\NormalTok{            \{}\StringTok{"role"}\NormalTok{: }\StringTok{"system"}\NormalTok{, }\StringTok{"content"}\NormalTok{: SYSREM\_PROMPT\},}
+\NormalTok{        ]}
+        \VariableTok{self}\NormalTok{.verbose }\OperatorTok{=}\NormalTok{ verbose}
+
+    \KeywordTok{def}\NormalTok{ get\_tool\_schema(}\VariableTok{self}\NormalTok{) }\OperatorTok{{-}\textgreater{}}\NormalTok{ List[Dict[}\BuiltInTok{str}\NormalTok{, Any]]:}
+        \CommentTok{\# 获取所有工具的 JSON 模式}
+        \ControlFlowTok{return}\NormalTok{ [function\_to\_json(tool) }\ControlFlowTok{for}\NormalTok{ tool }\KeywordTok{in} \VariableTok{self}\NormalTok{.tools]}
+
+    \KeywordTok{def}\NormalTok{ handle\_tool\_call(}\VariableTok{self}\NormalTok{, tool\_call):}
+        \CommentTok{\# 处理工具调用}
+\NormalTok{        function\_name }\OperatorTok{=}\NormalTok{ tool\_call.function.name}
+\NormalTok{        function\_args }\OperatorTok{=}\NormalTok{ tool\_call.function.arguments}
+\NormalTok{        function\_id }\OperatorTok{=}\NormalTok{ tool\_call.}\BuiltInTok{id}
+
+\NormalTok{        function\_call\_content }\OperatorTok{=} \BuiltInTok{eval}\NormalTok{(}\SpecialStringTok{f"}\SpecialCharTok{\{}\NormalTok{function\_name}\SpecialCharTok{\}}\SpecialStringTok{(**}\SpecialCharTok{\{}\NormalTok{function\_args}\SpecialCharTok{\}}\SpecialStringTok{)"}\NormalTok{)}
+
+        \ControlFlowTok{return}\NormalTok{ \{}
+            \StringTok{"role"}\NormalTok{: }\StringTok{"tool"}\NormalTok{,}
+            \StringTok{"content"}\NormalTok{: function\_call\_content,}
+            \StringTok{"tool\_call\_id"}\NormalTok{: function\_id,}
+\NormalTok{        \}}
+
+    \KeywordTok{def}\NormalTok{ get\_completion(}\VariableTok{self}\NormalTok{, prompt) }\OperatorTok{{-}\textgreater{}} \BuiltInTok{str}\NormalTok{:}
+
+        \VariableTok{self}\NormalTok{.messages.append(\{}\StringTok{"role"}\NormalTok{: }\StringTok{"user"}\NormalTok{, }\StringTok{"content"}\NormalTok{: prompt\})}
+
+        \CommentTok{\# 获取模型的完成响应}
+\NormalTok{        response }\OperatorTok{=} \VariableTok{self}\NormalTok{.client.chat.completions.create(}
+\NormalTok{            model}\OperatorTok{=}\VariableTok{self}\NormalTok{.model,}
+\NormalTok{            messages}\OperatorTok{=}\VariableTok{self}\NormalTok{.messages,}
+\NormalTok{            tools}\OperatorTok{=}\VariableTok{self}\NormalTok{.get\_tool\_schema(),}
+\NormalTok{            stream}\OperatorTok{=}\VariableTok{False}\NormalTok{,}
+\NormalTok{        )}
+        
+        \CommentTok{\# 检查模型是否调用了工具        }
+        \ControlFlowTok{if}\NormalTok{ response.choices[}\DecValTok{0}\NormalTok{].message.tool\_calls:}
+            \VariableTok{self}\NormalTok{.messages.append(\{}\StringTok{"role"}\NormalTok{: }\StringTok{"assistant"}\NormalTok{, }\StringTok{"content"}\NormalTok{: response.choices[}\DecValTok{0}\NormalTok{].message.content\})}
+            \CommentTok{\# 处理工具调用}
+\NormalTok{            tool\_list }\OperatorTok{=}\NormalTok{ []}
+            \ControlFlowTok{for}\NormalTok{ tool\_call }\KeywordTok{in}\NormalTok{ response.choices[}\DecValTok{0}\NormalTok{].message.tool\_calls:}
+                \CommentTok{\# 处理工具调用并将结果添加到消息列表中}
+                \VariableTok{self}\NormalTok{.messages.append(}\VariableTok{self}\NormalTok{.handle\_tool\_call(tool\_call))}
+\NormalTok{                tool\_list.append([tool\_call.function.name, tool\_call.function.arguments])}
+            \ControlFlowTok{if} \VariableTok{self}\NormalTok{.verbose:}
+                \BuiltInTok{print}\NormalTok{(}\StringTok{"调用工具："}\NormalTok{, response.choices[}\DecValTok{0}\NormalTok{].message.content, tool\_list)}
+            \CommentTok{\# 再次获取模型的完成响应，这次包含工具调用的结果}
+\NormalTok{            response }\OperatorTok{=} \VariableTok{self}\NormalTok{.client.chat.completions.create(}
+\NormalTok{                model}\OperatorTok{=}\VariableTok{self}\NormalTok{.model,}
+\NormalTok{                messages}\OperatorTok{=}\VariableTok{self}\NormalTok{.messages,}
+\NormalTok{                tools}\OperatorTok{=}\VariableTok{self}\NormalTok{.get\_tool\_schema(),}
+\NormalTok{                stream}\OperatorTok{=}\VariableTok{False}\NormalTok{,}
+\NormalTok{            )}
+
+        \CommentTok{\# 将模型的完成响应添加到消息列表中}
+        \VariableTok{self}\NormalTok{.messages.append(\{}\StringTok{"role"}\NormalTok{: }\StringTok{"assistant"}\NormalTok{, }\StringTok{"content"}\NormalTok{: response.choices[}\DecValTok{0}\NormalTok{].message.content\})}
+        \ControlFlowTok{return}\NormalTok{ response.choices[}\DecValTok{0}\NormalTok{].message.content}
+\end{Highlighting}
+\end{Shaded}
+
+Agent 的工作流程如下：
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  接收用户输入。
+\item
+  调用大模型（如 Qwen），并告知其可用的工具及其 Schema。
+\item
+  如果模型决定调用工具，Agent 会解析请求，执行相应的 Python 函数。
+\item
+  Agent 将工具的执行结果返回给模型。
+\item
+  模型根据工具结果生成最终回复。
+\item
+  Agent 将最终回复返回给用户。
+\end{enumerate}
+
+如图7.9所示，Agent 调用工具流程：
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.8\textwidth]{https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/7-images/7-3-Tiny_Agent.jpg}
+\caption{图7.9 Agent 工作流程}
+\end{figure}
+
+\paragraph{Step 4: 运行 Agent}\label{step-4-ux8fd0ux884c-agent}
+
+现在我们可以实例化并运行 Agent。在 \texttt{demo.py} 的
+\texttt{if\ \_\_name\_\_\ ==\ "\_\_main\_\_":}
+部分提供了一个简单的命令行交互示例。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# demo.py (部分)}
+\ControlFlowTok{if} \VariableTok{\_\_name\_\_} \OperatorTok{==} \StringTok{"\_\_main\_\_"}\NormalTok{:}
+\NormalTok{    client }\OperatorTok{=}\NormalTok{ OpenAI(}
+\NormalTok{        api\_key}\OperatorTok{=}\StringTok{"YOUR\_API\_KEY"}\NormalTok{, }\CommentTok{\# 替换为你的 API Key}
+\NormalTok{        base\_url}\OperatorTok{=}\StringTok{"https://api.siliconflow.cn/v1"}\NormalTok{,}
+\NormalTok{    )}
+
+    \CommentTok{\# 创建 Agent 实例，传入 client、模型名称和工具函数列表}
+\NormalTok{    agent }\OperatorTok{=}\NormalTok{ Agent(}
+\NormalTok{        client}\OperatorTok{=}\NormalTok{client,}
+\NormalTok{        model}\OperatorTok{=}\StringTok{"Qwen/Qwen2.5{-}32B{-}Instruct"}\NormalTok{,}
+\NormalTok{        tools}\OperatorTok{=}\NormalTok{[get\_current\_datetime, add, compare, count\_letter\_in\_string],}
+\NormalTok{        verbose}\OperatorTok{=}\VariableTok{True} \CommentTok{\# 设置为 True 可以看到工具调用信息}
+\NormalTok{    )}
+
+    \CommentTok{\# 开始交互式对话循环}
+    \ControlFlowTok{while} \VariableTok{True}\NormalTok{:}
+        \CommentTok{\# 使用彩色输出区分用户输入和AI回答}
+\NormalTok{        prompt }\OperatorTok{=} \BuiltInTok{input}\NormalTok{(}\StringTok{"}\CharTok{\textbackslash{}033}\StringTok{[94mUser: }\CharTok{\textbackslash{}033}\StringTok{[0m"}\NormalTok{)  }\CommentTok{\# 蓝色显示用户输入提示}
+        \ControlFlowTok{if}\NormalTok{ prompt.lower() }\OperatorTok{==} \StringTok{"exit"}\NormalTok{:}
+            \ControlFlowTok{break}
+\NormalTok{        response }\OperatorTok{=}\NormalTok{ agent.get\_completion(prompt)}
+        \BuiltInTok{print}\NormalTok{(}\StringTok{"}\CharTok{\textbackslash{}033}\StringTok{[92mAssistant: }\CharTok{\textbackslash{}033}\StringTok{[0m"}\NormalTok{, response)  }\CommentTok{\# 绿色显示AI助手回答}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{示例交互:}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{User:}\NormalTok{ 你好}
+\ExtensionTok{Assistant:}\NormalTok{  你好！有什么可以帮助你的吗？}
+\ExtensionTok{User:}\NormalTok{ 9.12和9 .2哪个更大？}
+\ExtensionTok{调用工具：} \PreprocessorTok{[}\StringTok{\textquotesingle{}compare\textquotesingle{}}\PreprocessorTok{]}
+\ExtensionTok{Assistant:}\NormalTok{  9.2 比 9.12 更大。}
+\ExtensionTok{User:}\NormalTok{ 为什么？}
+\ExtensionTok{Assistant:}\NormalTok{  当我们比较9.12和9.2时，可以将它们看作是9.12和9.20。由于9.20在小数点后第二位是0，而9.12在小数点后第二位是2，所以在小数点后第一位相等的情况下，9.20（即9.2）大于9.12。因此，9.2 比 9.12 更大。}
+\ExtensionTok{User:}\NormalTok{ strawberry中有几个r？}
+\ExtensionTok{调用工具：} \PreprocessorTok{[}\StringTok{\textquotesingle{}count\_letter\_in\_string\textquotesingle{}}\PreprocessorTok{]}
+\ExtensionTok{Assistant:}\NormalTok{  单词 }\StringTok{"strawberry"}\NormalTok{ 中有3个字母 }\StringTok{\textquotesingle{}r\textquotesingle{}}\NormalTok{。}
+\ExtensionTok{User:}\NormalTok{ 你确信嘛？}
+\ExtensionTok{调用工具：} \PreprocessorTok{[}\StringTok{\textquotesingle{}count\_letter\_in\_string\textquotesingle{}}\PreprocessorTok{]}
+\ExtensionTok{Assistant:}\NormalTok{  是的，我确定。单词 }\StringTok{"strawberry"}\NormalTok{ 中确实有3个字母 }\StringTok{\textquotesingle{}r\textquotesingle{}}\NormalTok{。让我们再次确认一下，}\StringTok{"strawberry"}\NormalTok{ 中的 }\StringTok{\textquotesingle{}r\textquotesingle{}}\NormalTok{ 确实出现了3次。}
+\ExtensionTok{User:}\NormalTok{ 好的 你很薄，现在几点 了？}
+\ExtensionTok{调用工具：} \PreprocessorTok{[}\StringTok{\textquotesingle{}get\_current\_datetime\textquotesingle{}}\PreprocessorTok{]}
+\ExtensionTok{Assistant:}\NormalTok{  当前的时间是2025年4月26日17:01:33。不过，我注意到您提到“你很薄”，这似乎是一个打字错误，如果您有任何其他问题或者需要进一步的帮助，请告诉我！}
+\ExtensionTok{User:}\NormalTok{ exit}
+\end{Highlighting}
+\end{Shaded}
+
+另外，我们也准备了一份可以展示的 Streamlit 应用，可以运行在本地，展示
+Agent 的功能。\texttt{streamlit\ run\ web\_demo.py} 来运行，以下为 Agent
+运行效果。
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.8\textwidth]{https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/7-images/7-3-streamlit-demo.png}
+\caption{图 7.10 Streamlit Demo}
+\end{figure}
+
+\textbf{参考文献}
+
+{[}1{]} Hugging Face. (2023). \emph{Open LLM Leaderboard:
+开源大语言模型基准测试平台}.
+https://huggingface.co/spaces/open-llm-leaderboard/open\_llm\_leaderboard
+
+{[}2{]} awacke1. (2023). \emph{LMSYS Chatbot Arena Leaderboard:
+大型语言模型竞技场评估平台}.
+https://huggingface.co/spaces/awacke1/lmsys-chatbot-arena-leaderboard
+
+{[}3{]} OpenCompass 团队. (2023). \emph{OpenCompass:
+大模型统一评测平台}. https://rank.opencompass.org.cn/home
+
+{[}4{]} OpenCompass 金融榜团队. (2024). \emph{CFBENCHMARK:
+金融领域大模型评测榜单}.
+https://specialist.opencompass.org.cn/CFBenchmark
+
+{[}5{]} OpenCompass 安全榜团队. (2024). \emph{Flames:
+大模型安全评测榜单}. https://flames.opencompass.org.cn/leaderboard
+
+{[}6{]} OpenCompass 通识榜团队. (2024). \emph{BotChat:
+大模型通用对话能力评测}. https://botchat.opencompass.org.cn/
+
+{[}7{]} OpenCompass 法律榜团队. (2024). \emph{LawBench:
+法律领域大模型评测}. https://lawbench.opencompass.org.cn/leaderboard
+
+{[}8{]} OpenCompass 医疗榜团队. (2024). \emph{MedBench:
+医疗领域大模型评测}. https://medbench.opencompass.org.cn/leaderboard
+
+{[}9{]} Zhi Jing, Yongye Su, and Yikun Han. (2024). \emph{When Large
+Language Models Meet Vector Databases: A Survey.} arXiv preprint
+arXiv:2402.01763.
+
+{[}10{]} Yunfan Gao, Yun Xiong, Xinyu Gao, Kangxiang Jia, Jinliu Pan,
+Yuxi Bi, Yi Dai, Jiawei Sun, Meng Wang, and Haofen Wang. (2024).
+\emph{Retrieval-Augmented Generation for Large Language Models: A
+Survey.} arXiv preprint arXiv:2312.10997.
+
+{[}11{]} Zhiruo Wang, Jun Araki, Zhengbao Jiang, Md Rizwan Parvez, 和
+Graham Neubig. (2023). \emph{Learning to Filter Context for
+Retrieval-Augmented Generation.} arXiv preprint arXiv:2311.08377.
+
+{[}12{]} Ori Ram, Yoav Levine, Itay Dalmedigos, Dor Muhlgay, Amnon
+Shashua, Kevin Leyton-Brown 和 Yoav Shoham. (2023). \emph{In-Context
+Retrieval-Augmented Language Models.} arXiv preprint arXiv:2302.00083.
+
+\end{document}
+
+
+\end{document}

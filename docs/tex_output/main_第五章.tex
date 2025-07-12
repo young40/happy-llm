@@ -1,0 +1,2716 @@
+\documentclass[12pt,a4paper]{book}
+\usepackage[UTF8]{ctex}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{bookmark}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{tocloft}
+
+% 页面设置
+\geometry{left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+
+% 代码块设置
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    numbers=left,
+    numberstyle=\tiny,
+    keywordstyle=\color{blue},
+    commentstyle=\color{green!60!black},
+    stringstyle=\color{red},
+    backgroundcolor=\color{gray!10},
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2
+}
+
+% 超链接设置
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+    citecolor=green,
+    bookmarks=true,
+    bookmarksopen=true,
+    pdfstartview=FitH
+}
+
+% 页眉页脚设置
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE,RO]{\thepage}
+\fancyhead[RE]{\leftmark}
+\fancyhead[LO]{\rightmark}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% 章节标题格式
+\titleformat{\chapter}{\Large\bfseries}{\thechapter}{1em}{}
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+
+% 目录格式
+\renewcommand{\cftchapfont}{\bfseries}
+\renewcommand{\cftsecfont}{\normalsize}
+
+\begin{document}
+
+% 标题页
+\begin{titlepage}
+    \centering
+    \vspace*{2cm}
+    
+    {\Huge\bfseries 动手学大语言模型}\\[2cm]
+    
+    {\Large 从理论到实践}\\[1cm]
+    
+    {\large Datawhale 开源学习社区}\\[2cm]
+    
+    \vfill
+    
+    {\large \today}
+\end{titlepage}
+
+% 版权页
+\newpage
+\thispagestyle{empty}
+\vspace*{2cm}
+\begin{center}
+    \textbf{版权声明}
+    
+    \vspace{1cm}
+    
+    本书由 Datawhale 开源学习社区编写，采用开源协议发布。
+    
+    欢迎读者在遵守开源协议的前提下自由使用、修改和分发本书内容。
+    
+    \vspace{1cm}
+    
+    GitHub: https://github.com/datawhalechina/happy-llm
+\end{center}
+
+% 目录
+\tableofcontents
+\newpage
+
+% 动手搭建大模型
+\chapter{动手搭建大模型}
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\documentclass[
+]{article}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{5}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\newenvironment{Shaded}{}{}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\BuiltInTok}[1]{\textcolor[rgb]{0.00,0.50,0.00}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{#1}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{#1}}
+\newcommand{\ImportTok}[1]{\textcolor[rgb]{0.00,0.50,0.00}{\textbf{#1}}}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{#1}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\author{}
+\date{}
+
+\begin{document}
+
+{
+\setcounter{tocdepth}{3}
+\tableofcontents
+}
+\section{第五章
+动手搭建大模型}\label{ux7b2cux4e94ux7ae0-ux52a8ux624bux642dux5efaux5927ux6a21ux578b}
+
+\subsection{5.1 动手实现一个 LLaMA2
+大模型}\label{ux52a8ux624bux5b9eux73b0ux4e00ux4e2a-llama2-ux5927ux6a21ux578b}
+
+Meta（原Facebook）于2023年2月发布第一款基于Transformer结构的大型语言模型LLaMA，并于同年7月发布同系列模型LLaMA2。我们在第四章已经学习和了解了LLM，以及如何训练LLM等内容。本小节我们就来学习如何动手实现一个LLaMA2模型。
+
+LLaMA2 模型结构如下图5.1所示：
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=1.0\textwidth]{https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/5-images/LLama2.png}
+\caption{图 5.1 LLaMA2结构}
+\end{figure}
+
+\subsubsection{5.1.1 定义超参数}\label{ux5b9aux4e49ux8d85ux53c2ux6570}
+
+首先我们需要定义一些超参数，这些超参数包括模型的大小、层数、头数、词嵌入维度、隐藏层维度等等。这些超参数可以根据实际情况进行调整。
+
+这里我们自定义一个\texttt{ModelConfig}类，来存储和记录我们的超参数，这里我们继承了\texttt{PretrainedConfig}类，这是\texttt{transformers}库中的参数类，我们可以通过继承这个类来方便的使用\texttt{transformers}库中的一些功能，也方便在后续导出Hugging
+Face模型。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{from}\NormalTok{ transformers }\ImportTok{import}\NormalTok{ PretrainedConfig}
+
+\KeywordTok{class}\NormalTok{ ModelConfig(PretrainedConfig):}
+\NormalTok{    model\_type }\OperatorTok{=} \StringTok{"Tiny{-}K"}
+    \KeywordTok{def} \FunctionTok{\_\_init\_\_}\NormalTok{(}
+            \VariableTok{self}\NormalTok{,}
+\NormalTok{            dim: }\BuiltInTok{int} \OperatorTok{=} \DecValTok{768}\NormalTok{, }\CommentTok{\# 模型维度}
+\NormalTok{            n\_layers: }\BuiltInTok{int} \OperatorTok{=} \DecValTok{12}\NormalTok{, }\CommentTok{\# Transformer的层数}
+\NormalTok{            n\_heads: }\BuiltInTok{int} \OperatorTok{=} \DecValTok{16}\NormalTok{, }\CommentTok{\# 注意力机制的头数}
+\NormalTok{            n\_kv\_heads: }\BuiltInTok{int} \OperatorTok{=} \DecValTok{8}\NormalTok{, }\CommentTok{\# 键值头的数量}
+\NormalTok{            vocab\_size: }\BuiltInTok{int} \OperatorTok{=} \DecValTok{6144}\NormalTok{, }\CommentTok{\# 词汇表大小}
+\NormalTok{            hidden\_dim: }\BuiltInTok{int} \OperatorTok{=} \VariableTok{None}\NormalTok{, }\CommentTok{\# 隐藏层维度}
+\NormalTok{            multiple\_of: }\BuiltInTok{int} \OperatorTok{=} \DecValTok{64}\NormalTok{, }
+\NormalTok{            norm\_eps: }\BuiltInTok{float} \OperatorTok{=} \FloatTok{1e{-}5}\NormalTok{, }\CommentTok{\# 归一化层的eps}
+\NormalTok{            max\_seq\_len: }\BuiltInTok{int} \OperatorTok{=} \DecValTok{512}\NormalTok{, }\CommentTok{\# 最大序列长度}
+\NormalTok{            dropout: }\BuiltInTok{float} \OperatorTok{=} \FloatTok{0.0}\NormalTok{, }\CommentTok{\# dropout概率}
+\NormalTok{            flash\_attn: }\BuiltInTok{bool} \OperatorTok{=} \VariableTok{True}\NormalTok{, }\CommentTok{\# 是否使用Flash Attention}
+            \OperatorTok{**}\NormalTok{kwargs,}
+\NormalTok{    ):}
+        \VariableTok{self}\NormalTok{.dim }\OperatorTok{=}\NormalTok{ dim}
+        \VariableTok{self}\NormalTok{.n\_layers }\OperatorTok{=}\NormalTok{ n\_layers}
+        \VariableTok{self}\NormalTok{.n\_heads }\OperatorTok{=}\NormalTok{ n\_heads}
+        \VariableTok{self}\NormalTok{.n\_kv\_heads }\OperatorTok{=}\NormalTok{ n\_kv\_heads}
+        \VariableTok{self}\NormalTok{.vocab\_size }\OperatorTok{=}\NormalTok{ vocab\_size}
+        \VariableTok{self}\NormalTok{.hidden\_dim }\OperatorTok{=}\NormalTok{ hidden\_dim}
+        \VariableTok{self}\NormalTok{.multiple\_of }\OperatorTok{=}\NormalTok{ multiple\_of}
+        \VariableTok{self}\NormalTok{.norm\_eps }\OperatorTok{=}\NormalTok{ norm\_eps}
+        \VariableTok{self}\NormalTok{.max\_seq\_len }\OperatorTok{=}\NormalTok{ max\_seq\_len}
+        \VariableTok{self}\NormalTok{.dropout }\OperatorTok{=}\NormalTok{ dropout}
+        \VariableTok{self}\NormalTok{.flash\_attn }\OperatorTok{=}\NormalTok{ flash\_attn}
+        \BuiltInTok{super}\NormalTok{().}\FunctionTok{\_\_init\_\_}\NormalTok{(}\OperatorTok{**}\NormalTok{kwargs)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{quote}
+在以下代码中出现 \texttt{args} 时，即默认为以上 \texttt{ModelConfig}
+参数配置。
+\end{quote}
+
+我们来看一下其中的一些超参数的含义，比如\texttt{dim}是模型维度，\texttt{n\_layers}是Transformer的层数，\texttt{n\_heads}是注意力机制的头数，\texttt{vocab\_size}是词汇表大小，\texttt{max\_seq\_len}是输入的最大序列长度等等。上面的代码中也对每一个参数做了详细的注释，在后面的代码中我们会根据这些超参数来构建我们的模型。
+
+\subsubsection{5.1.2 构建 RMSNorm}\label{ux6784ux5efa-rmsnorm}
+
+\texttt{RMSNorm}可以用如下的数学公式表示：
+
+\[
+\text{RMSNorm}(x) = \frac{x}{\sqrt{\frac{1}{n}\sum_{i=1}^{n}x_i^2 + \epsilon}} \cdot \gamma
+\]
+
+其中： - \(x_i\) 是输入向量的第 \(i\) 个元素 - \(\gamma\)
+是可学习的缩放参数（对应代码中的 \texttt{self.weight}） - \(n\)
+是输入向量的维度数量 - \(\epsilon\)
+是一个小常数，用于数值稳定性（以避免除以零的情况）
+
+这种归一化有助于通过确保权重的规模不会变得过大或过小来稳定学习过程，这在具有许多层的深度学习模型中特别有用。
+
+我们可以通过如下代码实现\texttt{RMSNorm}：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{class}\NormalTok{ RMSNorm(nn.Module):}
+    \KeywordTok{def} \FunctionTok{\_\_init\_\_}\NormalTok{(}\VariableTok{self}\NormalTok{, dim: }\BuiltInTok{int}\NormalTok{, eps: }\BuiltInTok{float}\NormalTok{):}
+        \BuiltInTok{super}\NormalTok{().}\FunctionTok{\_\_init\_\_}\NormalTok{()}
+        \CommentTok{\# eps是为了防止除以0的情况}
+        \VariableTok{self}\NormalTok{.eps }\OperatorTok{=}\NormalTok{ eps}
+        \CommentTok{\# weight是一个可学习的参数，全部初始化为1}
+        \VariableTok{self}\NormalTok{.weight }\OperatorTok{=}\NormalTok{ nn.Parameter(torch.ones(dim))}
+
+    \KeywordTok{def}\NormalTok{ \_norm(}\VariableTok{self}\NormalTok{, x):}
+        \CommentTok{\# 计算RMSNorm的核心部分}
+        \CommentTok{\# x.pow(2).mean({-}1, keepdim=True)计算了输入x的平方的均值}
+        \CommentTok{\# torch.rsqrt是平方根的倒数，这样就得到了RMSNorm的分母部分，再加上eps防止分母为0}
+        \CommentTok{\# 最后乘以x，得到RMSNorm的结果}
+        \ControlFlowTok{return}\NormalTok{ x }\OperatorTok{*}\NormalTok{ torch.rsqrt(x.}\BuiltInTok{pow}\NormalTok{(}\DecValTok{2}\NormalTok{).mean(}\OperatorTok{{-}}\DecValTok{1}\NormalTok{, keepdim}\OperatorTok{=}\VariableTok{True}\NormalTok{) }\OperatorTok{+} \VariableTok{self}\NormalTok{.eps)}
+
+    \KeywordTok{def}\NormalTok{ forward(}\VariableTok{self}\NormalTok{, x):}
+        \CommentTok{\# forward函数是模型的前向传播}
+        \CommentTok{\# 首先将输入x转为float类型，然后进行RMSNorm，最后再转回原来的数据类型}
+        \CommentTok{\# 最后乘以weight，这是RMSNorm的一个可学习的缩放因子}
+\NormalTok{        output }\OperatorTok{=} \VariableTok{self}\NormalTok{.\_norm(x.}\BuiltInTok{float}\NormalTok{()).type\_as(x)}
+        \ControlFlowTok{return}\NormalTok{ output }\OperatorTok{*} \VariableTok{self}\NormalTok{.weight}
+\end{Highlighting}
+\end{Shaded}
+
+并且，我们可以用下面的代码来对\texttt{RMSNorm}模块进行测试，可以看到代码最终输出的形状为\texttt{torch.Size({[}1,\ 50,\ 288{]})}，与我们输入的形状一致，说明模块的实现是正确的，归一化并不会改变输入的形状。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{norm }\OperatorTok{=}\NormalTok{ RMSNorm(args.dim, args.norm\_eps)}
+\NormalTok{x }\OperatorTok{=}\NormalTok{ torch.randn(}\DecValTok{1}\NormalTok{, }\DecValTok{50}\NormalTok{, args.dim)}
+\NormalTok{output }\OperatorTok{=}\NormalTok{ norm(x)}
+\BuiltInTok{print}\NormalTok{(output.shape)}
+
+\NormalTok{out:}
+\NormalTok{torch.Size([}\DecValTok{1}\NormalTok{, }\DecValTok{50}\NormalTok{, }\DecValTok{768}\NormalTok{])}
+\end{Highlighting}
+\end{Shaded}
+
+\subsubsection{5.1.3 构建 LLaMA2
+Attention}\label{ux6784ux5efa-llama2-attention}
+
+在 LLaMA2 模型中，虽然只有
+LLaMA2-70B模型使用了分组查询注意力机制（Grouped-Query
+Attention，GQA），但我们依然选择使用 GQA 来构建我们的 LLaMA Attention
+模块，它可以提高模型的效率，并节省一些显存占用。
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.5\textwidth]{https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/5-images/llama2-attention.png}
+\caption{图 5.2 LLaMA2 Attention 结构}
+\end{figure}
+
+\paragraph{5.1.3.1 repeat\_kv}\label{repeat_kv}
+
+在 LLaMA2
+模型中，我们需要将键和值的维度扩展到和查询的维度一样，这样才能进行注意力计算。我们可以通过如下代码实现\texttt{repeat\_kv}：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def}\NormalTok{ repeat\_kv(x: torch.Tensor, n\_rep: }\BuiltInTok{int}\NormalTok{) }\OperatorTok{{-}\textgreater{}}\NormalTok{ torch.Tensor:}
+    \CommentTok{\# 获取输入张量的形状：批量大小、序列长度、键/值对头的数量、每个头的维度大小}
+\NormalTok{    bs, slen, n\_kv\_heads, head\_dim }\OperatorTok{=}\NormalTok{ x.shape}
+    
+    \CommentTok{\# 如果重复次数为1，则不需要重复，直接返回原始张量}
+    \ControlFlowTok{if}\NormalTok{ n\_rep }\OperatorTok{==} \DecValTok{1}\NormalTok{:}
+        \ControlFlowTok{return}\NormalTok{ x}
+    
+    \CommentTok{\# 对张量进行扩展和重塑操作以重复键值对}
+    \ControlFlowTok{return}\NormalTok{ (}
+\NormalTok{        x[:, :, :, }\VariableTok{None}\NormalTok{, :]  }\CommentTok{\# 在第四个维度（头的维度前）添加一个新的维度}
+\NormalTok{        .expand(bs, slen, n\_kv\_heads, n\_rep, head\_dim)  }\CommentTok{\# 将新添加的维度扩展到n\_rep大小，实现重复的效果}
+\NormalTok{        .reshape(bs, slen, n\_kv\_heads }\OperatorTok{*}\NormalTok{ n\_rep, head\_dim)  }\CommentTok{\# 重新塑形，合并键/值对头的数量和重复次数的维度}
+\NormalTok{    )}
+\end{Highlighting}
+\end{Shaded}
+
+在上述代码中：
+
+\begin{itemize}
+\item
+  首先，获取输入张量的形状：首先，代码通过 x.shape
+  获取输入张量的形状，包括批量大小（bs）、序列长度（slen）、键/值对头的数量（n\_kv\_heads）以及每个头的维度大小（head\_dim）。
+\item
+  然后，检查重复次数：接着，代码检查重复次数 n\_rep
+  是否为1。如果是1，则说明不需要对键和值进行重复，直接返回原始张量 x。
+\item
+  最后，扩展和重塑张量：
+
+  \begin{itemize}
+  \tightlist
+  \item
+    在第三个维度（即键/值对头的维度）之后添加一个新的维度，形成
+    \texttt{x{[}:,\ :,\ :,\ None,\ :{]}}。
+  \item
+    使用 \texttt{expand} 方法将新添加的维度扩展到 \texttt{n\_rep}
+    大小，实现键/值对的重复效果。
+  \item
+    最后，通过 reshape
+    方法重新塑形，将扩展后的维度合并回键/值对头的数量中，即
+    \texttt{x.reshape(bs,\ slen,\ n\_kv\_heads\ *\ n\_rep,\ head\_dim)}，这样最终的张量形状就达到了与查询维度一致的效果。
+  \end{itemize}
+\end{itemize}
+
+\paragraph{5.1.3.2 旋转嵌入}\label{ux65cbux8f6cux5d4cux5165}
+
+接着我们来实现旋转嵌入，旋转嵌入是 LLaMA2
+模型中的一个重要组件，它可以为注意力机制提供更强的上下文信息，从而提高模型的性能。
+
+首先，我们要构造获得旋转嵌入的实部和虚部的函数：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# 注意：此处的dim应为 dim//n\_head，因为我们是对每个head进行旋转嵌入}
+\KeywordTok{def}\NormalTok{ precompute\_freqs\_cis(dim: }\BuiltInTok{int}\NormalTok{, end: }\BuiltInTok{int}\NormalTok{, theta: }\BuiltInTok{float} \OperatorTok{=} \FloatTok{10000.0}\NormalTok{):}
+    \CommentTok{\# torch.arange(0, dim, 2)[: (dim // 2)].float()生成了一个从0开始，步长为2的序列，长度为dim的一半}
+    \CommentTok{\# 然后每个元素除以dim，再取theta的倒数，得到频率}
+\NormalTok{    freqs }\OperatorTok{=} \FloatTok{1.0} \OperatorTok{/}\NormalTok{ (theta }\OperatorTok{**}\NormalTok{ (torch.arange(}\DecValTok{0}\NormalTok{, dim, }\DecValTok{2}\NormalTok{)[: (dim }\OperatorTok{//} \DecValTok{2}\NormalTok{)].}\BuiltInTok{float}\NormalTok{() }\OperatorTok{/}\NormalTok{ dim))}
+    \CommentTok{\# 生成一个从0到end的序列，长度为end}
+\NormalTok{    t }\OperatorTok{=}\NormalTok{ torch.arange(end, device}\OperatorTok{=}\NormalTok{freqs.device)}
+    \CommentTok{\# 计算外积，得到一个二维矩阵，每一行是t的元素乘以freqs的元素}
+\NormalTok{    freqs }\OperatorTok{=}\NormalTok{ torch.outer(t, freqs).}\BuiltInTok{float}\NormalTok{()}
+    \CommentTok{\# 计算频率的余弦值，得到实部}
+\NormalTok{    freqs\_cos }\OperatorTok{=}\NormalTok{ torch.cos(freqs)}
+    \CommentTok{\# 计算频率的正弦值，得到虚部}
+\NormalTok{    freqs\_sin }\OperatorTok{=}\NormalTok{ torch.sin(freqs)}
+    \ControlFlowTok{return}\NormalTok{ freqs\_cos, freqs\_sin}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{itemize}
+\tightlist
+\item
+  计算频率序列：
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{torch.arange(0,\ dim,\ 2){[}:\ (dim\ //\ 2){]}.float()}
+    生成了一个从0开始，步长为2的序列，其长度为\texttt{dim}的一半。
+  \item
+    每个元素除以\texttt{dim}后取\texttt{theta}的倒数，得到一个频率序列
+    \texttt{freqs}。这一步是为了生成适合旋转嵌入的频率。
+  \end{itemize}
+\item
+  生成时间序列：
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{t\ =\ torch.arange(end,\ device=freqs.device)}
+    生成一个从\texttt{0}到\texttt{end}的序列，长度为\texttt{end}。\texttt{end}通常是序列的最大长度。
+  \end{itemize}
+\item
+  计算频率的外积
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{freqs\ =\ torch.outer(t,\ freqs).float()} 计算时间序列
+    \texttt{t} 和频率序列 \texttt{freqs} 的外积，得到一个二维矩阵
+    \texttt{freqs}。每一行是时间序列 \texttt{t} 的元素乘以频率序列
+    \texttt{freqs} 的元素。
+  \end{itemize}
+\item
+  计算实部和虚部
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{freqs\_cos\ =\ torch.cos(freqs)} 计算频率矩阵 \texttt{freqs}
+    的余弦值，得到旋转嵌入的实部。
+  \item
+    \texttt{freqs\_sin\ =\ torch.sin(freqs)} 计算频率矩阵 \texttt{freqs}
+    的正弦值，得到旋转嵌入的虚部。
+  \end{itemize}
+\end{itemize}
+
+最终，该函数返回两个矩阵 \texttt{freqs\_cos} 和
+\texttt{freqs\_sin}，分别表示旋转嵌入的实部和虚部，用于后续的计算。
+
+接着，我们来构造调整张量形状的\texttt{reshape\_for\_broadcast}函数，这个函数的主要目的是调整
+\texttt{freqs\_cis} 的形状，使其在进行广播操作时与 \texttt{x}
+的维度对齐，从而能够进行正确的张量运算。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def}\NormalTok{ reshape\_for\_broadcast(freqs\_cis: torch.Tensor, x: torch.Tensor):}
+    \CommentTok{\# 获取x的维度数}
+\NormalTok{    ndim }\OperatorTok{=}\NormalTok{ x.ndim}
+    
+    \CommentTok{\# 断言，确保1在x的维度范围内}
+    \ControlFlowTok{assert} \DecValTok{0} \OperatorTok{\textless{}=} \DecValTok{1} \OperatorTok{\textless{}}\NormalTok{ ndim}
+    
+    \CommentTok{\# 断言，确保freqs\_cis的形状与x的第二维和最后一维相同}
+    \ControlFlowTok{assert}\NormalTok{ freqs\_cis.shape }\OperatorTok{==}\NormalTok{ (x.shape[}\DecValTok{1}\NormalTok{], x.shape[}\OperatorTok{{-}}\DecValTok{1}\NormalTok{])}
+    
+    \CommentTok{\# 构造一个新的形状，除了第二维和最后一维，其他维度都为1，这样做是为了能够将freqs\_cis与x进行广播操作}
+\NormalTok{    shape }\OperatorTok{=}\NormalTok{ [d }\ControlFlowTok{if}\NormalTok{ i }\OperatorTok{==} \DecValTok{1} \KeywordTok{or}\NormalTok{ i }\OperatorTok{==}\NormalTok{ ndim }\OperatorTok{{-}} \DecValTok{1} \ControlFlowTok{else} \DecValTok{1} \ControlFlowTok{for}\NormalTok{ i, d }\KeywordTok{in} \BuiltInTok{enumerate}\NormalTok{(x.shape)]}
+    
+    \CommentTok{\# 将freqs\_cis调整为新的形状，并返回}
+    \ControlFlowTok{return}\NormalTok{ freqs\_cis.view(shape)}
+\end{Highlighting}
+\end{Shaded}
+
+最后，我们可以通过如下代码实现旋转嵌入：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def}\NormalTok{ apply\_rotary\_emb(}
+\NormalTok{    xq: torch.Tensor,}
+\NormalTok{    xk: torch.Tensor,}
+\NormalTok{    freqs\_cos: torch.Tensor,}
+\NormalTok{    freqs\_sin: torch.Tensor}
+\NormalTok{) }\OperatorTok{{-}\textgreater{}}\NormalTok{ Tuple[torch.Tensor, torch.Tensor]:}
+
+    \CommentTok{\# 将查询和键张量转换为浮点数，并重塑形状以分离实部和虚部}
+\NormalTok{    xq\_r, xq\_i }\OperatorTok{=}\NormalTok{ xq.}\BuiltInTok{float}\NormalTok{().reshape(xq.shape[:}\OperatorTok{{-}}\DecValTok{1}\NormalTok{] }\OperatorTok{+}\NormalTok{ (}\OperatorTok{{-}}\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{)).unbind(}\OperatorTok{{-}}\DecValTok{1}\NormalTok{)}
+\NormalTok{    xk\_r, xk\_i }\OperatorTok{=}\NormalTok{ xk.}\BuiltInTok{float}\NormalTok{().reshape(xk.shape[:}\OperatorTok{{-}}\DecValTok{1}\NormalTok{] }\OperatorTok{+}\NormalTok{ (}\OperatorTok{{-}}\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{)).unbind(}\OperatorTok{{-}}\DecValTok{1}\NormalTok{)}
+
+    \CommentTok{\# 重新塑形频率张量以进行广播}
+\NormalTok{    freqs\_cos }\OperatorTok{=}\NormalTok{ reshape\_for\_broadcast(freqs\_cos, xq\_r)}
+\NormalTok{    freqs\_sin }\OperatorTok{=}\NormalTok{ reshape\_for\_broadcast(freqs\_sin, xq\_r)}
+
+    \CommentTok{\# 应用旋转，分别计算旋转后的实部和虚部}
+\NormalTok{    xq\_out\_r }\OperatorTok{=}\NormalTok{ xq\_r }\OperatorTok{*}\NormalTok{ freqs\_cos }\OperatorTok{{-}}\NormalTok{ xq\_i }\OperatorTok{*}\NormalTok{ freqs\_sin}
+\NormalTok{    xq\_out\_i }\OperatorTok{=}\NormalTok{ xq\_r }\OperatorTok{*}\NormalTok{ freqs\_sin }\OperatorTok{+}\NormalTok{ xq\_i }\OperatorTok{*}\NormalTok{ freqs\_cos}
+\NormalTok{    xk\_out\_r }\OperatorTok{=}\NormalTok{ xk\_r }\OperatorTok{*}\NormalTok{ freqs\_cos }\OperatorTok{{-}}\NormalTok{ xk\_i }\OperatorTok{*}\NormalTok{ freqs\_sin}
+\NormalTok{    xk\_out\_i }\OperatorTok{=}\NormalTok{ xk\_r }\OperatorTok{*}\NormalTok{ freqs\_sin }\OperatorTok{+}\NormalTok{ xk\_i }\OperatorTok{*}\NormalTok{ freqs\_cos}
+
+    \CommentTok{\# 将最后两个维度合并，并还原为原始张量的形状}
+\NormalTok{    xq\_out }\OperatorTok{=}\NormalTok{ torch.stack([xq\_out\_r, xq\_out\_i], dim}\OperatorTok{={-}}\DecValTok{1}\NormalTok{).flatten(}\DecValTok{3}\NormalTok{)}
+\NormalTok{    xk\_out }\OperatorTok{=}\NormalTok{ torch.stack([xk\_out\_r, xk\_out\_i], dim}\OperatorTok{={-}}\DecValTok{1}\NormalTok{).flatten(}\DecValTok{3}\NormalTok{)}
+
+    \ControlFlowTok{return}\NormalTok{ xq\_out.type\_as(xq), xk\_out.type\_as(xk)}
+\end{Highlighting}
+\end{Shaded}
+
+这里我们给出可以测试\texttt{apply\_rotary\_emb}函数的代码，大家也可以尝试在代码中添加断点，来查看每一步的计算结果。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{xq }\OperatorTok{=}\NormalTok{ torch.randn(}\DecValTok{1}\NormalTok{, }\DecValTok{50}\NormalTok{, }\DecValTok{6}\NormalTok{, }\DecValTok{48}\NormalTok{) }\CommentTok{\# bs, seq\_len, dim//n\_head, n\_head\_dim}
+\NormalTok{xk }\OperatorTok{=}\NormalTok{ torch.randn(}\DecValTok{1}\NormalTok{, }\DecValTok{50}\NormalTok{, }\DecValTok{6}\NormalTok{, }\DecValTok{48}\NormalTok{) }\CommentTok{\# bs, seq\_len, dim//n\_head, n\_head\_dim}
+
+\CommentTok{\# 使用 precompute\_freqs\_cis 函数获取 sin和cos}
+\NormalTok{cos, sin }\OperatorTok{=}\NormalTok{ precompute\_freqs\_cis(}\DecValTok{288}\OperatorTok{//}\DecValTok{6}\NormalTok{, }\DecValTok{50}\NormalTok{)}
+\BuiltInTok{print}\NormalTok{(cos.shape, sin.shape)}
+\NormalTok{xq\_out, xk\_out }\OperatorTok{=}\NormalTok{ apply\_rotary\_emb(xq, xk, cos, sin)}
+
+\NormalTok{xq\_out.shape, xk\_out.shape}
+\end{Highlighting}
+\end{Shaded}
+
+OUT:
+
+\begin{verbatim}
+torch.Size([50, 24]) torch.Size([50, 24])
+
+(torch.Size([1, 50, 6, 48]), torch.Size([1, 50, 6, 48]))
+\end{verbatim}
+
+\paragraph{5.1.3.3 组装 LLaMA2
+Attention}\label{ux7ec4ux88c5-llama2-attention}
+
+在上面我们已经完成了旋转嵌入的实现，接下来我们就可以构建 LLaMA2
+Attention 模块了。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{class}\NormalTok{ Attention(nn.Module):}
+    \KeywordTok{def} \FunctionTok{\_\_init\_\_}\NormalTok{(}\VariableTok{self}\NormalTok{, args: ModelConfig):}
+        \BuiltInTok{super}\NormalTok{().}\FunctionTok{\_\_init\_\_}\NormalTok{()}
+        \CommentTok{\# 根据是否指定n\_kv\_heads，确定用于键（key）和值（value）的头的数量。}
+        \VariableTok{self}\NormalTok{.n\_kv\_heads }\OperatorTok{=}\NormalTok{ args.n\_heads }\ControlFlowTok{if}\NormalTok{ args.n\_kv\_heads }\KeywordTok{is} \VariableTok{None} \ControlFlowTok{else}\NormalTok{ args.n\_kv\_heads}
+        \CommentTok{\# 确保总头数可以被键值头数整除。}
+        \ControlFlowTok{assert}\NormalTok{ args.n\_heads }\OperatorTok{\%} \VariableTok{self}\NormalTok{.n\_kv\_heads }\OperatorTok{==} \DecValTok{0}
+
+        \CommentTok{\# 模型并行处理大小，默认为1。}
+\NormalTok{        model\_parallel\_size }\OperatorTok{=} \DecValTok{1}
+        \CommentTok{\# 本地计算头数，等于总头数除以模型并行处理大小。}
+        \VariableTok{self}\NormalTok{.n\_local\_heads }\OperatorTok{=}\NormalTok{ args.n\_heads }\OperatorTok{//}\NormalTok{ model\_parallel\_size}
+        \CommentTok{\# 本地键值头数，等于键值头数除以模型并行处理大小。}
+        \VariableTok{self}\NormalTok{.n\_local\_kv\_heads }\OperatorTok{=} \VariableTok{self}\NormalTok{.n\_kv\_heads }\OperatorTok{//}\NormalTok{ model\_parallel\_size}
+        \CommentTok{\# 重复次数，用于扩展键和值的尺寸。}
+        \VariableTok{self}\NormalTok{.n\_rep }\OperatorTok{=} \VariableTok{self}\NormalTok{.n\_local\_heads }\OperatorTok{//} \VariableTok{self}\NormalTok{.n\_local\_kv\_heads}
+        \CommentTok{\# 每个头的维度，等于模型维度除以头的总数。}
+        \VariableTok{self}\NormalTok{.head\_dim }\OperatorTok{=}\NormalTok{ args.dim }\OperatorTok{//}\NormalTok{ args.n\_heads}
+
+        \CommentTok{\# 定义权重矩阵。}
+        \VariableTok{self}\NormalTok{.wq }\OperatorTok{=}\NormalTok{ nn.Linear(args.dim, args.n\_heads }\OperatorTok{*} \VariableTok{self}\NormalTok{.head\_dim, bias}\OperatorTok{=}\VariableTok{False}\NormalTok{)}
+        \VariableTok{self}\NormalTok{.wk }\OperatorTok{=}\NormalTok{ nn.Linear(args.dim, }\VariableTok{self}\NormalTok{.n\_kv\_heads }\OperatorTok{*} \VariableTok{self}\NormalTok{.head\_dim, bias}\OperatorTok{=}\VariableTok{False}\NormalTok{)}
+        \VariableTok{self}\NormalTok{.wv }\OperatorTok{=}\NormalTok{ nn.Linear(args.dim, }\VariableTok{self}\NormalTok{.n\_kv\_heads }\OperatorTok{*} \VariableTok{self}\NormalTok{.head\_dim, bias}\OperatorTok{=}\VariableTok{False}\NormalTok{)}
+        \CommentTok{\# 输出权重矩阵。}
+        \VariableTok{self}\NormalTok{.wo }\OperatorTok{=}\NormalTok{ nn.Linear(args.n\_heads }\OperatorTok{*} \VariableTok{self}\NormalTok{.head\_dim, args.dim, bias}\OperatorTok{=}\VariableTok{False}\NormalTok{)}
+
+        \CommentTok{\# 定义dropout。}
+        \VariableTok{self}\NormalTok{.attn\_dropout }\OperatorTok{=}\NormalTok{ nn.Dropout(args.dropout)}
+        \VariableTok{self}\NormalTok{.resid\_dropout }\OperatorTok{=}\NormalTok{ nn.Dropout(args.dropout)}
+        \CommentTok{\# 保存dropout概率。}
+        \VariableTok{self}\NormalTok{.dropout }\OperatorTok{=}\NormalTok{ args.dropout}
+
+        \CommentTok{\# 检查是否使用Flash Attention（需要PyTorch \textgreater{}= 2.0）。}
+        \VariableTok{self}\NormalTok{.flash }\OperatorTok{=} \BuiltInTok{hasattr}\NormalTok{(torch.nn.functional, }\StringTok{\textquotesingle{}scaled\_dot\_product\_attention\textquotesingle{}}\NormalTok{)}
+        \ControlFlowTok{if} \KeywordTok{not} \VariableTok{self}\NormalTok{.flash:}
+            \CommentTok{\# 若不支持Flash Attention，则使用手动实现的注意力机制，并设置mask。}
+            \BuiltInTok{print}\NormalTok{(}\StringTok{"WARNING: using slow attention. Flash Attention requires PyTorch \textgreater{}= 2.0"}\NormalTok{)}
+            \CommentTok{\# 创建一个上三角矩阵，用于遮蔽未来信息。}
+\NormalTok{            mask }\OperatorTok{=}\NormalTok{ torch.full((}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{, args.max\_seq\_len, args.max\_seq\_len), }\BuiltInTok{float}\NormalTok{(}\StringTok{"{-}inf"}\NormalTok{))}
+\NormalTok{            mask }\OperatorTok{=}\NormalTok{ torch.triu(mask, diagonal}\OperatorTok{=}\DecValTok{1}\NormalTok{)}
+            \CommentTok{\# 注册为模型的缓冲区}
+            \VariableTok{self}\NormalTok{.register\_buffer(}\StringTok{"mask"}\NormalTok{, mask)}
+
+    \KeywordTok{def}\NormalTok{ forward(}\VariableTok{self}\NormalTok{, x: torch.Tensor, freqs\_cos: torch.Tensor, freqs\_sin: torch.Tensor):}
+        \CommentTok{\# 获取批次大小和序列长度，[batch\_size, seq\_len, dim]}
+\NormalTok{        bsz, seqlen, \_ }\OperatorTok{=}\NormalTok{ x.shape}
+
+        \CommentTok{\# 计算查询（Q）、键（K）、值（V）。}
+\NormalTok{        xq, xk, xv }\OperatorTok{=} \VariableTok{self}\NormalTok{.wq(x), }\VariableTok{self}\NormalTok{.wk(x), }\VariableTok{self}\NormalTok{.wv(x)}
+        \CommentTok{\# 调整形状以适应头的维度。}
+\NormalTok{        xq }\OperatorTok{=}\NormalTok{ xq.view(bsz, seqlen, }\VariableTok{self}\NormalTok{.n\_local\_heads, }\VariableTok{self}\NormalTok{.head\_dim)}
+\NormalTok{        xk }\OperatorTok{=}\NormalTok{ xk.view(bsz, seqlen, }\VariableTok{self}\NormalTok{.n\_local\_kv\_heads, }\VariableTok{self}\NormalTok{.head\_dim)}
+\NormalTok{        xv }\OperatorTok{=}\NormalTok{ xv.view(bsz, seqlen, }\VariableTok{self}\NormalTok{.n\_local\_kv\_heads, }\VariableTok{self}\NormalTok{.head\_dim)}
+
+        \CommentTok{\# 应用旋转位置嵌入（RoPE）。}
+\NormalTok{        xq, xk }\OperatorTok{=}\NormalTok{ apply\_rotary\_emb(xq, xk, freqs\_cos, freqs\_sin)}
+
+        \CommentTok{\# 对键和值进行扩展以适应重复次数。}
+\NormalTok{        xk }\OperatorTok{=}\NormalTok{ repeat\_kv(xk, }\VariableTok{self}\NormalTok{.n\_rep)}
+\NormalTok{        xv }\OperatorTok{=}\NormalTok{ repeat\_kv(xv, }\VariableTok{self}\NormalTok{.n\_rep)}
+
+        \CommentTok{\# 将头作为批次维度处理。}
+\NormalTok{        xq }\OperatorTok{=}\NormalTok{ xq.transpose(}\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{)}
+\NormalTok{        xk }\OperatorTok{=}\NormalTok{ xk.transpose(}\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{)}
+\NormalTok{        xv }\OperatorTok{=}\NormalTok{ xv.transpose(}\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{)}
+
+        \CommentTok{\# 根据是否支持Flash Attention，选择实现方式。}
+        \ControlFlowTok{if} \VariableTok{self}\NormalTok{.flash:}
+            \CommentTok{\# 使用Flash Attention。}
+\NormalTok{            output }\OperatorTok{=}\NormalTok{ torch.nn.functional.scaled\_dot\_product\_attention(xq, xk, xv, attn\_mask}\OperatorTok{=}\VariableTok{None}\NormalTok{, dropout\_p}\OperatorTok{=}\VariableTok{self}\NormalTok{.dropout }\ControlFlowTok{if} \VariableTok{self}\NormalTok{.training }\ControlFlowTok{else} \FloatTok{0.0}\NormalTok{, is\_causal}\OperatorTok{=}\VariableTok{True}\NormalTok{)}
+        \ControlFlowTok{else}\NormalTok{:}
+            \CommentTok{\# 使用手动实现的注意力机制。}
+\NormalTok{            scores }\OperatorTok{=}\NormalTok{ torch.matmul(xq, xk.transpose(}\DecValTok{2}\NormalTok{, }\DecValTok{3}\NormalTok{)) }\OperatorTok{/}\NormalTok{ math.sqrt(}\VariableTok{self}\NormalTok{.head\_dim)}
+            \ControlFlowTok{assert} \BuiltInTok{hasattr}\NormalTok{(}\VariableTok{self}\NormalTok{, }\StringTok{\textquotesingle{}mask\textquotesingle{}}\NormalTok{)}
+\NormalTok{            scores }\OperatorTok{=}\NormalTok{ scores }\OperatorTok{+} \VariableTok{self}\NormalTok{.mask[:, :, :seqlen, :seqlen]}
+\NormalTok{            scores }\OperatorTok{=}\NormalTok{ F.softmax(scores.}\BuiltInTok{float}\NormalTok{(), dim}\OperatorTok{={-}}\DecValTok{1}\NormalTok{).type\_as(xq)}
+\NormalTok{            scores }\OperatorTok{=} \VariableTok{self}\NormalTok{.attn\_dropout(scores)}
+\NormalTok{            output }\OperatorTok{=}\NormalTok{ torch.matmul(scores, xv)}
+
+        \CommentTok{\# 恢复时间维度并合并头。}
+\NormalTok{        output }\OperatorTok{=}\NormalTok{ output.transpose(}\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{).contiguous().view(bsz, seqlen, }\OperatorTok{{-}}\DecValTok{1}\NormalTok{)}
+
+        \CommentTok{\# 最终投影回残差流。}
+\NormalTok{        output }\OperatorTok{=} \VariableTok{self}\NormalTok{.wo(output)}
+\NormalTok{        output }\OperatorTok{=} \VariableTok{self}\NormalTok{.resid\_dropout(output)}
+        \ControlFlowTok{return}\NormalTok{ output}
+\end{Highlighting}
+\end{Shaded}
+
+同样大家可以使用下面的代码来对注意力模块进行测试，可以看到代码最终输出的形状为\texttt{torch.Size({[}1,\ 50,\ 768{]})}，与我们输入的形状一致，说明模块的实现是正确的。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# 创建Attention实例}
+\NormalTok{attention\_model }\OperatorTok{=}\NormalTok{ Attention(args)}
+
+\CommentTok{\# 模拟输入数据}
+\NormalTok{batch\_size }\OperatorTok{=} \DecValTok{1}
+\NormalTok{seq\_len }\OperatorTok{=} \DecValTok{50}  \CommentTok{\# 假设实际使用的序列长度为50}
+\NormalTok{dim }\OperatorTok{=}\NormalTok{ args.dim}
+\NormalTok{x }\OperatorTok{=}\NormalTok{ torch.rand(batch\_size, seq\_len, dim)  }\CommentTok{\# 随机生成输入张量}
+\CommentTok{\# freqs\_cos = torch.rand(seq\_len, dim // 2)  \# 模拟cos频率，用于RoPE}
+\CommentTok{\# freqs\_sin = torch.rand(seq\_len, dim // 2)  \# 模拟sin频率，用于RoPE}
+
+\NormalTok{freqs\_cos, freqs\_sin }\OperatorTok{=}\NormalTok{ precompute\_freqs\_cis(dim}\OperatorTok{//}\NormalTok{args.n\_heads, seq\_len)}
+
+\CommentTok{\# 运行Attention模型}
+\NormalTok{output }\OperatorTok{=}\NormalTok{ attention\_model(x, freqs\_cos, freqs\_sin)}
+
+\CommentTok{\# attention出来之后的形状 依然是[batch\_size, seq\_len, dim]}
+\BuiltInTok{print}\NormalTok{(}\StringTok{"Output shape:"}\NormalTok{, output.shape)}
+\end{Highlighting}
+\end{Shaded}
+
+OUT:
+
+\begin{verbatim}
+Output shape: torch.Size([1, 50, 768])
+\end{verbatim}
+
+\subsubsection{5.1.4 构建 LLaMA2
+MLP模块}\label{ux6784ux5efa-llama2-mlpux6a21ux5757}
+
+相对于前面我们实现的LLaMA2 Attention模块，LLaMA2
+MLP模块的实现要简单一些。我们可以通过如下代码实现\texttt{MLP}：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{class}\NormalTok{ MLP(nn.Module):}
+    \KeywordTok{def} \FunctionTok{\_\_init\_\_}\NormalTok{(}\VariableTok{self}\NormalTok{, dim: }\BuiltInTok{int}\NormalTok{, hidden\_dim: }\BuiltInTok{int}\NormalTok{, multiple\_of: }\BuiltInTok{int}\NormalTok{, dropout: }\BuiltInTok{float}\NormalTok{):}
+        \BuiltInTok{super}\NormalTok{().}\FunctionTok{\_\_init\_\_}\NormalTok{()}
+        \CommentTok{\# 如果没有指定隐藏层的维度，我们将其设置为输入维度的4倍}
+        \CommentTok{\# 然后将其减少到2/3，最后确保它是multiple\_of的倍数}
+        \ControlFlowTok{if}\NormalTok{ hidden\_dim }\KeywordTok{is} \VariableTok{None}\NormalTok{:}
+\NormalTok{            hidden\_dim }\OperatorTok{=} \DecValTok{4} \OperatorTok{*}\NormalTok{ dim}
+\NormalTok{            hidden\_dim }\OperatorTok{=} \BuiltInTok{int}\NormalTok{(}\DecValTok{2} \OperatorTok{*}\NormalTok{ hidden\_dim }\OperatorTok{/} \DecValTok{3}\NormalTok{)}
+\NormalTok{            hidden\_dim }\OperatorTok{=}\NormalTok{ multiple\_of }\OperatorTok{*}\NormalTok{ ((hidden\_dim }\OperatorTok{+}\NormalTok{ multiple\_of }\OperatorTok{{-}} \DecValTok{1}\NormalTok{) }\OperatorTok{//}\NormalTok{ multiple\_of)}
+        \CommentTok{\# 定义第一层线性变换，从输入维度到隐藏维度}
+        \VariableTok{self}\NormalTok{.w1 }\OperatorTok{=}\NormalTok{ nn.Linear(dim, hidden\_dim, bias}\OperatorTok{=}\VariableTok{False}\NormalTok{)}
+        \CommentTok{\# 定义第二层线性变换，从隐藏维度到输入维度}
+        \VariableTok{self}\NormalTok{.w2 }\OperatorTok{=}\NormalTok{ nn.Linear(hidden\_dim, dim, bias}\OperatorTok{=}\VariableTok{False}\NormalTok{)}
+        \CommentTok{\# 定义第三层线性变换，从输入维度到隐藏维度}
+        \VariableTok{self}\NormalTok{.w3 }\OperatorTok{=}\NormalTok{ nn.Linear(dim, hidden\_dim, bias}\OperatorTok{=}\VariableTok{False}\NormalTok{)}
+        \CommentTok{\# 定义dropout层，用于防止过拟合}
+        \VariableTok{self}\NormalTok{.dropout }\OperatorTok{=}\NormalTok{ nn.Dropout(dropout)}
+
+    \KeywordTok{def}\NormalTok{ forward(}\VariableTok{self}\NormalTok{, x):}
+        \CommentTok{\# 前向传播函数}
+        \CommentTok{\# 首先，输入x通过第一层线性变换和SILU激活函数}
+        \CommentTok{\# 然后，结果乘以输入x通过第三层线性变换的结果}
+        \CommentTok{\# 最后，通过第二层线性变换和dropout层}
+        \ControlFlowTok{return} \VariableTok{self}\NormalTok{.dropout(}\VariableTok{self}\NormalTok{.w2(F.silu(}\VariableTok{self}\NormalTok{.w1(x)) }\OperatorTok{*} \VariableTok{self}\NormalTok{.w3(x)))}
+\end{Highlighting}
+\end{Shaded}
+
+我们着重观察一下\texttt{forward}函数的实现，首先，输入 \texttt{x}
+通过第一层线性变换 \texttt{self.w1} 和 \texttt{SILU}
+激活函数，然后，结果乘以输入 \texttt{x} 通过第三层线性变换
+\texttt{self.w3} 的结果，最后，通过第二层线性变换 \texttt{self.w2} 和
+\texttt{dropout} 层，得到最终输出。
+
+同样大家可以使用下面的代码来对\texttt{LLaMAMLP}模块进行测试，可以看到代码最终输出的形状为\texttt{torch.Size({[}1,\ 50,\ 768{]})}，与我们输入的形状一致，说明模块的实现是正确的。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# 创建MLP实例}
+\NormalTok{mlp }\OperatorTok{=}\NormalTok{ MLP(args.dim, args.hidden\_dim, args.multiple\_of, args.dropout)}
+\CommentTok{\# 随机生成数据}
+\NormalTok{x }\OperatorTok{=}\NormalTok{ torch.randn(}\DecValTok{1}\NormalTok{, }\DecValTok{50}\NormalTok{, args.dim)}
+\CommentTok{\# 运行MLP模型}
+\NormalTok{output }\OperatorTok{=}\NormalTok{ mlp(x)}
+\BuiltInTok{print}\NormalTok{(output.shape)}
+\end{Highlighting}
+\end{Shaded}
+
+OUT:
+
+\begin{verbatim}
+torch.Size([1, 50, 768])
+\end{verbatim}
+
+\subsubsection{5.1.5 LLaMA2 Decoder Layer}\label{llama2-decoder-layer}
+
+到这里，我们已经实现了\texttt{LLaMA2}模型的\texttt{Attention}模块和\texttt{MLP}模块，接下来我们就可以构建\texttt{LLaMA2}的\texttt{Decoder\ Layer}了。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{class}\NormalTok{ DecoderLayer(nn.Module):}
+    \KeywordTok{def} \FunctionTok{\_\_init\_\_}\NormalTok{(}\VariableTok{self}\NormalTok{, layer\_id: }\BuiltInTok{int}\NormalTok{, args: ModelConfig):}
+        \BuiltInTok{super}\NormalTok{().}\FunctionTok{\_\_init\_\_}\NormalTok{()}
+        \CommentTok{\# 定义多头注意力的头数}
+        \VariableTok{self}\NormalTok{.n\_heads }\OperatorTok{=}\NormalTok{ args.n\_heads}
+        \CommentTok{\# 定义输入维度}
+        \VariableTok{self}\NormalTok{.dim }\OperatorTok{=}\NormalTok{ args.dim}
+        \CommentTok{\# 定义每个头的维度，等于输入维度除以头数}
+        \VariableTok{self}\NormalTok{.head\_dim }\OperatorTok{=}\NormalTok{ args.dim }\OperatorTok{//}\NormalTok{ args.n\_heads}
+        \CommentTok{\# 定义LLaMA2Attention对象，用于进行多头注意力计算}
+        \VariableTok{self}\NormalTok{.attention }\OperatorTok{=}\NormalTok{ Attention(args)}
+        \CommentTok{\# 定义LLaMAMLP对象，用于进行前馈神经网络计算}
+        \VariableTok{self}\NormalTok{.feed\_forward }\OperatorTok{=}\NormalTok{ MLP(}
+\NormalTok{            dim}\OperatorTok{=}\NormalTok{args.dim,}
+\NormalTok{            hidden\_dim}\OperatorTok{=}\NormalTok{args.hidden\_dim,}
+\NormalTok{            multiple\_of}\OperatorTok{=}\NormalTok{args.multiple\_of,}
+\NormalTok{            dropout}\OperatorTok{=}\NormalTok{args.dropout,}
+\NormalTok{        )}
+        \CommentTok{\# 定义层的ID}
+        \VariableTok{self}\NormalTok{.layer\_id }\OperatorTok{=}\NormalTok{ layer\_id}
+        \CommentTok{\# 定义注意力计算的归一化层}
+        \VariableTok{self}\NormalTok{.attention\_norm }\OperatorTok{=}\NormalTok{ RMSNorm(args.dim, eps}\OperatorTok{=}\NormalTok{args.norm\_eps)}
+        \CommentTok{\# 定义前馈神经网络计算的归一化层}
+        \VariableTok{self}\NormalTok{.ffn\_norm }\OperatorTok{=}\NormalTok{ RMSNorm(args.dim, eps}\OperatorTok{=}\NormalTok{args.norm\_eps)}
+
+    \KeywordTok{def}\NormalTok{ forward(}\VariableTok{self}\NormalTok{, x, freqs\_cos, freqs\_sin):}
+        \CommentTok{\# 前向传播函数}
+        \CommentTok{\# 首先，输入x经过注意力归一化层，然后进行注意力计算，结果与输入x相加得到h}
+        \CommentTok{\# 然后，h经过前馈神经网络归一化层，然后进行前馈神经网络计算，结果与h相加得到输出}
+\NormalTok{        h }\OperatorTok{=}\NormalTok{ x }\OperatorTok{+} \VariableTok{self}\NormalTok{.attention.forward(}\VariableTok{self}\NormalTok{.attention\_norm(x), freqs\_cos, freqs\_sin)}
+\NormalTok{        out }\OperatorTok{=}\NormalTok{ h }\OperatorTok{+} \VariableTok{self}\NormalTok{.feed\_forward.forward(}\VariableTok{self}\NormalTok{.ffn\_norm(h))}
+        \ControlFlowTok{return}\NormalTok{ out}
+\end{Highlighting}
+\end{Shaded}
+
+\texttt{DecoderLayer}就是把我们上面完成的\texttt{Attention}模块和\texttt{MLP}模块组合在一起，实现了一个完整的\texttt{Transformer}模块。
+
+同样大家可以使用下面的代码来对\texttt{DecoderLayer}模块进行测试，可以看到代码最终输出的形状为\texttt{torch.Size({[}1,\ 50,\ 768{]})}，与我们输入的形状一致，说明模块的实现是正确的。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# 创建LLaMADecoderLayer实例}
+\NormalTok{decoderlayer }\OperatorTok{=}\NormalTok{ DecoderLayer(}\DecValTok{0}\NormalTok{, args)}
+
+\CommentTok{\# 模拟输入数据}
+\NormalTok{dim }\OperatorTok{=}\NormalTok{ args.dim}
+\NormalTok{seq\_len }\OperatorTok{=} \DecValTok{50}
+
+\NormalTok{x }\OperatorTok{=}\NormalTok{ torch.randn(}\DecValTok{1}\NormalTok{, seq\_len, dim) }\CommentTok{\# [bs, seq\_len, dim]}
+
+\NormalTok{freqs\_cos, freqs\_sin }\OperatorTok{=}\NormalTok{ precompute\_freqs\_cis(dim}\OperatorTok{//}\NormalTok{args.n\_heads, seq\_len)}
+
+\NormalTok{out }\OperatorTok{=}\NormalTok{ decoderlayer(x, freqs\_cos, freqs\_sin)}
+
+\BuiltInTok{print}\NormalTok{(out.shape) }\CommentTok{\# 形状和输入的x一样 [batch\_size, seq\_len, dim]}
+\end{Highlighting}
+\end{Shaded}
+
+OUT:
+
+\begin{verbatim}
+torch.Size([1, 50, 768])
+\end{verbatim}
+
+\subsubsection{5.1.6 构建 LLaMA2
+模型}\label{ux6784ux5efa-llama2-ux6a21ux578b}
+
+好了，我们已经完了上述所有的模块的实现，接下来就是激动人心的时刻，我们可以构建\texttt{LLaMA2}模型了。，\texttt{LLaMA2}模型就是将\texttt{DecoderLayer}模块堆叠起来，构成一个完整的\texttt{Transformer}模型。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{class}\NormalTok{ Transformer(PreTrainedModel):}
+\NormalTok{    config\_class }\OperatorTok{=}\NormalTok{ ModelConfig  }\CommentTok{\# 配置类}
+\NormalTok{    last\_loss: Optional[torch.Tensor] }\CommentTok{\# 记录最后一次计算的损失}
+
+    \KeywordTok{def} \FunctionTok{\_\_init\_\_}\NormalTok{(}\VariableTok{self}\NormalTok{, args: ModelConfig }\OperatorTok{=} \VariableTok{None}\NormalTok{):}
+        \BuiltInTok{super}\NormalTok{().}\FunctionTok{\_\_init\_\_}\NormalTok{(args)}
+        \CommentTok{\# 初始化模型参数}
+        \VariableTok{self}\NormalTok{.args }\OperatorTok{=}\NormalTok{ args}
+        \CommentTok{\# 词汇表大小}
+        \VariableTok{self}\NormalTok{.vocab\_size }\OperatorTok{=}\NormalTok{ args.vocab\_size}
+        \CommentTok{\# 层数}
+        \VariableTok{self}\NormalTok{.n\_layers }\OperatorTok{=}\NormalTok{ args.n\_layers}
+
+        \CommentTok{\# 词嵌入层}
+        \VariableTok{self}\NormalTok{.tok\_embeddings }\OperatorTok{=}\NormalTok{ nn.Embedding(args.vocab\_size, args.dim)}
+        \CommentTok{\# Dropout层}
+        \VariableTok{self}\NormalTok{.dropout }\OperatorTok{=}\NormalTok{ nn.Dropout(args.dropout)}
+        \CommentTok{\# Decoder层}
+        \VariableTok{self}\NormalTok{.layers }\OperatorTok{=}\NormalTok{ torch.nn.ModuleList()}
+        \ControlFlowTok{for}\NormalTok{ layer\_id }\KeywordTok{in} \BuiltInTok{range}\NormalTok{(args.n\_layers):}
+            \VariableTok{self}\NormalTok{.layers.append(DecoderLayer(layer\_id, args))}
+        \CommentTok{\# 归一化层}
+        \VariableTok{self}\NormalTok{.norm }\OperatorTok{=}\NormalTok{ RMSNorm(args.dim, eps}\OperatorTok{=}\NormalTok{args.norm\_eps)}
+        \CommentTok{\# 输出层}
+        \VariableTok{self}\NormalTok{.output }\OperatorTok{=}\NormalTok{ nn.Linear(args.dim, args.vocab\_size, bias}\OperatorTok{=}\VariableTok{False}\NormalTok{)}
+
+        \CommentTok{\# 将词嵌入层的权重与输出层的权重共享}
+        \VariableTok{self}\NormalTok{.tok\_embeddings.weight }\OperatorTok{=} \VariableTok{self}\NormalTok{.output.weight }
+
+        \CommentTok{\# 预计算相对位置嵌入的频率}
+\NormalTok{        freqs\_cos, freqs\_sin }\OperatorTok{=}\NormalTok{ precompute\_freqs\_cis(}\VariableTok{self}\NormalTok{.args.dim }\OperatorTok{//} \VariableTok{self}\NormalTok{.args.n\_heads, }\VariableTok{self}\NormalTok{.args.max\_seq\_len)}
+        \VariableTok{self}\NormalTok{.register\_buffer(}\StringTok{"freqs\_cos"}\NormalTok{, freqs\_cos, persistent}\OperatorTok{=}\VariableTok{False}\NormalTok{)}
+        \VariableTok{self}\NormalTok{.register\_buffer(}\StringTok{"freqs\_sin"}\NormalTok{, freqs\_sin, persistent}\OperatorTok{=}\VariableTok{False}\NormalTok{)}
+
+        \CommentTok{\# 初始化所有权重}
+        \VariableTok{self}\NormalTok{.}\BuiltInTok{apply}\NormalTok{(}\VariableTok{self}\NormalTok{.\_init\_weights)}
+        \CommentTok{\# 对残差投影进行特殊的缩放初始化}
+        \ControlFlowTok{for}\NormalTok{ pn, p }\KeywordTok{in} \VariableTok{self}\NormalTok{.named\_parameters():}
+            \ControlFlowTok{if}\NormalTok{ pn.endswith(}\StringTok{\textquotesingle{}w3.weight\textquotesingle{}}\NormalTok{) }\KeywordTok{or}\NormalTok{ pn.endswith(}\StringTok{\textquotesingle{}wo.weight\textquotesingle{}}\NormalTok{):}
+\NormalTok{                torch.nn.init.normal\_(p, mean}\OperatorTok{=}\FloatTok{0.0}\NormalTok{, std}\OperatorTok{=}\FloatTok{0.02}\OperatorTok{/}\NormalTok{math.sqrt(}\DecValTok{2} \OperatorTok{*}\NormalTok{ args.n\_layers))}
+
+        \CommentTok{\# 初始化最后一次前向传播的损失属性}
+        \VariableTok{self}\NormalTok{.last\_loss }\OperatorTok{=} \VariableTok{None}
+        \VariableTok{self}\NormalTok{.OUT }\OperatorTok{=}\NormalTok{ CausalLMOutputWithPast()  }\CommentTok{\# 输出容器}
+        \VariableTok{self}\NormalTok{.\_no\_split\_modules }\OperatorTok{=}\NormalTok{ [name }\ControlFlowTok{for}\NormalTok{ name, \_ }\KeywordTok{in} \VariableTok{self}\NormalTok{.named\_modules()]  }\CommentTok{\# 不分割的模块列表}
+
+    \KeywordTok{def}\NormalTok{ \_init\_weights(}\VariableTok{self}\NormalTok{, module):}
+        \CommentTok{\# 初始化权重的函数}
+        \ControlFlowTok{if} \BuiltInTok{isinstance}\NormalTok{(module, nn.Linear):}
+\NormalTok{            torch.nn.init.normal\_(module.weight, mean}\OperatorTok{=}\FloatTok{0.0}\NormalTok{, std}\OperatorTok{=}\FloatTok{0.02}\NormalTok{)}
+            \ControlFlowTok{if}\NormalTok{ module.bias }\KeywordTok{is} \KeywordTok{not} \VariableTok{None}\NormalTok{:}
+\NormalTok{                torch.nn.init.zeros\_(module.bias)}
+        \ControlFlowTok{elif} \BuiltInTok{isinstance}\NormalTok{(module, nn.Embedding):}
+\NormalTok{            torch.nn.init.normal\_(module.weight, mean}\OperatorTok{=}\FloatTok{0.0}\NormalTok{, std}\OperatorTok{=}\FloatTok{0.02}\NormalTok{)}
+    
+    \KeywordTok{def}\NormalTok{ forward(}\VariableTok{self}\NormalTok{, tokens: torch.Tensor, targets: Optional[torch.Tensor] }\OperatorTok{=} \VariableTok{None}\NormalTok{, }\OperatorTok{**}\NormalTok{keyargs) }\OperatorTok{{-}\textgreater{}}\NormalTok{ torch.Tensor:}
+        \CommentTok{"""}
+\CommentTok{        {-} tokens: Optional[torch.Tensor], 输入 token 张量。}
+\CommentTok{        {-} targets: Optional[torch.Tensor], 目标 token 张量。}
+\CommentTok{        {-} kv\_cache: bool, 是否使用键值缓存。}
+\CommentTok{        {-} keyargs: 其他关键字参数。}
+
+\CommentTok{        {-} self.OUT: CausalLMOutputWithPast, 包含 logits 和损失。}
+\CommentTok{        """}
+
+        \ControlFlowTok{if} \StringTok{\textquotesingle{}input\_ids\textquotesingle{}} \KeywordTok{in}\NormalTok{ keyargs:}
+\NormalTok{            tokens }\OperatorTok{=}\NormalTok{ keyargs[}\StringTok{\textquotesingle{}input\_ids\textquotesingle{}}\NormalTok{]}
+        \ControlFlowTok{if} \StringTok{\textquotesingle{}attention\_mask\textquotesingle{}} \KeywordTok{in}\NormalTok{ keyargs:}
+\NormalTok{            targets }\OperatorTok{=}\NormalTok{ keyargs[}\StringTok{\textquotesingle{}attention\_mask\textquotesingle{}}\NormalTok{]}
+
+        \CommentTok{\# 前向传播函数}
+\NormalTok{        \_bsz, seqlen }\OperatorTok{=}\NormalTok{ tokens.shape}
+        \CommentTok{\# 通过词嵌入层和Dropout层}
+\NormalTok{        h }\OperatorTok{=} \VariableTok{self}\NormalTok{.tok\_embeddings(tokens)}
+\NormalTok{        h }\OperatorTok{=} \VariableTok{self}\NormalTok{.dropout(h)}
+        \CommentTok{\# 获取相对位置嵌入的频率}
+\NormalTok{        freqs\_cos }\OperatorTok{=} \VariableTok{self}\NormalTok{.freqs\_cos[:seqlen]}
+\NormalTok{        freqs\_sin }\OperatorTok{=} \VariableTok{self}\NormalTok{.freqs\_sin[:seqlen]}
+
+        \CommentTok{\# 通过Decoder层}
+        \ControlFlowTok{for}\NormalTok{ layer }\KeywordTok{in} \VariableTok{self}\NormalTok{.layers:}
+\NormalTok{            h }\OperatorTok{=}\NormalTok{ layer(h, freqs\_cos, freqs\_sin)}
+        \CommentTok{\# 通过归一化层}
+\NormalTok{        h }\OperatorTok{=} \VariableTok{self}\NormalTok{.norm(h)}
+
+        \ControlFlowTok{if}\NormalTok{ targets }\KeywordTok{is} \KeywordTok{not} \VariableTok{None}\NormalTok{:}
+            \CommentTok{\# 如果给定了目标，计算损失}
+\NormalTok{            logits }\OperatorTok{=} \VariableTok{self}\NormalTok{.output(h)}
+            \VariableTok{self}\NormalTok{.last\_loss }\OperatorTok{=}\NormalTok{ F.cross\_entropy(logits.view(}\OperatorTok{{-}}\DecValTok{1}\NormalTok{, logits.size(}\OperatorTok{{-}}\DecValTok{1}\NormalTok{)), targets.view(}\OperatorTok{{-}}\DecValTok{1}\NormalTok{), ignore\_index}\OperatorTok{=}\DecValTok{0}\NormalTok{, reduction}\OperatorTok{=}\StringTok{\textquotesingle{}none\textquotesingle{}}\NormalTok{)}
+        \ControlFlowTok{else}\NormalTok{:}
+            \CommentTok{\# 推理时的小优化：只对最后一个位置的输出进行前向传播}
+\NormalTok{            logits }\OperatorTok{=} \VariableTok{self}\NormalTok{.output(h[:, [}\OperatorTok{{-}}\DecValTok{1}\NormalTok{], :]) }
+            \VariableTok{self}\NormalTok{.last\_loss }\OperatorTok{=} \VariableTok{None}
+
+        \CommentTok{\# 设置输出}
+        \VariableTok{self}\NormalTok{.OUT.}\FunctionTok{\_\_setitem\_\_}\NormalTok{(}\StringTok{\textquotesingle{}logits\textquotesingle{}}\NormalTok{, logits)}
+        \VariableTok{self}\NormalTok{.OUT.}\FunctionTok{\_\_setitem\_\_}\NormalTok{(}\StringTok{\textquotesingle{}last\_loss\textquotesingle{}}\NormalTok{, }\VariableTok{self}\NormalTok{.last\_loss)}
+        \ControlFlowTok{return} \VariableTok{self}\NormalTok{.OUT}
+
+    
+    \AttributeTok{@torch.inference\_mode}\NormalTok{()}
+    \KeywordTok{def}\NormalTok{ generate(}\VariableTok{self}\NormalTok{, idx, stop\_id}\OperatorTok{=}\VariableTok{None}\NormalTok{, max\_new\_tokens}\OperatorTok{=}\DecValTok{256}\NormalTok{, temperature}\OperatorTok{=}\FloatTok{1.0}\NormalTok{, top\_k}\OperatorTok{=}\VariableTok{None}\NormalTok{):}
+        \CommentTok{"""}
+\CommentTok{        给定输入序列 idx（形状为 (bz,seq\_len) 的长整型张量），通过多次生成新 token 来完成序列。}
+\CommentTok{        在 model.eval() 模式下运行。效率较低的采样版本，没有使用键k/v cache。}
+\CommentTok{        """}
+\NormalTok{        index }\OperatorTok{=}\NormalTok{ idx.shape[}\DecValTok{1}\NormalTok{]}
+        \ControlFlowTok{for}\NormalTok{ \_ }\KeywordTok{in} \BuiltInTok{range}\NormalTok{(max\_new\_tokens):}
+            \CommentTok{\# 如果序列上下文过长，截断它到最大长度}
+\NormalTok{            idx\_cond }\OperatorTok{=}\NormalTok{ idx }\ControlFlowTok{if}\NormalTok{ idx.size(}\DecValTok{1}\NormalTok{) }\OperatorTok{\textless{}=} \VariableTok{self}\NormalTok{.args.max\_seq\_len }\ControlFlowTok{else}\NormalTok{ idx[:, }\OperatorTok{{-}}\VariableTok{self}\NormalTok{.args.max\_seq\_len:]}
+            
+            \CommentTok{\# 前向传播获取序列中最后一个位置的 logits}
+\NormalTok{            logits }\OperatorTok{=} \VariableTok{self}\NormalTok{(idx\_cond).logits}
+\NormalTok{            logits }\OperatorTok{=}\NormalTok{ logits[:, }\OperatorTok{{-}}\DecValTok{1}\NormalTok{, :] }\CommentTok{\# 只保留最后一个时间步的输出}
+            
+            \ControlFlowTok{if}\NormalTok{ temperature }\OperatorTok{==} \FloatTok{0.0}\NormalTok{:}
+                \CommentTok{\# 选择最有可能的索引}
+\NormalTok{                \_, idx\_next }\OperatorTok{=}\NormalTok{ torch.topk(logits, k}\OperatorTok{=}\DecValTok{1}\NormalTok{, dim}\OperatorTok{={-}}\DecValTok{1}\NormalTok{)}
+            \ControlFlowTok{else}\NormalTok{:}
+                \CommentTok{\# 缩放 logits 并应用 softmax}
+\NormalTok{                logits }\OperatorTok{=}\NormalTok{ logits }\OperatorTok{/}\NormalTok{ temperature}
+                \ControlFlowTok{if}\NormalTok{ top\_k }\KeywordTok{is} \KeywordTok{not} \VariableTok{None}\NormalTok{:}
+\NormalTok{                    v, \_ }\OperatorTok{=}\NormalTok{ torch.topk(logits, }\BuiltInTok{min}\NormalTok{(top\_k, logits.size(}\OperatorTok{{-}}\DecValTok{1}\NormalTok{)))}
+\NormalTok{                    logits[logits }\OperatorTok{\textless{}}\NormalTok{ v[:, [}\OperatorTok{{-}}\DecValTok{1}\NormalTok{]]] }\OperatorTok{=} \OperatorTok{{-}}\BuiltInTok{float}\NormalTok{(}\StringTok{\textquotesingle{}Inf\textquotesingle{}}\NormalTok{)}
+\NormalTok{                probs }\OperatorTok{=}\NormalTok{ F.softmax(logits, dim}\OperatorTok{={-}}\DecValTok{1}\NormalTok{)}
+\NormalTok{                idx\_next }\OperatorTok{=}\NormalTok{ torch.multinomial(probs, num\_samples}\OperatorTok{=}\DecValTok{1}\NormalTok{)}
+            
+
+            \ControlFlowTok{if}\NormalTok{ idx\_next }\OperatorTok{==}\NormalTok{ stop\_id:}
+                \ControlFlowTok{break}
+
+            \CommentTok{\# 将采样的索引添加到序列中并继续}
+\NormalTok{            idx }\OperatorTok{=}\NormalTok{ torch.cat((idx, idx\_next), dim}\OperatorTok{=}\DecValTok{1}\NormalTok{)}
+
+        \ControlFlowTok{return}\NormalTok{ idx[:, index:] }\CommentTok{\# 只返回生成的token}
+\end{Highlighting}
+\end{Shaded}
+
+同样大家可以使用下面的代码来对\texttt{Transformer}模块进行测试，可以看到代码最终输出的形状为\texttt{torch.Size({[}1,\ 1,\ 6144{]})}，与我们输入的形状一致，说明模块的实现是正确的。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# LLaMA2Model.forward 接受两个参数，tokens和targets，其中tokens是输入的张量, 应为int类型}
+\NormalTok{x }\OperatorTok{=}\NormalTok{ torch.randint(}\DecValTok{0}\NormalTok{, }\DecValTok{6144}\NormalTok{, (}\DecValTok{1}\NormalTok{, }\DecValTok{50}\NormalTok{)) }\CommentTok{\# [bs, seq\_len]}
+\CommentTok{\# 实例化LLaMA2Model}
+\NormalTok{model }\OperatorTok{=}\NormalTok{ Transformer(args}\OperatorTok{=}\NormalTok{args)}
+\CommentTok{\# 计算model的全部参数}
+\NormalTok{num\_params }\OperatorTok{=} \BuiltInTok{sum}\NormalTok{(p.numel() }\ControlFlowTok{for}\NormalTok{ p }\KeywordTok{in}\NormalTok{ model.parameters())}
+\BuiltInTok{print}\NormalTok{(}\StringTok{\textquotesingle{}Number of parameters:\textquotesingle{}}\NormalTok{, num\_params)}
+
+\NormalTok{out }\OperatorTok{=}\NormalTok{ model(x)}
+\BuiltInTok{print}\NormalTok{(out.logits.shape) }\CommentTok{\# [batch\_size, 1, vocab\_size]}
+\end{Highlighting}
+\end{Shaded}
+
+OUT:
+
+\begin{verbatim}
+Number of parameters: 82594560
+torch.Size([1, 1, 6144])
+\end{verbatim}
+
+\subsection{5.2 训练 Tokenizer}\label{ux8badux7ec3-tokenizer}
+
+在自然语言处理 (NLP) 中，Tokenizer 是一种将文本分解为较小单位（称为
+token）的工具。这些 token
+可以是词、子词、字符，甚至是特定的符号。Tokenization 是 NLP
+中的第一步，直接影响后续处理和分析的效果。不同类型的 tokenizer
+适用于不同的应用场景，以下是几种常见的 tokenizer 及其特点。
+
+\subsubsection{5.2.1 Word-based Tokenizer}\label{word-based-tokenizer}
+
+\textbf{Word-based Tokenizer}
+是最简单和直观的一种分词方法。它将文本按空格和标点符号分割成单词。这种方法的优点在于其简单和直接，易于实现，且与人类对语言的直觉相符。然而，它也存在一些明显的缺点，如无法处理未登录词（OOV，out-of-vocabulary）和罕见词，对复合词（如``New
+York''）或缩略词（如``don't''）的处理也不够精细。此外，Word-based
+Tokenizer
+在处理不同语言时也会遇到挑战，因为一些语言（如中文、日文）没有显式的单词分隔符。
+
+示例：
+
+\begin{verbatim}
+Input: "Hello, world! There is Datawhale."
+Output: ["Hello", ",", "world", "!", "There", "is", "Datawhale", "."]
+\end{verbatim}
+
+在这个例子中，输入的句子被分割成一系列单词和标点符号，每个单词或标点符号都作为一个独立的
+token。
+
+\subsubsection{5.2.2 Character-based
+Tokenizer}\label{character-based-tokenizer}
+
+\textbf{Character-based Tokenizer} 将文本中的每个字符视为一个独立的
+token。这种方法能非常精细地处理文本，适用于处理拼写错误、未登录词或新词。由于每个字符都是一个独立的
+token，因此这种方法可以捕捉到非常细微的语言特征。这对于一些特定的应用场景，如生成式任务或需要处理大量未登录词的任务，特别有用。但是，这种方法也会导致
+token
+序列变得非常长，增加了模型的计算复杂度和训练时间。此外，字符级的分割可能会丢失一些词级别的语义信息，使得模型难以理解上下文。
+
+示例：
+
+\begin{verbatim}
+Input: "Hello"
+Output: ["H", "e", "l", "l", "o"]
+\end{verbatim}
+
+在这个例子中，单词``Hello''被分割成单个字符，每个字符作为一个独立的
+token。这种方法能够处理任何语言和字符集，具有极大的灵活性。
+
+\subsubsection{5.2.3 Subword Tokenizer}\label{subword-tokenizer}
+
+\textbf{Subword Tokenizer}
+介于词和字符之间，能够更好地平衡分词的细粒度和处理未登录词的能力。Subword
+Tokenizer
+的关键思想是将文本分割成比单词更小的单位，但又比字符更大，这样既能处理未知词，又能保持一定的语义信息。常见的子词分词方法包括
+BPE、WordPiece 和 Unigram。
+
+\paragraph{（1）Byte Pair Encoding (BPE)}\label{byte-pair-encoding-bpe}
+
+\textbf{BPE}
+是一种基于统计方法，通过反复合并频率最高的字符或字符序列对来生成子词词典。这种方法的优点在于其简单和高效，能够有效地处理未知词和罕见词，同时保持较低的词典大小。BPE
+的合并过程是自底向上的，逐步将频率最高的字符对合并成新的子词，直到达到预定的词典大小或不再有高频的字符对。
+
+示例：
+
+\begin{verbatim}
+Input: "lower"
+Output: ["low", "er"]
+
+Input: "newest"
+Output: ["new", "est"]
+\end{verbatim}
+
+在这个例子中，单词``lower''被分割成子词``low''和``er''，而``newest''被分割成``new''和``est''。这种方法有效地处理了词干和词缀，保持了单词的基本语义结构。
+
+\paragraph{（2）WordPiece}\label{wordpiece}
+
+\textbf{WordPiece} 是另一种基于子词的分词方法，最初用于谷歌的 BERT
+模型。与 BPE 类似，WordPiece
+通过最大化子词序列的似然函数来生成词典，但在合并子词时更注重语言模型的优化。WordPiece
+会优先选择能够最大化整体句子概率的子词，使得分词结果在语言模型中具有更高的概率。
+
+示例：
+
+\begin{verbatim}
+Input: "unhappiness"
+Output: ["un", "##happiness"]
+\end{verbatim}
+
+在这个例子中，单词``unhappiness''被分割成子词``un''和``\#\#happiness''，其中``\#\#''表示这是一个后缀子词。通过这种方式，WordPiece
+能够更好地处理复合词和派生词，保留更多的语义信息。
+
+\paragraph{（3）Unigram}\label{unigram}
+
+\textbf{Unigram}
+分词方法基于概率模型，通过选择具有最高概率的子词来分割文本。Unigram
+词典是通过训练语言模型生成的，可以处理多种语言和不同类型的文本。Unigram
+模型会为每个子词分配一个概率，然后根据这些概率进行最优分割。
+
+示例：
+
+\begin{verbatim}
+Input: "unhappiness"
+Output: ["un", "happiness"]
+
+Input: "newest"
+Output: ["new", "est"]
+\end{verbatim}
+
+在这个例子中，单词``unhappiness''被分割成子词``un''和``happiness''，而``newest''被分割成``new''和``est''。这种方法通过概率模型有效地处理了子词分割，使得分割结果更符合语言使用习惯。
+
+每种 Tokenizer 方法都有其特定的应用场景和优缺点，选择适合的 Tokenizer
+对于自然语言处理任务的成功至关重要。
+
+\subsubsection{5.2.4 训练一个
+Tokenizer}\label{ux8badux7ec3ux4e00ux4e2a-tokenizer}
+
+这里我们选择使用 BPE 算法来训练一个 Subword Tokenizer。BPE
+是一种简单而有效的分词方法，能够处理未登录词和罕见词，同时保持较小的词典大小。我们将使用
+Hugging Face 的 \texttt{tokenizers} 库来训练一个 BPE Tokenizer。
+
+\paragraph{Step 1:
+安装和导入依赖库}\label{step-1-ux5b89ux88c5ux548cux5bfcux5165ux4f9dux8d56ux5e93}
+
+首先，我们需要安装 \texttt{tokenizers} 库，除此之外还需要安装
+\texttt{datasets} 和 \texttt{transformers}
+库，用于加载训练数据和加载训练完成后的 Tokenizer。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{pip}\NormalTok{ install tokenizers datasets transformers}
+\end{Highlighting}
+\end{Shaded}
+
+然后，导入所需的库。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{import}\NormalTok{ random}
+\ImportTok{import}\NormalTok{ json}
+\ImportTok{import}\NormalTok{ os}
+\ImportTok{from}\NormalTok{ transformers }\ImportTok{import}\NormalTok{ AutoTokenizer, PreTrainedTokenizerFast}
+\ImportTok{from}\NormalTok{ tokenizers }\ImportTok{import}\NormalTok{ (}
+\NormalTok{    decoders,}
+\NormalTok{    models,}
+\NormalTok{    pre\_tokenizers,}
+\NormalTok{    trainers,}
+\NormalTok{    Tokenizer,}
+\NormalTok{)}
+\ImportTok{from}\NormalTok{ tokenizers.normalizers }\ImportTok{import}\NormalTok{ NFKC}
+\ImportTok{from}\NormalTok{ typing }\ImportTok{import}\NormalTok{ Generator}
+\end{Highlighting}
+\end{Shaded}
+
+\paragraph{Step 2:
+加载训练数据}\label{step-2-ux52a0ux8f7dux8badux7ec3ux6570ux636e}
+
+这里我们使用与预训练相同的数据集（出门问问序列猴子开源数据集）训练tokenizer，可使用\texttt{code/download\_dataset.sh}
+和 \texttt{code/deal\_dataset.py} 下载和预处理数据集。
+
+\begin{quote}
+注：由于数据集过大，可能会导致在训练过程中内存不足。因为本项目为学习目的，建议学习者手动分割小部分数据集用于训练验证，笔者也在
+Github 仓库中存放了训练好的 tokenizer，可以直接使用。
+\end{quote}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def}\NormalTok{ read\_texts\_from\_jsonl(file\_path: }\BuiltInTok{str}\NormalTok{) }\OperatorTok{{-}\textgreater{}}\NormalTok{ Generator[}\BuiltInTok{str}\NormalTok{, }\VariableTok{None}\NormalTok{, }\VariableTok{None}\NormalTok{]:}
+    \CommentTok{"""读取JSONL文件并安全提取文本数据"""}
+    \ControlFlowTok{with} \BuiltInTok{open}\NormalTok{(file\_path, }\StringTok{\textquotesingle{}r\textquotesingle{}}\NormalTok{, encoding}\OperatorTok{=}\StringTok{\textquotesingle{}utf{-}8\textquotesingle{}}\NormalTok{) }\ImportTok{as}\NormalTok{ f:}
+        \ControlFlowTok{for}\NormalTok{ line\_num, line }\KeywordTok{in} \BuiltInTok{enumerate}\NormalTok{(f, }\DecValTok{1}\NormalTok{):}
+            \ControlFlowTok{try}\NormalTok{:}
+\NormalTok{                data }\OperatorTok{=}\NormalTok{ json.loads(line)}
+                \ControlFlowTok{if} \StringTok{\textquotesingle{}text\textquotesingle{}} \KeywordTok{not} \KeywordTok{in}\NormalTok{ data:}
+                    \ControlFlowTok{raise} \PreprocessorTok{KeyError}\NormalTok{(}\SpecialStringTok{f"Missing \textquotesingle{}text\textquotesingle{} field in line }\SpecialCharTok{\{}\NormalTok{line\_num}\SpecialCharTok{\}}\SpecialStringTok{"}\NormalTok{)}
+                \ControlFlowTok{yield}\NormalTok{ data[}\StringTok{\textquotesingle{}text\textquotesingle{}}\NormalTok{]}
+            \ControlFlowTok{except}\NormalTok{ json.JSONDecodeError:}
+                \BuiltInTok{print}\NormalTok{(}\SpecialStringTok{f"Error decoding JSON in line }\SpecialCharTok{\{}\NormalTok{line\_num}\SpecialCharTok{\}}\SpecialStringTok{"}\NormalTok{)}
+                \ControlFlowTok{continue}
+            \ControlFlowTok{except} \PreprocessorTok{KeyError} \ImportTok{as}\NormalTok{ e:}
+                \BuiltInTok{print}\NormalTok{(e)}
+                \ControlFlowTok{continue}
+\end{Highlighting}
+\end{Shaded}
+
+\paragraph{Step 3:
+创建配置文件}\label{step-3-ux521bux5efaux914dux7f6eux6587ux4ef6}
+
+在训练 BPE Tokenizer 之前，我们需要创建一个完整的 \texttt{Tokenizer}
+配置文件，包括 \texttt{tokenizer\_config.json} 和
+\texttt{special\_tokens\_map.json}。这些配置文件定义了
+\texttt{Tokenizer} 的参数和特殊标记，用于训练和加载
+\texttt{Tokenizer}。此处的\texttt{chat\_template}我们与\texttt{Qwen2.5}模型保持一致。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def}\NormalTok{ create\_tokenizer\_config(save\_dir: }\BuiltInTok{str}\NormalTok{) }\OperatorTok{{-}\textgreater{}} \VariableTok{None}\NormalTok{:}
+    \CommentTok{"""创建完整的tokenizer配置文件"""}
+\NormalTok{    config }\OperatorTok{=}\NormalTok{ \{}
+        \StringTok{"add\_bos\_token"}\NormalTok{: }\VariableTok{False}\NormalTok{,}
+        \StringTok{"add\_eos\_token"}\NormalTok{: }\VariableTok{False}\NormalTok{,}
+        \StringTok{"add\_prefix\_space"}\NormalTok{: }\VariableTok{False}\NormalTok{,}
+        \StringTok{"bos\_token"}\NormalTok{: }\StringTok{"\textless{}|im\_start|\textgreater{}"}\NormalTok{,}
+        \StringTok{"eos\_token"}\NormalTok{: }\StringTok{"\textless{}|im\_end|\textgreater{}"}\NormalTok{,}
+        \StringTok{"pad\_token"}\NormalTok{: }\StringTok{"\textless{}|im\_end|\textgreater{}"}\NormalTok{,}
+        \StringTok{"unk\_token"}\NormalTok{: }\StringTok{"\textless{}unk\textgreater{}"}\NormalTok{,}
+        \StringTok{"model\_max\_length"}\NormalTok{: }\DecValTok{1000000000000000019884624838656}\NormalTok{,}
+        \StringTok{"clean\_up\_tokenization\_spaces"}\NormalTok{: }\VariableTok{False}\NormalTok{,}
+        \StringTok{"tokenizer\_class"}\NormalTok{: }\StringTok{"PreTrainedTokenizerFast"}\NormalTok{,}
+        \StringTok{"chat\_template"}\NormalTok{: (}
+            \StringTok{"\{}\SpecialCharTok{\% f}\StringTok{or message in messages \%\}"}
+            \StringTok{"\{}\SpecialCharTok{\% i}\StringTok{f message[\textquotesingle{}role\textquotesingle{}] == \textquotesingle{}system\textquotesingle{} \%\}"}
+            \StringTok{"\textless{}|im\_start|\textgreater{}system}\CharTok{\textbackslash{}n}\SpecialCharTok{\{\{}\StringTok{ message[\textquotesingle{}content\textquotesingle{}] }\SpecialCharTok{\}\}}\StringTok{\textless{}|im\_end|\textgreater{}}\CharTok{\textbackslash{}n}\StringTok{"}
+            \StringTok{"\{}\SpecialCharTok{\% e}\StringTok{lif message[\textquotesingle{}role\textquotesingle{}] == \textquotesingle{}user\textquotesingle{} \%\}"}
+            \StringTok{"\textless{}|im\_start|\textgreater{}user}\CharTok{\textbackslash{}n}\SpecialCharTok{\{\{}\StringTok{ message[\textquotesingle{}content\textquotesingle{}] }\SpecialCharTok{\}\}}\StringTok{\textless{}|im\_end|\textgreater{}}\CharTok{\textbackslash{}n}\StringTok{"}
+            \StringTok{"\{}\SpecialCharTok{\% e}\StringTok{lif message[\textquotesingle{}role\textquotesingle{}] == \textquotesingle{}assistant\textquotesingle{} \%\}"}
+            \StringTok{"\textless{}|im\_start|\textgreater{}assistant}\CharTok{\textbackslash{}n}\SpecialCharTok{\{\{}\StringTok{ message[\textquotesingle{}content\textquotesingle{}] }\SpecialCharTok{\}\}}\StringTok{\textless{}|im\_end|\textgreater{}}\CharTok{\textbackslash{}n}\StringTok{"}
+            \StringTok{"\{}\SpecialCharTok{\% e}\StringTok{ndif \%\}"}
+            \StringTok{"\{}\SpecialCharTok{\% e}\StringTok{ndfor \%\}"}
+            \StringTok{"\{}\SpecialCharTok{\% i}\StringTok{f add\_generation\_prompt \%\}"}
+            \StringTok{"}\SpecialCharTok{\{\{}\StringTok{ \textquotesingle{}\textless{}|im\_start|\textgreater{}assistant}\CharTok{\textbackslash{}n}\StringTok{\textquotesingle{} }\SpecialCharTok{\}\}}\StringTok{"}
+            \StringTok{"\{}\SpecialCharTok{\% e}\StringTok{ndif \%\}"}
+\NormalTok{        )}
+\NormalTok{    \}}
+
+    \CommentTok{\# 保存主配置文件}
+    \ControlFlowTok{with} \BuiltInTok{open}\NormalTok{(os.path.join(save\_dir, }\StringTok{"tokenizer\_config.json"}\NormalTok{), }\StringTok{"w"}\NormalTok{, encoding}\OperatorTok{=}\StringTok{"utf{-}8"}\NormalTok{) }\ImportTok{as}\NormalTok{ f:}
+\NormalTok{        json.dump(config, f, ensure\_ascii}\OperatorTok{=}\VariableTok{False}\NormalTok{, indent}\OperatorTok{=}\DecValTok{4}\NormalTok{)}
+
+    \CommentTok{\# 创建special\_tokens\_map.json}
+\NormalTok{    special\_tokens\_map }\OperatorTok{=}\NormalTok{ \{}
+        \StringTok{"bos\_token"}\NormalTok{: }\StringTok{"\textless{}|im\_start|\textgreater{}"}\NormalTok{,}
+        \StringTok{"eos\_token"}\NormalTok{: }\StringTok{"\textless{}|im\_end|\textgreater{}"}\NormalTok{,}
+        \StringTok{"unk\_token"}\NormalTok{: }\StringTok{"\textless{}unk\textgreater{}"}\NormalTok{,}
+        \StringTok{"pad\_token"}\NormalTok{: }\StringTok{"\textless{}|im\_end|\textgreater{}"}\NormalTok{,}
+        \StringTok{"additional\_special\_tokens"}\NormalTok{: [}\StringTok{"\textless{}s\textgreater{}"}\NormalTok{, }\StringTok{"\textless{}/s\textgreater{}"}\NormalTok{]}
+\NormalTok{    \}}
+    \ControlFlowTok{with} \BuiltInTok{open}\NormalTok{(os.path.join(save\_dir, }\StringTok{"special\_tokens\_map.json"}\NormalTok{), }\StringTok{"w"}\NormalTok{, encoding}\OperatorTok{=}\StringTok{"utf{-}8"}\NormalTok{) }\ImportTok{as}\NormalTok{ f:}
+\NormalTok{        json.dump(special\_tokens\_map, f, ensure\_ascii}\OperatorTok{=}\VariableTok{False}\NormalTok{, indent}\OperatorTok{=}\DecValTok{4}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\paragraph{Step 4: 训练 BPE
+Tokenizer}\label{step-4-ux8badux7ec3-bpe-tokenizer}
+
+在训练 BPE Tokenizer 之前，我们需要定义一个训练函数，用于训练 Tokenizer
+并保存训练好的 Tokenizer 文件。这里我们使用 \texttt{tokenizers} 库中的
+\texttt{Tokenizer} 类来训练 BPE Tokenizer。
+
+可以看到我们在训练 Tokenizer 时，配置了一些特殊的 token，如
+\texttt{\textless{}unk\textgreater{}}、\texttt{\textless{}s\textgreater{}}、\texttt{\textless{}/s\textgreater{}}、\texttt{\textless{}\textbar{}im\_start\textbar{}\textgreater{}}
+和 \texttt{\textless{}\textbar{}im\_end\textbar{}\textgreater{}}。这些
+token 用于标记未知词、句子的开始和结束，以及对话的开始和结束。这些特殊
+token 可以帮助模型更好地理解文本数据，提高模型的泛化能力和效果。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def}\NormalTok{ train\_tokenizer(data\_path: }\BuiltInTok{str}\NormalTok{, save\_dir: }\BuiltInTok{str}\NormalTok{, vocab\_size: }\BuiltInTok{int} \OperatorTok{=} \DecValTok{8192}\NormalTok{) }\OperatorTok{{-}\textgreater{}} \VariableTok{None}\NormalTok{:}
+    \CommentTok{"""训练并保存自定义tokenizer"""}
+\NormalTok{    os.makedirs(save\_dir, exist\_ok}\OperatorTok{=}\VariableTok{True}\NormalTok{)}
+    
+    \CommentTok{\# 初始化tokenizer}
+\NormalTok{    tokenizer }\OperatorTok{=}\NormalTok{ Tokenizer(models.BPE(unk\_token}\OperatorTok{=}\StringTok{"\textless{}unk\textgreater{}"}\NormalTok{))}
+\NormalTok{    tokenizer.normalizer }\OperatorTok{=}\NormalTok{ NFKC()  }\CommentTok{\# 添加文本规范化}
+\NormalTok{    tokenizer.pre\_tokenizer }\OperatorTok{=}\NormalTok{ pre\_tokenizers.ByteLevel(add\_prefix\_space}\OperatorTok{=}\VariableTok{False}\NormalTok{)}
+\NormalTok{    tokenizer.decoder }\OperatorTok{=}\NormalTok{ decoders.ByteLevel()}
+
+    \CommentTok{\# 配置特殊token}
+\NormalTok{    special\_tokens }\OperatorTok{=}\NormalTok{ [}
+        \StringTok{"\textless{}unk\textgreater{}"}\NormalTok{, }
+        \StringTok{"\textless{}s\textgreater{}"}\NormalTok{, }
+        \StringTok{"\textless{}/s\textgreater{}"}\NormalTok{, }
+        \StringTok{"\textless{}|im\_start|\textgreater{}"}\NormalTok{, }
+        \StringTok{"\textless{}|im\_end|\textgreater{}"}
+\NormalTok{    ]}
+
+    \CommentTok{\# 配置训练器}
+\NormalTok{    trainer }\OperatorTok{=}\NormalTok{ trainers.BpeTrainer(}
+\NormalTok{        vocab\_size}\OperatorTok{=}\NormalTok{vocab\_size,}
+\NormalTok{        special\_tokens}\OperatorTok{=}\NormalTok{special\_tokens,}
+\NormalTok{        min\_frequency}\OperatorTok{=}\DecValTok{2}\NormalTok{,  }\CommentTok{\# 提高低频词过滤}
+\NormalTok{        show\_progress}\OperatorTok{=}\VariableTok{True}\NormalTok{,}
+\NormalTok{        initial\_alphabet}\OperatorTok{=}\NormalTok{pre\_tokenizers.ByteLevel.alphabet()}
+\NormalTok{    )}
+
+    \CommentTok{\# 训练tokenizer}
+    \BuiltInTok{print}\NormalTok{(}\SpecialStringTok{f"Training tokenizer with data from }\SpecialCharTok{\{}\NormalTok{data\_path}\SpecialCharTok{\}}\SpecialStringTok{"}\NormalTok{)}
+\NormalTok{    texts }\OperatorTok{=}\NormalTok{ read\_texts\_from\_jsonl(data\_path)}
+\NormalTok{    tokenizer.train\_from\_iterator(texts, trainer}\OperatorTok{=}\NormalTok{trainer, length}\OperatorTok{=}\NormalTok{os.path.getsize(data\_path))}
+
+    \CommentTok{\# 验证特殊token映射}
+    \ControlFlowTok{try}\NormalTok{:}
+        \ControlFlowTok{assert}\NormalTok{ tokenizer.token\_to\_id(}\StringTok{"\textless{}unk\textgreater{}"}\NormalTok{) }\OperatorTok{==} \DecValTok{0}
+        \ControlFlowTok{assert}\NormalTok{ tokenizer.token\_to\_id(}\StringTok{"\textless{}s\textgreater{}"}\NormalTok{) }\OperatorTok{==} \DecValTok{1}
+        \ControlFlowTok{assert}\NormalTok{ tokenizer.token\_to\_id(}\StringTok{"\textless{}/s\textgreater{}"}\NormalTok{) }\OperatorTok{==} \DecValTok{2}
+        \ControlFlowTok{assert}\NormalTok{ tokenizer.token\_to\_id(}\StringTok{"\textless{}|im\_start|\textgreater{}"}\NormalTok{) }\OperatorTok{==} \DecValTok{3}
+        \ControlFlowTok{assert}\NormalTok{ tokenizer.token\_to\_id(}\StringTok{"\textless{}|im\_end|\textgreater{}"}\NormalTok{) }\OperatorTok{==} \DecValTok{4}
+    \ControlFlowTok{except} \PreprocessorTok{AssertionError} \ImportTok{as}\NormalTok{ e:}
+        \BuiltInTok{print}\NormalTok{(}\StringTok{"Special tokens mapping error:"}\NormalTok{, e)}
+        \ControlFlowTok{raise}
+
+    \CommentTok{\# 保存tokenizer文件}
+\NormalTok{    tokenizer.save(os.path.join(save\_dir, }\StringTok{"tokenizer.json"}\NormalTok{))}
+    
+    \CommentTok{\# 创建配置文件}
+\NormalTok{    create\_tokenizer\_config(save\_dir)}
+    \BuiltInTok{print}\NormalTok{(}\SpecialStringTok{f"Tokenizer saved to }\SpecialCharTok{\{}\NormalTok{save\_dir}\SpecialCharTok{\}}\SpecialStringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\paragraph{Step 5: 使用训练好的
+Tokenizer}\label{step-5-ux4f7fux7528ux8badux7ec3ux597dux7684-tokenizer}
+
+我们可以使用训练好的 Tokenizer
+来处理文本数据，如编码、解码、生成对话等。下面是一个简单的示例，展示了如何使用训练好的
+Tokenizer 来处理文本数据。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def}\NormalTok{ eval\_tokenizer(tokenizer\_path: }\BuiltInTok{str}\NormalTok{) }\OperatorTok{{-}\textgreater{}} \VariableTok{None}\NormalTok{:}
+    \CommentTok{"""评估tokenizer功能"""}
+    \ControlFlowTok{try}\NormalTok{:}
+\NormalTok{        tokenizer }\OperatorTok{=}\NormalTok{ AutoTokenizer.from\_pretrained(tokenizer\_path)}
+    \ControlFlowTok{except} \PreprocessorTok{Exception} \ImportTok{as}\NormalTok{ e:}
+        \BuiltInTok{print}\NormalTok{(}\SpecialStringTok{f"Error loading tokenizer: }\SpecialCharTok{\{}\NormalTok{e}\SpecialCharTok{\}}\SpecialStringTok{"}\NormalTok{)}
+        \ControlFlowTok{return}
+
+    \CommentTok{\# 测试基本属性}
+    \BuiltInTok{print}\NormalTok{(}\StringTok{"}\CharTok{\textbackslash{}n}\StringTok{=== Tokenizer基本信息 ==="}\NormalTok{)}
+    \BuiltInTok{print}\NormalTok{(}\SpecialStringTok{f"Vocab size: }\SpecialCharTok{\{}\BuiltInTok{len}\NormalTok{(tokenizer)}\SpecialCharTok{\}}\SpecialStringTok{"}\NormalTok{)}
+    \BuiltInTok{print}\NormalTok{(}\SpecialStringTok{f"Special tokens: }\SpecialCharTok{\{}\NormalTok{tokenizer}\SpecialCharTok{.}\NormalTok{all\_special\_tokens}\SpecialCharTok{\}}\SpecialStringTok{"}\NormalTok{)}
+    \BuiltInTok{print}\NormalTok{(}\SpecialStringTok{f"Special token IDs: }\SpecialCharTok{\{}\NormalTok{tokenizer}\SpecialCharTok{.}\NormalTok{all\_special\_ids}\SpecialCharTok{\}}\SpecialStringTok{"}\NormalTok{)}
+
+    \CommentTok{\# 测试聊天模板}
+\NormalTok{    messages }\OperatorTok{=}\NormalTok{ [}
+\NormalTok{        \{}\StringTok{"role"}\NormalTok{: }\StringTok{"system"}\NormalTok{, }\StringTok{"content"}\NormalTok{: }\StringTok{"你是一个AI助手。"}\NormalTok{\},}
+\NormalTok{        \{}\StringTok{"role"}\NormalTok{: }\StringTok{"user"}\NormalTok{, }\StringTok{"content"}\NormalTok{: }\StringTok{"How are you?"}\NormalTok{\},}
+\NormalTok{        \{}\StringTok{"role"}\NormalTok{: }\StringTok{"assistant"}\NormalTok{, }\StringTok{"content"}\NormalTok{: }\StringTok{"I\textquotesingle{}m fine, thank you. and you?"}\NormalTok{\},}
+\NormalTok{        \{}\StringTok{"role"}\NormalTok{: }\StringTok{"user"}\NormalTok{, }\StringTok{"content"}\NormalTok{: }\StringTok{"I\textquotesingle{}m good too."}\NormalTok{\},}
+\NormalTok{        \{}\StringTok{"role"}\NormalTok{: }\StringTok{"assistant"}\NormalTok{, }\StringTok{"content"}\NormalTok{: }\StringTok{"That\textquotesingle{}s great to hear!"}\NormalTok{\},}
+\NormalTok{    ]}
+    
+    \BuiltInTok{print}\NormalTok{(}\StringTok{"}\CharTok{\textbackslash{}n}\StringTok{=== 聊天模板测试 ==="}\NormalTok{)}
+\NormalTok{    prompt }\OperatorTok{=}\NormalTok{ tokenizer.apply\_chat\_template(}
+\NormalTok{        messages, }
+\NormalTok{        tokenize}\OperatorTok{=}\VariableTok{False}\NormalTok{, }
+        \CommentTok{\# add\_generation\_prompt=True}
+\NormalTok{    )}
+    \BuiltInTok{print}\NormalTok{(}\StringTok{"Generated prompt:}\CharTok{\textbackslash{}n}\StringTok{"}\NormalTok{, prompt, sep}\OperatorTok{=}\StringTok{""}\NormalTok{)}
+
+    \CommentTok{\# 测试编码解码}
+    \BuiltInTok{print}\NormalTok{(}\StringTok{"}\CharTok{\textbackslash{}n}\StringTok{=== 编码解码测试 ==="}\NormalTok{)}
+\NormalTok{    encoded }\OperatorTok{=}\NormalTok{ tokenizer(prompt, truncation}\OperatorTok{=}\VariableTok{True}\NormalTok{, max\_length}\OperatorTok{=}\DecValTok{256}\NormalTok{)}
+\NormalTok{    decoded }\OperatorTok{=}\NormalTok{ tokenizer.decode(encoded[}\StringTok{"input\_ids"}\NormalTok{], skip\_special\_tokens}\OperatorTok{=}\VariableTok{False}\NormalTok{)}
+    \BuiltInTok{print}\NormalTok{(}\StringTok{"Decoded text matches original:"}\NormalTok{, decoded }\OperatorTok{==}\NormalTok{ prompt)}
+
+    \CommentTok{\# 测试特殊token处理}
+    \BuiltInTok{print}\NormalTok{(}\StringTok{"}\CharTok{\textbackslash{}n}\StringTok{=== 特殊token处理 ==="}\NormalTok{)}
+\NormalTok{    test\_text }\OperatorTok{=} \StringTok{"\textless{}|im\_start|\textgreater{}user}\CharTok{\textbackslash{}n}\StringTok{Hello\textless{}|im\_end|\textgreater{}"}
+\NormalTok{    encoded }\OperatorTok{=}\NormalTok{ tokenizer(test\_text).input\_ids}
+\NormalTok{    decoded }\OperatorTok{=}\NormalTok{ tokenizer.decode(encoded)}
+    \BuiltInTok{print}\NormalTok{(}\SpecialStringTok{f"Original: }\SpecialCharTok{\{}\NormalTok{test\_text}\SpecialCharTok{\}}\SpecialStringTok{"}\NormalTok{)}
+    \BuiltInTok{print}\NormalTok{(}\SpecialStringTok{f"Decoded:  }\SpecialCharTok{\{}\NormalTok{decoded}\SpecialCharTok{\}}\SpecialStringTok{"}\NormalTok{)}
+    \BuiltInTok{print}\NormalTok{(}\StringTok{"Special tokens preserved:"}\NormalTok{, decoded }\OperatorTok{==}\NormalTok{ test\_text)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{eval\_tokenizer(}\StringTok{\textquotesingle{}your tokenizer path\textquotesingle{}}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+OUT:
+
+\begin{verbatim}
+=== Tokenizer基本信息 ===
+Vocab size: 6144
+Special tokens: ['<|im_start|>', '<|im_end|>', '<unk>', '<s>', '</s>']
+Special token IDs: [3, 4, 0, 1, 2]
+
+=== 聊天模板测试 ===
+Generated prompt:
+<|im_start|>system
+你是一个AI助手。<|im_end|>
+<|im_start|>user
+How are you?<|im_end|>
+<|im_start|>assistant
+I'm fine, thank you. and you?<|im_end|>
+<|im_start|>user
+I'm good too.<|im_end|>
+<|im_start|>assistant
+That's great to hear!<|im_end|>
+
+
+=== 编码解码测试 ===
+Decoded text matches original: False
+
+=== 特殊token处理 ===
+Original: <|im_start|>user
+Hello<|im_end|>
+Decoded:  <|im_start|> user
+Hello<|im_end|>
+Special tokens preserved: False
+\end{verbatim}
+
+\subsection{5.3
+预训练一个小型LLM}\label{ux9884ux8badux7ec3ux4e00ux4e2aux5c0fux578bllm}
+
+在前面的章节中，我们熟悉了各种大模型的模型结构，以及如如何训练Tokenizer。在本节中，我们将动手训练一个八千万参数的LLM。
+
+\subsubsection{5.3.1 数据下载}\label{ux6570ux636eux4e0bux8f7d}
+
+首先，我们需要下载预训练数据集。在这里，我们使用两个开源的数据集，包含了大量的中文对话数据，可以用于训练对话生成模型。
+
+\begin{itemize}
+\item
+  出门问问序列猴子开源数据集：出门问问序列猴子通用文本数据集由来自网页、百科、博客、问答、开源代码、书籍、报刊、专利、教材、考题等多种公开可获取的数据进行汇总清洗之后而形成的大语言模型预训练语料。总量大概在
+  10B Token。
+\item
+  BelleGroup：350万条中文对话数据集，包含了人机对话、人人对话、人物对话等多种对话数据，可以用于训练对话生成模型。
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# 下载预训练数据集}
+\NormalTok{os.system(}\StringTok{"modelscope download {-}{-}dataset ddzhu123/seq{-}monkey mobvoi\_seq\_monkey\_general\_open\_corpus.jsonl.tar.bz2 {-}{-}local\_dir your\_local\_dir"}\NormalTok{)}
+\CommentTok{\# 解压预训练数据集}
+\NormalTok{os.system(}\StringTok{"tar {-}xvf your\_local\_dir/mobvoi\_seq\_monkey\_general\_open\_corpus.jsonl.tar.bz2"}\NormalTok{)}
+
+\CommentTok{\# 下载SFT数据集}
+\NormalTok{os.system(}\SpecialStringTok{f\textquotesingle{}huggingface{-}cli download {-}{-}repo{-}type dataset {-}{-}resume{-}download BelleGroup/train\_3.5M\_CN {-}{-}local{-}dir BelleGroup\textquotesingle{}}\NormalTok{)}
+
+
+
+\CommentTok{\# 1 处理预训练数据}
+\KeywordTok{def}\NormalTok{ split\_text(text, chunk\_size}\OperatorTok{=}\DecValTok{512}\NormalTok{):}
+    \CommentTok{"""将文本按指定长度切分成块"""}
+    \ControlFlowTok{return}\NormalTok{ [text[i:i}\OperatorTok{+}\NormalTok{chunk\_size] }\ControlFlowTok{for}\NormalTok{ i }\KeywordTok{in} \BuiltInTok{range}\NormalTok{(}\DecValTok{0}\NormalTok{, }\BuiltInTok{len}\NormalTok{(text), chunk\_size)]}
+
+\NormalTok{input\_file }\OperatorTok{=} \StringTok{\textquotesingle{}mobvoi\_seq\_monkey\_general\_open\_corpus.jsonl\textquotesingle{}}
+
+\ControlFlowTok{with} \BuiltInTok{open}\NormalTok{(}\StringTok{\textquotesingle{}seq\_monkey\_datawhale.jsonl\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}a\textquotesingle{}}\NormalTok{, encoding}\OperatorTok{=}\StringTok{\textquotesingle{}utf{-}8\textquotesingle{}}\NormalTok{) }\ImportTok{as}\NormalTok{ pretrain:}
+    \ControlFlowTok{with} \BuiltInTok{open}\NormalTok{(input\_file, }\StringTok{\textquotesingle{}r\textquotesingle{}}\NormalTok{, encoding}\OperatorTok{=}\StringTok{\textquotesingle{}utf{-}8\textquotesingle{}}\NormalTok{) }\ImportTok{as}\NormalTok{ f:}
+\NormalTok{        data }\OperatorTok{=}\NormalTok{ f.readlines()}
+        \ControlFlowTok{for}\NormalTok{ line }\KeywordTok{in}\NormalTok{ tqdm(data, desc}\OperatorTok{=}\SpecialStringTok{f"Processing lines in }\SpecialCharTok{\{}\NormalTok{input\_file}\SpecialCharTok{\}}\SpecialStringTok{"}\NormalTok{, leave}\OperatorTok{=}\VariableTok{False}\NormalTok{):  }\CommentTok{\# 添加行级别的进度条}
+\NormalTok{            line }\OperatorTok{=}\NormalTok{ json.loads(line)}
+\NormalTok{            text }\OperatorTok{=}\NormalTok{ line[}\StringTok{\textquotesingle{}text\textquotesingle{}}\NormalTok{]}
+\NormalTok{            chunks }\OperatorTok{=}\NormalTok{ split\_text(text)}
+            \ControlFlowTok{for}\NormalTok{ chunk }\KeywordTok{in}\NormalTok{ chunks:}
+\NormalTok{                pretrain.write(json.dumps(\{}\StringTok{\textquotesingle{}text\textquotesingle{}}\NormalTok{: chunk\}, ensure\_ascii}\OperatorTok{=}\VariableTok{False}\NormalTok{) }\OperatorTok{+} \StringTok{\textquotesingle{}}\CharTok{\textbackslash{}n}\StringTok{\textquotesingle{}}\NormalTok{)}
+
+\CommentTok{\# 2 处理SFT数据}
+
+\KeywordTok{def}\NormalTok{ convert\_message(data):}
+    \CommentTok{"""}
+\CommentTok{    将原始数据转换为标准格式}
+\CommentTok{    """}
+\NormalTok{    message }\OperatorTok{=}\NormalTok{ [}
+\NormalTok{        \{}\StringTok{"role"}\NormalTok{: }\StringTok{"system"}\NormalTok{, }\StringTok{"content"}\NormalTok{: }\StringTok{"你是一个AI助手"}\NormalTok{\},}
+\NormalTok{    ]}
+    \ControlFlowTok{for}\NormalTok{ item }\KeywordTok{in}\NormalTok{ data:}
+        \ControlFlowTok{if}\NormalTok{ item[}\StringTok{\textquotesingle{}from\textquotesingle{}}\NormalTok{] }\OperatorTok{==} \StringTok{\textquotesingle{}human\textquotesingle{}}\NormalTok{:}
+\NormalTok{            message.append(\{}\StringTok{\textquotesingle{}role\textquotesingle{}}\NormalTok{: }\StringTok{\textquotesingle{}user\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}content\textquotesingle{}}\NormalTok{: item[}\StringTok{\textquotesingle{}value\textquotesingle{}}\NormalTok{]\})}
+        \ControlFlowTok{elif}\NormalTok{ item[}\StringTok{\textquotesingle{}from\textquotesingle{}}\NormalTok{] }\OperatorTok{==} \StringTok{\textquotesingle{}assistant\textquotesingle{}}\NormalTok{:}
+\NormalTok{            message.append(\{}\StringTok{\textquotesingle{}role\textquotesingle{}}\NormalTok{: }\StringTok{\textquotesingle{}assistant\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}content\textquotesingle{}}\NormalTok{: item[}\StringTok{\textquotesingle{}value\textquotesingle{}}\NormalTok{]\})}
+    \ControlFlowTok{return}\NormalTok{ message}
+
+\ControlFlowTok{with} \BuiltInTok{open}\NormalTok{(}\StringTok{\textquotesingle{}BelleGroup\_sft.jsonl\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}a\textquotesingle{}}\NormalTok{, encoding}\OperatorTok{=}\StringTok{\textquotesingle{}utf{-}8\textquotesingle{}}\NormalTok{) }\ImportTok{as}\NormalTok{ sft:}
+    \ControlFlowTok{with} \BuiltInTok{open}\NormalTok{(}\StringTok{\textquotesingle{}BelleGroup/train\_3.5M\_CN.json\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}r\textquotesingle{}}\NormalTok{) }\ImportTok{as}\NormalTok{ f:}
+\NormalTok{        data }\OperatorTok{=}\NormalTok{ f.readlines()}
+        \ControlFlowTok{for}\NormalTok{ item }\KeywordTok{in}\NormalTok{ tqdm(data, desc}\OperatorTok{=}\StringTok{"Processing"}\NormalTok{, unit}\OperatorTok{=}\StringTok{"lines"}\NormalTok{):}
+\NormalTok{            item }\OperatorTok{=}\NormalTok{ json.loads(item)}
+\NormalTok{            message }\OperatorTok{=}\NormalTok{ convert\_message(item[}\StringTok{\textquotesingle{}conversations\textquotesingle{}}\NormalTok{])}
+\NormalTok{            sft.write(json.dumps(message, ensure\_ascii}\OperatorTok{=}\VariableTok{False}\NormalTok{) }\OperatorTok{+} \StringTok{\textquotesingle{}}\CharTok{\textbackslash{}n}\StringTok{\textquotesingle{}}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\subsubsection{5.3.2 训练 Tokenizer}\label{ux8badux7ec3-tokenizer-1}
+
+首先，我们需要为文本处理训练一个Tokenizer。Tokenizer的作用是将文本转换为数字序列，以便模型能够理解和处理。我们使用的数据集是
+\href{https://www.modelscope.cn/datasets/ddzhu123/seq-monkey/files}{出门问问序列猴子开源数据集}
+，这个数据集包含了大量的中文文本数据，可以用于训练Tokenizer。
+
+\begin{quote}
+注：由于数据集较大，如果大家在自己本地电脑训练的话进度比较慢，所以在这里我们提供了一个已经训练好的Tokenizer，大家可以直接使用。如果大家想要自己训练的话，可以参考下面的代码。
+\end{quote}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{python}\NormalTok{ code/train\_tokenizer.py}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{import}\NormalTok{ random}
+\ImportTok{import}\NormalTok{ json}
+\ImportTok{import}\NormalTok{ os}
+\ImportTok{from}\NormalTok{ transformers }\ImportTok{import}\NormalTok{ AutoTokenizer, PreTrainedTokenizerFast}
+\ImportTok{from}\NormalTok{ tokenizers }\ImportTok{import}\NormalTok{ (}
+\NormalTok{    decoders,}
+\NormalTok{    models,}
+\NormalTok{    pre\_tokenizers,}
+\NormalTok{    trainers,}
+\NormalTok{    Tokenizer,}
+\NormalTok{)}
+\ImportTok{from}\NormalTok{ tokenizers.normalizers }\ImportTok{import}\NormalTok{ NFKC}
+\ImportTok{from}\NormalTok{ typing }\ImportTok{import}\NormalTok{ Generator}
+
+\NormalTok{random.seed(}\DecValTok{42}\NormalTok{)}
+
+\KeywordTok{def}\NormalTok{ read\_texts\_from\_jsonl(file\_path: }\BuiltInTok{str}\NormalTok{) }\OperatorTok{{-}\textgreater{}}\NormalTok{ Generator[}\BuiltInTok{str}\NormalTok{, }\VariableTok{None}\NormalTok{, }\VariableTok{None}\NormalTok{]:}
+    \CommentTok{"""读取JSONL文件并安全提取文本数据"""}
+    \ControlFlowTok{with} \BuiltInTok{open}\NormalTok{(file\_path, }\StringTok{\textquotesingle{}r\textquotesingle{}}\NormalTok{, encoding}\OperatorTok{=}\StringTok{\textquotesingle{}utf{-}8\textquotesingle{}}\NormalTok{) }\ImportTok{as}\NormalTok{ f:}
+        \ControlFlowTok{for}\NormalTok{ line\_num, line }\KeywordTok{in} \BuiltInTok{enumerate}\NormalTok{(f, }\DecValTok{1}\NormalTok{):}
+            \ControlFlowTok{try}\NormalTok{:}
+\NormalTok{                data }\OperatorTok{=}\NormalTok{ json.loads(line)}
+                \ControlFlowTok{if} \StringTok{\textquotesingle{}text\textquotesingle{}} \KeywordTok{not} \KeywordTok{in}\NormalTok{ data:}
+                    \ControlFlowTok{raise} \PreprocessorTok{KeyError}\NormalTok{(}\SpecialStringTok{f"Missing \textquotesingle{}text\textquotesingle{} field in line }\SpecialCharTok{\{}\NormalTok{line\_num}\SpecialCharTok{\}}\SpecialStringTok{"}\NormalTok{)}
+                \ControlFlowTok{yield}\NormalTok{ data[}\StringTok{\textquotesingle{}text\textquotesingle{}}\NormalTok{]}
+            \ControlFlowTok{except}\NormalTok{ json.JSONDecodeError:}
+                \BuiltInTok{print}\NormalTok{(}\SpecialStringTok{f"Error decoding JSON in line }\SpecialCharTok{\{}\NormalTok{line\_num}\SpecialCharTok{\}}\SpecialStringTok{"}\NormalTok{)}
+                \ControlFlowTok{continue}
+            \ControlFlowTok{except} \PreprocessorTok{KeyError} \ImportTok{as}\NormalTok{ e:}
+                \BuiltInTok{print}\NormalTok{(e)}
+                \ControlFlowTok{continue}
+
+\KeywordTok{def}\NormalTok{ create\_tokenizer\_config(save\_dir: }\BuiltInTok{str}\NormalTok{) }\OperatorTok{{-}\textgreater{}} \VariableTok{None}\NormalTok{:}
+    \CommentTok{"""创建完整的tokenizer配置文件"""}
+\NormalTok{    config }\OperatorTok{=}\NormalTok{ \{}
+        \StringTok{"add\_bos\_token"}\NormalTok{: }\VariableTok{False}\NormalTok{,}
+        \StringTok{"add\_eos\_token"}\NormalTok{: }\VariableTok{False}\NormalTok{,}
+        \StringTok{"add\_prefix\_space"}\NormalTok{: }\VariableTok{True}\NormalTok{,}
+        \StringTok{"bos\_token"}\NormalTok{: }\StringTok{"\textless{}|im\_start|\textgreater{}"}\NormalTok{,}
+        \StringTok{"eos\_token"}\NormalTok{: }\StringTok{"\textless{}|im\_end|\textgreater{}"}\NormalTok{,}
+        \StringTok{"pad\_token"}\NormalTok{: }\StringTok{"\textless{}|im\_end|\textgreater{}"}\NormalTok{,}
+        \StringTok{"unk\_token"}\NormalTok{: }\StringTok{"\textless{}unk\textgreater{}"}\NormalTok{,}
+        \StringTok{"model\_max\_length"}\NormalTok{: }\DecValTok{1000000000000000019884624838656}\NormalTok{,}
+        \StringTok{"clean\_up\_tokenization\_spaces"}\NormalTok{: }\VariableTok{False}\NormalTok{,}
+        \StringTok{"tokenizer\_class"}\NormalTok{: }\StringTok{"PreTrainedTokenizerFast"}\NormalTok{,}
+        \StringTok{"chat\_template"}\NormalTok{: (}
+            \StringTok{"\{}\SpecialCharTok{\% f}\StringTok{or message in messages \%\}"}
+            \StringTok{"\{}\SpecialCharTok{\% i}\StringTok{f message[\textquotesingle{}role\textquotesingle{}] == \textquotesingle{}system\textquotesingle{} \%\}"}
+            \StringTok{"\textless{}|im\_start|\textgreater{}system}\CharTok{\textbackslash{}n}\SpecialCharTok{\{\{}\StringTok{ message[\textquotesingle{}content\textquotesingle{}] }\SpecialCharTok{\}\}}\StringTok{\textless{}|im\_end|\textgreater{}}\CharTok{\textbackslash{}n}\StringTok{"}
+            \StringTok{"\{}\SpecialCharTok{\% e}\StringTok{lif message[\textquotesingle{}role\textquotesingle{}] == \textquotesingle{}user\textquotesingle{} \%\}"}
+            \StringTok{"\textless{}|im\_start|\textgreater{}user}\CharTok{\textbackslash{}n}\SpecialCharTok{\{\{}\StringTok{ message[\textquotesingle{}content\textquotesingle{}] }\SpecialCharTok{\}\}}\StringTok{\textless{}|im\_end|\textgreater{}}\CharTok{\textbackslash{}n}\StringTok{"}
+            \StringTok{"\{}\SpecialCharTok{\% e}\StringTok{lif message[\textquotesingle{}role\textquotesingle{}] == \textquotesingle{}assistant\textquotesingle{} \%\}"}
+            \StringTok{"\textless{}|im\_start|\textgreater{}assistant}\CharTok{\textbackslash{}n}\SpecialCharTok{\{\{}\StringTok{ message[\textquotesingle{}content\textquotesingle{}] }\SpecialCharTok{\}\}}\StringTok{\textless{}|im\_end|\textgreater{}}\CharTok{\textbackslash{}n}\StringTok{"}
+            \StringTok{"\{}\SpecialCharTok{\% e}\StringTok{ndif \%\}"}
+            \StringTok{"\{}\SpecialCharTok{\% e}\StringTok{ndfor \%\}"}
+            \StringTok{"\{}\SpecialCharTok{\% i}\StringTok{f add\_generation\_prompt \%\}"}
+            \StringTok{"}\SpecialCharTok{\{\{}\StringTok{ \textquotesingle{}\textless{}|im\_start|\textgreater{}assistant}\CharTok{\textbackslash{}n}\StringTok{\textquotesingle{} }\SpecialCharTok{\}\}}\StringTok{"}
+            \StringTok{"\{}\SpecialCharTok{\% e}\StringTok{ndif \%\}"}
+\NormalTok{        )}
+\NormalTok{    \}}
+
+    \CommentTok{\# 保存主配置文件}
+    \ControlFlowTok{with} \BuiltInTok{open}\NormalTok{(os.path.join(save\_dir, }\StringTok{"tokenizer\_config.json"}\NormalTok{), }\StringTok{"w"}\NormalTok{, encoding}\OperatorTok{=}\StringTok{"utf{-}8"}\NormalTok{) }\ImportTok{as}\NormalTok{ f:}
+\NormalTok{        json.dump(config, f, ensure\_ascii}\OperatorTok{=}\VariableTok{False}\NormalTok{, indent}\OperatorTok{=}\DecValTok{4}\NormalTok{)}
+
+    \CommentTok{\# 创建special\_tokens\_map.json}
+\NormalTok{    special\_tokens\_map }\OperatorTok{=}\NormalTok{ \{}
+        \StringTok{"bos\_token"}\NormalTok{: }\StringTok{"\textless{}|im\_start|\textgreater{}"}\NormalTok{,}
+        \StringTok{"eos\_token"}\NormalTok{: }\StringTok{"\textless{}|im\_end|\textgreater{}"}\NormalTok{,}
+        \StringTok{"unk\_token"}\NormalTok{: }\StringTok{"\textless{}unk\textgreater{}"}\NormalTok{,}
+        \StringTok{"pad\_token"}\NormalTok{: }\StringTok{"\textless{}|im\_end|\textgreater{}"}\NormalTok{,}
+        \StringTok{"additional\_special\_tokens"}\NormalTok{: [}\StringTok{"\textless{}s\textgreater{}"}\NormalTok{, }\StringTok{"\textless{}/s\textgreater{}"}\NormalTok{]}
+\NormalTok{    \}}
+    \ControlFlowTok{with} \BuiltInTok{open}\NormalTok{(os.path.join(save\_dir, }\StringTok{"special\_tokens\_map.json"}\NormalTok{), }\StringTok{"w"}\NormalTok{, encoding}\OperatorTok{=}\StringTok{"utf{-}8"}\NormalTok{) }\ImportTok{as}\NormalTok{ f:}
+\NormalTok{        json.dump(special\_tokens\_map, f, ensure\_ascii}\OperatorTok{=}\VariableTok{False}\NormalTok{, indent}\OperatorTok{=}\DecValTok{4}\NormalTok{)}
+
+\KeywordTok{def}\NormalTok{ train\_tokenizer(data\_path: }\BuiltInTok{str}\NormalTok{, save\_dir: }\BuiltInTok{str}\NormalTok{, vocab\_size: }\BuiltInTok{int} \OperatorTok{=} \DecValTok{8192}\NormalTok{) }\OperatorTok{{-}\textgreater{}} \VariableTok{None}\NormalTok{:}
+    \CommentTok{"""训练并保存自定义tokenizer"""}
+\NormalTok{    os.makedirs(save\_dir, exist\_ok}\OperatorTok{=}\VariableTok{True}\NormalTok{)}
+    
+    \CommentTok{\# 初始化tokenizer}
+\NormalTok{    tokenizer }\OperatorTok{=}\NormalTok{ Tokenizer(models.BPE(unk\_token}\OperatorTok{=}\StringTok{"\textless{}unk\textgreater{}"}\NormalTok{))}
+\NormalTok{    tokenizer.normalizer }\OperatorTok{=}\NormalTok{ NFKC()  }\CommentTok{\# 添加文本规范化}
+\NormalTok{    tokenizer.pre\_tokenizer }\OperatorTok{=}\NormalTok{ pre\_tokenizers.ByteLevel(add\_prefix\_space}\OperatorTok{=}\VariableTok{False}\NormalTok{)}
+\NormalTok{    tokenizer.decoder }\OperatorTok{=}\NormalTok{ decoders.ByteLevel()}
+
+    \CommentTok{\# 配置特殊token}
+\NormalTok{    special\_tokens }\OperatorTok{=}\NormalTok{ [}
+        \StringTok{"\textless{}unk\textgreater{}"}\NormalTok{, }
+        \StringTok{"\textless{}s\textgreater{}"}\NormalTok{, }
+        \StringTok{"\textless{}/s\textgreater{}"}\NormalTok{, }
+        \StringTok{"\textless{}|im\_start|\textgreater{}"}\NormalTok{, }
+        \StringTok{"\textless{}|im\_end|\textgreater{}"}
+\NormalTok{    ]}
+
+    \CommentTok{\# 配置训练器}
+\NormalTok{    trainer }\OperatorTok{=}\NormalTok{ trainers.BpeTrainer(}
+\NormalTok{        vocab\_size}\OperatorTok{=}\NormalTok{vocab\_size,}
+\NormalTok{        special\_tokens}\OperatorTok{=}\NormalTok{special\_tokens,}
+\NormalTok{        min\_frequency}\OperatorTok{=}\DecValTok{2}\NormalTok{,  }\CommentTok{\# 提高低频词过滤}
+\NormalTok{        show\_progress}\OperatorTok{=}\VariableTok{True}\NormalTok{,}
+\NormalTok{        initial\_alphabet}\OperatorTok{=}\NormalTok{pre\_tokenizers.ByteLevel.alphabet()}
+\NormalTok{    )}
+
+    \CommentTok{\# 训练tokenizer}
+    \BuiltInTok{print}\NormalTok{(}\SpecialStringTok{f"Training tokenizer with data from }\SpecialCharTok{\{}\NormalTok{data\_path}\SpecialCharTok{\}}\SpecialStringTok{"}\NormalTok{)}
+\NormalTok{    texts }\OperatorTok{=}\NormalTok{ read\_texts\_from\_jsonl(data\_path)}
+\NormalTok{    tokenizer.train\_from\_iterator(texts, trainer}\OperatorTok{=}\NormalTok{trainer, length}\OperatorTok{=}\NormalTok{os.path.getsize(data\_path))}
+
+    \CommentTok{\# 验证特殊token映射}
+    \ControlFlowTok{try}\NormalTok{:}
+        \ControlFlowTok{assert}\NormalTok{ tokenizer.token\_to\_id(}\StringTok{"\textless{}unk\textgreater{}"}\NormalTok{) }\OperatorTok{==} \DecValTok{0}
+        \ControlFlowTok{assert}\NormalTok{ tokenizer.token\_to\_id(}\StringTok{"\textless{}s\textgreater{}"}\NormalTok{) }\OperatorTok{==} \DecValTok{1}
+        \ControlFlowTok{assert}\NormalTok{ tokenizer.token\_to\_id(}\StringTok{"\textless{}/s\textgreater{}"}\NormalTok{) }\OperatorTok{==} \DecValTok{2}
+        \ControlFlowTok{assert}\NormalTok{ tokenizer.token\_to\_id(}\StringTok{"\textless{}|im\_start|\textgreater{}"}\NormalTok{) }\OperatorTok{==} \DecValTok{3}
+        \ControlFlowTok{assert}\NormalTok{ tokenizer.token\_to\_id(}\StringTok{"\textless{}|im\_end|\textgreater{}"}\NormalTok{) }\OperatorTok{==} \DecValTok{4}
+    \ControlFlowTok{except} \PreprocessorTok{AssertionError} \ImportTok{as}\NormalTok{ e:}
+        \BuiltInTok{print}\NormalTok{(}\StringTok{"Special tokens mapping error:"}\NormalTok{, e)}
+        \ControlFlowTok{raise}
+
+    \CommentTok{\# 保存tokenizer文件}
+\NormalTok{    tokenizer.save(os.path.join(save\_dir, }\StringTok{"tokenizer.json"}\NormalTok{))}
+    
+    \CommentTok{\# 创建配置文件}
+\NormalTok{    create\_tokenizer\_config(save\_dir)}
+    \BuiltInTok{print}\NormalTok{(}\SpecialStringTok{f"Tokenizer saved to }\SpecialCharTok{\{}\NormalTok{save\_dir}\SpecialCharTok{\}}\SpecialStringTok{"}\NormalTok{)}
+
+\KeywordTok{def}\NormalTok{ eval\_tokenizer(tokenizer\_path: }\BuiltInTok{str}\NormalTok{) }\OperatorTok{{-}\textgreater{}} \VariableTok{None}\NormalTok{:}
+    \CommentTok{"""评估tokenizer功能"""}
+    \ControlFlowTok{try}\NormalTok{:}
+\NormalTok{        tokenizer }\OperatorTok{=}\NormalTok{ AutoTokenizer.from\_pretrained(tokenizer\_path)}
+    \ControlFlowTok{except} \PreprocessorTok{Exception} \ImportTok{as}\NormalTok{ e:}
+        \BuiltInTok{print}\NormalTok{(}\SpecialStringTok{f"Error loading tokenizer: }\SpecialCharTok{\{}\NormalTok{e}\SpecialCharTok{\}}\SpecialStringTok{"}\NormalTok{)}
+        \ControlFlowTok{return}
+
+    \CommentTok{\# 测试基本属性}
+    \BuiltInTok{print}\NormalTok{(}\StringTok{"}\CharTok{\textbackslash{}n}\StringTok{=== Tokenizer基本信息 ==="}\NormalTok{)}
+    \BuiltInTok{print}\NormalTok{(}\SpecialStringTok{f"Vocab size: }\SpecialCharTok{\{}\BuiltInTok{len}\NormalTok{(tokenizer)}\SpecialCharTok{\}}\SpecialStringTok{"}\NormalTok{)}
+    \BuiltInTok{print}\NormalTok{(}\SpecialStringTok{f"Special tokens: }\SpecialCharTok{\{}\NormalTok{tokenizer}\SpecialCharTok{.}\NormalTok{all\_special\_tokens}\SpecialCharTok{\}}\SpecialStringTok{"}\NormalTok{)}
+    \BuiltInTok{print}\NormalTok{(}\SpecialStringTok{f"Special token IDs: }\SpecialCharTok{\{}\NormalTok{tokenizer}\SpecialCharTok{.}\NormalTok{all\_special\_ids}\SpecialCharTok{\}}\SpecialStringTok{"}\NormalTok{)}
+
+    \CommentTok{\# 测试聊天模板}
+\NormalTok{    messages }\OperatorTok{=}\NormalTok{ [}
+\NormalTok{        \{}\StringTok{"role"}\NormalTok{: }\StringTok{"system"}\NormalTok{, }\StringTok{"content"}\NormalTok{: }\StringTok{"你是一个AI助手。"}\NormalTok{\},}
+\NormalTok{        \{}\StringTok{"role"}\NormalTok{: }\StringTok{"user"}\NormalTok{, }\StringTok{"content"}\NormalTok{: }\StringTok{"How are you?"}\NormalTok{\},}
+\NormalTok{        \{}\StringTok{"role"}\NormalTok{: }\StringTok{"assistant"}\NormalTok{, }\StringTok{"content"}\NormalTok{: }\StringTok{"I\textquotesingle{}m fine, thank you. and you?"}\NormalTok{\},}
+\NormalTok{        \{}\StringTok{"role"}\NormalTok{: }\StringTok{"user"}\NormalTok{, }\StringTok{"content"}\NormalTok{: }\StringTok{"I\textquotesingle{}m good too."}\NormalTok{\},}
+\NormalTok{        \{}\StringTok{"role"}\NormalTok{: }\StringTok{"assistant"}\NormalTok{, }\StringTok{"content"}\NormalTok{: }\StringTok{"That\textquotesingle{}s great to hear!"}\NormalTok{\},}
+\NormalTok{    ]}
+    
+    \BuiltInTok{print}\NormalTok{(}\StringTok{"}\CharTok{\textbackslash{}n}\StringTok{=== 聊天模板测试 ==="}\NormalTok{)}
+\NormalTok{    prompt }\OperatorTok{=}\NormalTok{ tokenizer.apply\_chat\_template(}
+\NormalTok{        messages, }
+\NormalTok{        tokenize}\OperatorTok{=}\VariableTok{False}\NormalTok{, }
+        \CommentTok{\# add\_generation\_prompt=True}
+\NormalTok{    )}
+    \BuiltInTok{print}\NormalTok{(}\StringTok{"Generated prompt:}\CharTok{\textbackslash{}n}\StringTok{"}\NormalTok{, prompt, sep}\OperatorTok{=}\StringTok{""}\NormalTok{)}
+
+    \CommentTok{\# 测试编码解码}
+    \BuiltInTok{print}\NormalTok{(}\StringTok{"}\CharTok{\textbackslash{}n}\StringTok{=== 编码解码测试 ==="}\NormalTok{)}
+\NormalTok{    encoded }\OperatorTok{=}\NormalTok{ tokenizer(prompt, truncation}\OperatorTok{=}\VariableTok{True}\NormalTok{, max\_length}\OperatorTok{=}\DecValTok{256}\NormalTok{)}
+\NormalTok{    decoded }\OperatorTok{=}\NormalTok{ tokenizer.decode(encoded[}\StringTok{"input\_ids"}\NormalTok{], skip\_special\_tokens}\OperatorTok{=}\VariableTok{False}\NormalTok{)}
+    \BuiltInTok{print}\NormalTok{(}\StringTok{"Decoded text matches original:"}\NormalTok{, decoded }\OperatorTok{==}\NormalTok{ prompt)}
+
+    \CommentTok{\# 测试特殊token处理}
+    \BuiltInTok{print}\NormalTok{(}\StringTok{"}\CharTok{\textbackslash{}n}\StringTok{=== 特殊token处理 ==="}\NormalTok{)}
+\NormalTok{    test\_text }\OperatorTok{=} \StringTok{"\textless{}|im\_start|\textgreater{}user}\CharTok{\textbackslash{}n}\StringTok{Hello\textless{}|im\_end|\textgreater{}"}
+\NormalTok{    encoded }\OperatorTok{=}\NormalTok{ tokenizer(test\_text).input\_ids}
+\NormalTok{    decoded }\OperatorTok{=}\NormalTok{ tokenizer.decode(encoded)}
+    \BuiltInTok{print}\NormalTok{(}\SpecialStringTok{f"Original: }\SpecialCharTok{\{}\NormalTok{test\_text}\SpecialCharTok{\}}\SpecialStringTok{"}\NormalTok{)}
+    \BuiltInTok{print}\NormalTok{(}\SpecialStringTok{f"Decoded:  }\SpecialCharTok{\{}\NormalTok{decoded}\SpecialCharTok{\}}\SpecialStringTok{"}\NormalTok{)}
+    \BuiltInTok{print}\NormalTok{(}\StringTok{"Special tokens preserved:"}\NormalTok{, decoded }\OperatorTok{==}\NormalTok{ test\_text)}
+
+\KeywordTok{def}\NormalTok{ main():}
+    \CommentTok{\# 配置路径}
+\NormalTok{    data\_path }\OperatorTok{=} \StringTok{"your data path"}
+\NormalTok{    save\_dir }\OperatorTok{=} \StringTok{"tokenizer\_k"}
+
+    \CommentTok{\# 训练tokenizer}
+\NormalTok{    train\_tokenizer(}
+\NormalTok{        data\_path}\OperatorTok{=}\NormalTok{data\_path,}
+\NormalTok{        save\_dir}\OperatorTok{=}\NormalTok{save\_dir,}
+\NormalTok{        vocab\_size}\OperatorTok{=}\DecValTok{6144}
+\NormalTok{    )}
+
+    \CommentTok{\# 评估tokenizer}
+\NormalTok{    eval\_tokenizer(save\_dir)}
+
+\ControlFlowTok{if} \VariableTok{\_\_name\_\_} \OperatorTok{==} \StringTok{\textquotesingle{}\_\_main\_\_\textquotesingle{}}\NormalTok{:}
+\NormalTok{    main()}
+\end{Highlighting}
+\end{Shaded}
+
+训练完成之后可以可以使用 \texttt{eval\_tokenizer()} 测试 Tokenizer
+的功能，确保 Tokenizer 正常工作。在这个函数中，我们首先加载训练好的
+Tokenizer，然后测试了 Tokenizer
+的基本属性、聊天模板、编码解码等功能。这些测试可以帮助我们验证 Tokenizer
+的正确性，确保它能够正常工作。正确的输出为：
+
+OUT:
+
+\begin{verbatim}
+=== Tokenizer基本信息 ===
+Vocab size: 6144
+Special tokens: ['<|im_start|>', '<|im_end|>', '<unk>', '<s>', '</s>']
+Special token IDs: [3, 4, 0, 1, 2]
+
+=== 聊天模板测试 ===
+Generated prompt:
+<|im_start|>system
+你是一个AI助手。<|im_end|>
+<|im_start|>user
+How are you?<|im_end|>
+<|im_start|>assistant
+I'm fine, thank you. and you?<|im_end|>
+<|im_start|>user
+I'm good too.<|im_end|>
+<|im_start|>assistant
+That's great to hear!<|im_end|>
+
+
+=== 编码解码测试 ===
+Decoded text matches original: False
+
+=== 特殊token处理 ===
+Original: <|im_start|>user
+Hello<|im_end|>
+Decoded:  <|im_start|> user
+Hello<|im_end|>
+Special tokens preserved: False
+\end{verbatim}
+
+\subsubsection{5.3.3 Dataset}\label{dataset}
+
+\paragraph{PretrainDataset}\label{pretraindataset}
+
+在将数据送入到模型之前，我们还需要进行一些处理用于将文本数据转化为模型能够理解的Token。在这里我们使用的是Pytorch的Dataset类，用于加载数据集。我们定义了一个\texttt{PretrainDataset}类，用于加载已预处理好的数据集。我们继承了\texttt{torch.utils.data.IterableDataset}来定义该数据集，这使得我们可以更灵活、高效地处理数据。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{from}\NormalTok{ torch.utils.data }\ImportTok{import}\NormalTok{ Dataset}
+
+\KeywordTok{class}\NormalTok{ PretrainDataset(Dataset):}
+    \KeywordTok{def} \FunctionTok{\_\_init\_\_}\NormalTok{(}\VariableTok{self}\NormalTok{, data\_path, tokenizer, max\_length}\OperatorTok{=}\DecValTok{512}\NormalTok{):}
+        \BuiltInTok{super}\NormalTok{().}\FunctionTok{\_\_init\_\_}\NormalTok{()}
+        \VariableTok{self}\NormalTok{.data\_path }\OperatorTok{=}\NormalTok{ data\_path}
+        \VariableTok{self}\NormalTok{.tokenizer }\OperatorTok{=}\NormalTok{ tokenizer}
+        \VariableTok{self}\NormalTok{.max\_length }\OperatorTok{=}\NormalTok{ max\_length}
+        \VariableTok{self}\NormalTok{.padding }\OperatorTok{=} \DecValTok{0}
+        \ControlFlowTok{with} \BuiltInTok{open}\NormalTok{(data\_path, }\StringTok{\textquotesingle{}r\textquotesingle{}}\NormalTok{, encoding}\OperatorTok{=}\StringTok{\textquotesingle{}utf{-}8\textquotesingle{}}\NormalTok{) }\ImportTok{as}\NormalTok{ f:}
+            \VariableTok{self}\NormalTok{.data }\OperatorTok{=}\NormalTok{ f.readlines()}
+
+    \KeywordTok{def} \FunctionTok{\_\_len\_\_}\NormalTok{(}\VariableTok{self}\NormalTok{):}
+        \ControlFlowTok{return} \BuiltInTok{len}\NormalTok{(}\VariableTok{self}\NormalTok{.data)}
+
+    \KeywordTok{def} \FunctionTok{\_\_getitem\_\_}\NormalTok{(}\VariableTok{self}\NormalTok{, index: }\BuiltInTok{int}\NormalTok{):}
+\NormalTok{        sample }\OperatorTok{=}\NormalTok{ json.loads(}\VariableTok{self}\NormalTok{.data[index])}
+\NormalTok{        text }\OperatorTok{=} \SpecialStringTok{f"}\SpecialCharTok{\{}\VariableTok{self}\SpecialCharTok{.}\NormalTok{tokenizer}\SpecialCharTok{.}\NormalTok{bos\_token}\SpecialCharTok{\}\{}\NormalTok{sample[}\StringTok{\textquotesingle{}text\textquotesingle{}}\NormalTok{]}\SpecialCharTok{\}}\SpecialStringTok{"}
+\NormalTok{        input\_id }\OperatorTok{=} \VariableTok{self}\NormalTok{.tokenizer(text).data[}\StringTok{\textquotesingle{}input\_ids\textquotesingle{}}\NormalTok{][:}\VariableTok{self}\NormalTok{.max\_length]}
+\NormalTok{        text\_len }\OperatorTok{=} \BuiltInTok{len}\NormalTok{(input\_id)}
+        \CommentTok{\# 没满最大长度的剩余部分}
+\NormalTok{        padding\_len }\OperatorTok{=} \VariableTok{self}\NormalTok{.max\_length }\OperatorTok{{-}}\NormalTok{ text\_len}
+\NormalTok{        input\_id }\OperatorTok{=}\NormalTok{ input\_id }\OperatorTok{+}\NormalTok{ [}\VariableTok{self}\NormalTok{.padding] }\OperatorTok{*}\NormalTok{ padding\_len}
+        \CommentTok{\# 0表示不计算损失}
+\NormalTok{        loss\_mask }\OperatorTok{=}\NormalTok{ [}\DecValTok{1}\NormalTok{] }\OperatorTok{*}\NormalTok{ text\_len }\OperatorTok{+}\NormalTok{ [}\DecValTok{0}\NormalTok{] }\OperatorTok{*}\NormalTok{ padding\_len}
+
+\NormalTok{        input\_id }\OperatorTok{=}\NormalTok{ np.array(input\_id)}
+\NormalTok{        X }\OperatorTok{=}\NormalTok{ np.array(input\_id[:}\OperatorTok{{-}}\DecValTok{1}\NormalTok{]).astype(np.int64)}
+\NormalTok{        Y }\OperatorTok{=}\NormalTok{ np.array(input\_id[}\DecValTok{1}\NormalTok{:]).astype(np.int64)}
+\NormalTok{        loss\_mask }\OperatorTok{=}\NormalTok{ np.array(loss\_mask[}\DecValTok{1}\NormalTok{:]).astype(np.int64)}
+        \ControlFlowTok{return}\NormalTok{ torch.from\_numpy(X), torch.from\_numpy(Y), torch.from\_numpy(loss\_mask)}
+\end{Highlighting}
+\end{Shaded}
+
+在以上代码和图5.3可以看出，\texttt{Pretrain\ Dataset} 主要是将
+\texttt{text} 通过 \texttt{tokenizer} 转换成 \texttt{input\_id}，然后将
+\texttt{input\_id} 拆分成 \texttt{X} 和 \texttt{Y}，其中 \texttt{X} 为
+\texttt{input\_id} 的前 n-1 个元素，\texttt{Y} 为 \texttt{input\_id}
+的后 n-1 \texttt{个元素。loss\_mask}
+主要是用来标记哪些位置需要计算损失，哪些位置不需要计算损失。
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=1.0\textwidth]{https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/5-images/pretrain_dataset.png}
+\caption{图5.3 预训练损失函数计算}
+\end{figure}
+
+图中示例展示了当\texttt{max\_length=9}时的处理过程： -
+\textbf{输入序列}：\texttt{{[}BOS,\ T1,\ T2,\ T3,\ T4,\ T5,\ T6,\ T7,\ EOS{]}}
+- \textbf{样本拆分}： -
+X：\texttt{{[}BOS,\ T1,\ T2,\ T3,\ T4,\ T5,\ T6,\ T7{]}} →
+模型输入上下文 -
+Y：\texttt{{[}T1,\ T2,\ T3,\ T4,\ T5,\ T6,\ T7,\ EOS{]}} → 模型预测目标
+- \textbf{损失掩码}： -
+有效位置：\texttt{{[}0,\ 1,\ 1,\ 1,\ 1,\ 1,\ 1,\ 1,\ 1{]}} →
+仅对T1-EOS计算损失
+
+\paragraph{SFTDataset}\label{sftdataset}
+
+\texttt{SFTDataset}
+其实是一个多轮对话数据集，我们的目标是让模型学会如何进行多轮对话。在这个阶段我们的输入是上一轮的对话内容，输出是当前轮的对话内容。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{class}\NormalTok{ SFTDataset(Dataset):}
+    \KeywordTok{def} \FunctionTok{\_\_init\_\_}\NormalTok{(}\VariableTok{self}\NormalTok{, data\_path, tokenizer, max\_length}\OperatorTok{=}\DecValTok{512}\NormalTok{):}
+        \BuiltInTok{super}\NormalTok{().}\FunctionTok{\_\_init\_\_}\NormalTok{()}
+        \VariableTok{self}\NormalTok{.data\_path }\OperatorTok{=}\NormalTok{ data\_path}
+        \VariableTok{self}\NormalTok{.tokenizer }\OperatorTok{=}\NormalTok{ tokenizer}
+        \VariableTok{self}\NormalTok{.max\_length }\OperatorTok{=}\NormalTok{ max\_length}
+        \VariableTok{self}\NormalTok{.padding }\OperatorTok{=} \DecValTok{0}
+        \ControlFlowTok{with} \BuiltInTok{open}\NormalTok{(data\_path, }\StringTok{\textquotesingle{}r\textquotesingle{}}\NormalTok{, encoding}\OperatorTok{=}\StringTok{\textquotesingle{}utf{-}8\textquotesingle{}}\NormalTok{) }\ImportTok{as}\NormalTok{ f:}
+            \VariableTok{self}\NormalTok{.data }\OperatorTok{=}\NormalTok{ f.readlines()}
+
+    \KeywordTok{def} \FunctionTok{\_\_len\_\_}\NormalTok{(}\VariableTok{self}\NormalTok{):}
+        \ControlFlowTok{return} \BuiltInTok{len}\NormalTok{(}\VariableTok{self}\NormalTok{.data)}
+
+    \KeywordTok{def}\NormalTok{ generate\_loss\_mask(}\VariableTok{self}\NormalTok{, input\_ids):}
+        \CommentTok{\# 生成 loss mask, 0 表示不计算损失, 1 表示计算损失}
+\NormalTok{        mask }\OperatorTok{=}\NormalTok{ [}\DecValTok{0}\NormalTok{] }\OperatorTok{*} \BuiltInTok{len}\NormalTok{(input\_ids)}
+\NormalTok{        a\_sequence }\OperatorTok{=}\NormalTok{ [}\DecValTok{3}\NormalTok{, }\DecValTok{1074}\NormalTok{, }\DecValTok{537}\NormalTok{, }\DecValTok{500}\NormalTok{, }\DecValTok{203}\NormalTok{]  }\CommentTok{\# \textless{}|im\_start|\textgreater{}assistant\textbackslash{}n}
+\NormalTok{        a\_length }\OperatorTok{=} \BuiltInTok{len}\NormalTok{(a\_sequence)}
+\NormalTok{        n }\OperatorTok{=} \BuiltInTok{len}\NormalTok{(input\_ids)}
+\NormalTok{        i }\OperatorTok{=} \DecValTok{0}
+        
+        \ControlFlowTok{while}\NormalTok{ i }\OperatorTok{\textless{}=}\NormalTok{ n }\OperatorTok{{-}}\NormalTok{ a\_length:}
+            \CommentTok{\# 检查当前位置是否匹配目标子序列}
+\NormalTok{            match }\OperatorTok{=} \VariableTok{True}
+            \ControlFlowTok{for}\NormalTok{ k }\KeywordTok{in} \BuiltInTok{range}\NormalTok{(a\_length):}
+                \ControlFlowTok{if}\NormalTok{ input\_ids[i }\OperatorTok{+}\NormalTok{ k] }\OperatorTok{!=}\NormalTok{ a\_sequence[k]:}
+\NormalTok{                    match }\OperatorTok{=} \VariableTok{False}
+                    \ControlFlowTok{break}
+            \ControlFlowTok{if}\NormalTok{ match:}
+                \CommentTok{\# 从子序列结束的位置开始查找第一个4, 4 为 \textless{}|im\_end|\textgreater{} EOS id}
+\NormalTok{                j }\OperatorTok{=} \VariableTok{None}
+                \ControlFlowTok{for}\NormalTok{ idx }\KeywordTok{in} \BuiltInTok{range}\NormalTok{(i }\OperatorTok{+}\NormalTok{ a\_length, n):}
+                    \ControlFlowTok{if}\NormalTok{ input\_ids[idx] }\OperatorTok{==} \DecValTok{4}\NormalTok{:}
+\NormalTok{                        j }\OperatorTok{=}\NormalTok{ idx}
+                        \ControlFlowTok{break}
+                \ControlFlowTok{if}\NormalTok{ j }\KeywordTok{is} \KeywordTok{not} \VariableTok{None}\NormalTok{:}
+\NormalTok{                    start }\OperatorTok{=}\NormalTok{ i }\OperatorTok{+}\NormalTok{ a\_length}
+\NormalTok{                    end }\OperatorTok{=}\NormalTok{ j  }\CommentTok{\# 结束位置设为j（包含4）}
+                    \CommentTok{\# 标记区间为1（包括start到end）}
+                    \ControlFlowTok{if}\NormalTok{ start }\OperatorTok{\textless{}=}\NormalTok{ end:}
+                        \ControlFlowTok{for}\NormalTok{ pos }\KeywordTok{in} \BuiltInTok{range}\NormalTok{(start, end }\OperatorTok{+} \DecValTok{1}\NormalTok{):}
+                            \ControlFlowTok{if}\NormalTok{ pos }\OperatorTok{\textless{}} \BuiltInTok{len}\NormalTok{(mask):}
+\NormalTok{                                mask[pos] }\OperatorTok{=} \DecValTok{1}
+                \CommentTok{\# 跳过当前子序列，避免重叠匹配}
+\NormalTok{                i }\OperatorTok{+=}\NormalTok{ a\_length}
+            \ControlFlowTok{else}\NormalTok{:}
+\NormalTok{                i }\OperatorTok{+=} \DecValTok{1}
+        \ControlFlowTok{return}\NormalTok{ mask}
+
+    \KeywordTok{def} \FunctionTok{\_\_getitem\_\_}\NormalTok{(}\VariableTok{self}\NormalTok{, index: }\BuiltInTok{int}\NormalTok{):}
+\NormalTok{        sample }\OperatorTok{=}\NormalTok{ json.loads(}\VariableTok{self}\NormalTok{.data[index])}
+\NormalTok{        text }\OperatorTok{=} \VariableTok{self}\NormalTok{.tokenizer.apply\_chat\_template(sample, tokenize}\OperatorTok{=}\VariableTok{False}\NormalTok{, add\_generation\_prompt}\OperatorTok{=}\VariableTok{False}\NormalTok{)}
+\NormalTok{        input\_id }\OperatorTok{=} \VariableTok{self}\NormalTok{.tokenizer(text).data[}\StringTok{\textquotesingle{}input\_ids\textquotesingle{}}\NormalTok{][:}\VariableTok{self}\NormalTok{.max\_length]}
+\NormalTok{        text\_len }\OperatorTok{=} \BuiltInTok{len}\NormalTok{(input\_id)}
+        \CommentTok{\# 没满最大长度的剩余部分}
+\NormalTok{        padding\_len }\OperatorTok{=} \VariableTok{self}\NormalTok{.max\_length }\OperatorTok{{-}}\NormalTok{ text\_len}
+\NormalTok{        input\_id }\OperatorTok{=}\NormalTok{ input\_id }\OperatorTok{+}\NormalTok{ [}\VariableTok{self}\NormalTok{.padding] }\OperatorTok{*}\NormalTok{ padding\_len}
+        \CommentTok{\# 0表示不计算损失}
+\NormalTok{        loss\_mask }\OperatorTok{=} \VariableTok{self}\NormalTok{.generate\_loss\_mask(input\_id)}
+
+\NormalTok{        input\_id }\OperatorTok{=}\NormalTok{ np.array(input\_id)}
+\NormalTok{        X }\OperatorTok{=}\NormalTok{ np.array(input\_id[:}\OperatorTok{{-}}\DecValTok{1}\NormalTok{]).astype(np.int64)}
+\NormalTok{        Y }\OperatorTok{=}\NormalTok{ np.array(input\_id[}\DecValTok{1}\NormalTok{:]).astype(np.int64)}
+\NormalTok{        loss\_mask }\OperatorTok{=}\NormalTok{ np.array(loss\_mask[}\DecValTok{1}\NormalTok{:]).astype(np.int64)}
+        \ControlFlowTok{return}\NormalTok{ torch.from\_numpy(X), torch.from\_numpy(Y), torch.from\_numpy(loss\_mask)}
+\end{Highlighting}
+\end{Shaded}
+
+在 SFT
+阶段，这里使用的是多轮对话数据集，所以就需要区分哪些位置需要计算损失，哪些位置不需要计算损失。在上面的代码中，我使用了一个
+\texttt{generate\_loss\_mask} 函数来生成
+\texttt{loss\_mask}。这个函数主要是用来生成 \texttt{loss\_mask}，其中
+\texttt{loss\_mask} 的生成规则是：当遇到
+\texttt{\textbar{}\textless{}im\_start\textbar{}\textgreater{}assistant\textbackslash{}n}
+时，就开始计算损失，直到遇到
+\texttt{\textbar{}\textless{}im\_end\textbar{}\textgreater{}}
+为止。这样就可以保证我们的模型在 SFT
+阶段只计算当前轮的对话内容，如图5.4所示。
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.9\textwidth]{https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/5-images/sftdataset.png}
+\caption{图5.4 SFT 损失函数计算}
+\end{figure}
+
+可以看到，其实 SFT Dataset 和 Pretrain Dataset 的 \texttt{X} 和
+\texttt{Y} 是一样的，只是在 SFT Dataset 中我们需要生成一个
+\texttt{loss\_mask} 来标记哪些位置需要计算损失，哪些位置不需要计算损失。
+图中 \texttt{Input\ ids}
+中的蓝色小方格就是AI的回答，所以是需要模型学习的地方。所以在
+\texttt{loss\_mask}
+中，蓝色小方格对应的位置是黄色，其他位置是灰色。在代码
+\texttt{loss\_mask} 中的 1 对应的位置计算损失，0 对应的位置不计算损失。
+
+\subsubsection{5.3.4 预训练}\label{ux9884ux8badux7ec3}
+
+在数据预处理完成后，我们就可以开始训练模型了。我们使用的模型是一个和LLama2结构一样的
+Decoder only
+Transformer模型，使用Pytorch实现。相关代码在\texttt{code/k\_model.py}文件中。此处不再赘述，源码中有详细的中文注释，且我们在之前的文章中也有详细的介绍。
+
+在模型这一部分可以重点看一下生成式模型是如何实现生成token的，可以查看\texttt{k\_model.py}文件中的\texttt{Transforerm}类中的\texttt{generate}方法。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\AttributeTok{@torch.inference\_mode}\NormalTok{()}
+    \KeywordTok{def}\NormalTok{ generate(}\VariableTok{self}\NormalTok{, idx, stop\_id}\OperatorTok{=}\VariableTok{None}\NormalTok{, max\_new\_tokens}\OperatorTok{=}\DecValTok{256}\NormalTok{, temperature}\OperatorTok{=}\FloatTok{1.0}\NormalTok{, top\_k}\OperatorTok{=}\VariableTok{None}\NormalTok{):}
+        \CommentTok{"""}
+\CommentTok{        给定输入序列 idx（形状为 (bz,seq\_len) 的长整型张量），通过多次生成新 token 来完成序列。}
+\CommentTok{        在 model.eval() 模式下运行。效率较低的采样版本，没有使用键k/v cache。}
+\CommentTok{        """}
+\NormalTok{        index }\OperatorTok{=}\NormalTok{ idx.shape[}\DecValTok{1}\NormalTok{]}
+        \ControlFlowTok{for}\NormalTok{ \_ }\KeywordTok{in} \BuiltInTok{range}\NormalTok{(max\_new\_tokens):}
+            \CommentTok{\# 如果序列上下文过长，截断它到最大长度}
+\NormalTok{            idx\_cond }\OperatorTok{=}\NormalTok{ idx }\ControlFlowTok{if}\NormalTok{ idx.size(}\DecValTok{1}\NormalTok{) }\OperatorTok{\textless{}=} \VariableTok{self}\NormalTok{.args.max\_seq\_len }\ControlFlowTok{else}\NormalTok{ idx[:, }\OperatorTok{{-}}\VariableTok{self}\NormalTok{.args.max\_seq\_len:]}
+            
+            \CommentTok{\# 前向传播获取序列中最后一个位置的 logits}
+\NormalTok{            logits }\OperatorTok{=} \VariableTok{self}\NormalTok{(idx\_cond).logits}
+\NormalTok{            logits }\OperatorTok{=}\NormalTok{ logits[:, }\OperatorTok{{-}}\DecValTok{1}\NormalTok{, :] }\CommentTok{\# 只保留最后一个时间步的输出}
+            
+            \ControlFlowTok{if}\NormalTok{ temperature }\OperatorTok{==} \FloatTok{0.0}\NormalTok{:}
+                \CommentTok{\# 选择最有可能的索引}
+\NormalTok{                \_, idx\_next }\OperatorTok{=}\NormalTok{ torch.topk(logits, k}\OperatorTok{=}\DecValTok{1}\NormalTok{, dim}\OperatorTok{={-}}\DecValTok{1}\NormalTok{)}
+            \ControlFlowTok{else}\NormalTok{:}
+                \CommentTok{\# 缩放 logits 并应用 softmax}
+\NormalTok{                logits }\OperatorTok{=}\NormalTok{ logits }\OperatorTok{/}\NormalTok{ temperature}
+                \ControlFlowTok{if}\NormalTok{ top\_k }\KeywordTok{is} \KeywordTok{not} \VariableTok{None}\NormalTok{:}
+\NormalTok{                    v, \_ }\OperatorTok{=}\NormalTok{ torch.topk(logits, }\BuiltInTok{min}\NormalTok{(top\_k, logits.size(}\OperatorTok{{-}}\DecValTok{1}\NormalTok{)))}
+\NormalTok{                    logits[logits }\OperatorTok{\textless{}}\NormalTok{ v[:, [}\OperatorTok{{-}}\DecValTok{1}\NormalTok{]]] }\OperatorTok{=} \OperatorTok{{-}}\BuiltInTok{float}\NormalTok{(}\StringTok{\textquotesingle{}Inf\textquotesingle{}}\NormalTok{)}
+\NormalTok{                probs }\OperatorTok{=}\NormalTok{ F.softmax(logits, dim}\OperatorTok{={-}}\DecValTok{1}\NormalTok{)}
+\NormalTok{                idx\_next }\OperatorTok{=}\NormalTok{ torch.multinomial(probs, num\_samples}\OperatorTok{=}\DecValTok{1}\NormalTok{)}
+            
+
+            \ControlFlowTok{if}\NormalTok{ idx\_next }\OperatorTok{==}\NormalTok{ stop\_id:}
+                \ControlFlowTok{break}
+
+            \CommentTok{\# 将采样的索引添加到序列中并继续}
+\NormalTok{            idx }\OperatorTok{=}\NormalTok{ torch.cat((idx, idx\_next), dim}\OperatorTok{=}\DecValTok{1}\NormalTok{)}
+
+        \ControlFlowTok{return}\NormalTok{ idx[:, index:] }\CommentTok{\# 只返回生成的token}
+\end{Highlighting}
+\end{Shaded}
+
+在 \texttt{generate} 方法中，我们首先获取序列中最后一个位置的
+\texttt{logits}，然后基于这些 \texttt{logits} 生成新的
+\texttt{token}。接着，生成的新 \texttt{token}
+会被添加到序列中，模型随后会继续生成下一个
+\texttt{token}。通过这种迭代过程，我们能够生成完整的文本。
+
+接下来就是最重要的部分，训练模型!
+
+\begin{quote}
+注：在使用下面代码进行模型训练时，需要指定 \texttt{-\/-data\_path}
+参数为预处理好的数据集路径，例如
+\texttt{-\/-data\_path\ seq\_monkey\_datawhale.jsonl}，也需要指定要用哪几张GPU进行训练，例如
+\texttt{-\/-gpus\ 0,1}。
+\end{quote}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def}\NormalTok{ get\_lr(it, }\BuiltInTok{all}\NormalTok{):}
+    \CommentTok{"""}
+\CommentTok{    计算当前迭代的学习率，使用余弦退火调度策略}
+\CommentTok{    }
+\CommentTok{    学习率调度策略：}
+\CommentTok{    1. Warmup阶段：学习率从0线性增长到目标学习率}
+\CommentTok{    2. 余弦退火阶段：学习率按余弦函数衰减到最小学习率}
+\CommentTok{    3. 超出训练步数后：保持最小学习率}
+\CommentTok{    }
+\CommentTok{    Args:}
+\CommentTok{        it (int): 当前迭代步数}
+\CommentTok{        all (int): 总迭代步数}
+\CommentTok{        }
+\CommentTok{    Returns:}
+\CommentTok{        float: 当前步数对应的学习率}
+\CommentTok{    """}
+\NormalTok{    warmup\_iters }\OperatorTok{=}\NormalTok{ args.warmup\_iters  }\CommentTok{\# 预热迭代次数}
+\NormalTok{    lr\_decay\_iters }\OperatorTok{=} \BuiltInTok{all}  \CommentTok{\# 学习率衰减的总迭代次数}
+\NormalTok{    min\_lr }\OperatorTok{=}\NormalTok{ args.learning\_rate }\OperatorTok{/} \DecValTok{10}  \CommentTok{\# 最小学习率，为初始学习率的1/10}
+
+    \CommentTok{\# Warmup阶段：线性增长}
+    \ControlFlowTok{if}\NormalTok{ it }\OperatorTok{\textless{}}\NormalTok{ warmup\_iters:}
+        \ControlFlowTok{return}\NormalTok{ args.learning\_rate }\OperatorTok{*}\NormalTok{ it }\OperatorTok{/}\NormalTok{ warmup\_iters}
+    
+    \CommentTok{\# 超出训练步数：保持最小学习率}
+    \ControlFlowTok{if}\NormalTok{ it }\OperatorTok{\textgreater{}}\NormalTok{ lr\_decay\_iters:}
+        \ControlFlowTok{return}\NormalTok{ min\_lr}
+    
+    \CommentTok{\# 余弦退火阶段}
+\NormalTok{    decay\_ratio }\OperatorTok{=}\NormalTok{ (it }\OperatorTok{{-}}\NormalTok{ warmup\_iters) }\OperatorTok{/}\NormalTok{ (lr\_decay\_iters }\OperatorTok{{-}}\NormalTok{ warmup\_iters)}
+    \ControlFlowTok{assert} \DecValTok{0} \OperatorTok{\textless{}=}\NormalTok{ decay\_ratio }\OperatorTok{\textless{}=} \DecValTok{1}
+\NormalTok{    coeff }\OperatorTok{=} \FloatTok{0.5} \OperatorTok{*}\NormalTok{ (}\FloatTok{1.0} \OperatorTok{+}\NormalTok{ math.cos(math.pi }\OperatorTok{*}\NormalTok{ decay\_ratio))  }\CommentTok{\# 余弦系数}
+    \ControlFlowTok{return}\NormalTok{ min\_lr }\OperatorTok{+}\NormalTok{ coeff }\OperatorTok{*}\NormalTok{ (args.learning\_rate }\OperatorTok{{-}}\NormalTok{ min\_lr)}
+
+\KeywordTok{def}\NormalTok{ train\_epoch(epoch):}
+    \CommentTok{"""}
+\CommentTok{    训练一个epoch的函数}
+\CommentTok{    }
+\CommentTok{    实现了完整的训练循环，包括：}
+\CommentTok{    1. 数据加载和设备转移}
+\CommentTok{    2. 动态学习率调整}
+\CommentTok{    3. 前向传播和损失计算}
+\CommentTok{    4. 梯度累积和反向传播}
+\CommentTok{    5. 梯度裁剪和优化器更新}
+\CommentTok{    6. 日志记录和模型保存}
+\CommentTok{    }
+\CommentTok{    Args:}
+\CommentTok{        epoch (int): 当前epoch编号}
+\CommentTok{    """}
+\NormalTok{    start\_time }\OperatorTok{=}\NormalTok{ time.time()  }\CommentTok{\# 记录开始时间}
+    
+    \CommentTok{\# 遍历数据加载器中的每个batch}
+    \ControlFlowTok{for}\NormalTok{ step, (X, Y, loss\_mask) }\KeywordTok{in} \BuiltInTok{enumerate}\NormalTok{(train\_loader):}
+        \CommentTok{\# 将数据转移到指定设备（GPU/CPU）}
+\NormalTok{        X }\OperatorTok{=}\NormalTok{ X.to(args.device)  }\CommentTok{\# 输入序列}
+\NormalTok{        Y }\OperatorTok{=}\NormalTok{ Y.to(args.device)  }\CommentTok{\# 目标序列}
+\NormalTok{        loss\_mask }\OperatorTok{=}\NormalTok{ loss\_mask.to(args.device)  }\CommentTok{\# 损失掩码，用于忽略padding token}
+
+        \CommentTok{\# 计算当前步骤的学习率}
+\NormalTok{        lr }\OperatorTok{=}\NormalTok{ get\_lr(epoch }\OperatorTok{*}\NormalTok{ iter\_per\_epoch }\OperatorTok{+}\NormalTok{ step, args.epochs }\OperatorTok{*}\NormalTok{ iter\_per\_epoch)}
+        \CommentTok{\# 更新优化器中所有参数组的学习率}
+        \ControlFlowTok{for}\NormalTok{ param\_group }\KeywordTok{in}\NormalTok{ optimizer.param\_groups:}
+\NormalTok{            param\_group[}\StringTok{\textquotesingle{}lr\textquotesingle{}}\NormalTok{] }\OperatorTok{=}\NormalTok{ lr}
+
+        \CommentTok{\# 使用混合精度训练上下文}
+        \ControlFlowTok{with}\NormalTok{ ctx:}
+            \CommentTok{\# 前向传播}
+\NormalTok{            out }\OperatorTok{=}\NormalTok{ model(X, Y)}
+            \CommentTok{\# 计算损失并除以累积步数（用于梯度累积）}
+\NormalTok{            loss }\OperatorTok{=}\NormalTok{ out.last\_loss }\OperatorTok{/}\NormalTok{ args.accumulation\_steps}
+            \CommentTok{\# 将loss\_mask展平为一维}
+\NormalTok{            loss\_mask }\OperatorTok{=}\NormalTok{ loss\_mask.view(}\OperatorTok{{-}}\DecValTok{1}\NormalTok{)}
+            \CommentTok{\# 应用掩码计算有效损失（忽略padding位置）}
+\NormalTok{            loss }\OperatorTok{=}\NormalTok{ torch.}\BuiltInTok{sum}\NormalTok{(loss }\OperatorTok{*}\NormalTok{ loss\_mask) }\OperatorTok{/}\NormalTok{ loss\_mask.}\BuiltInTok{sum}\NormalTok{()}
+
+        \CommentTok{\# 使用scaler进行混合精度的反向传播}
+\NormalTok{        scaler.scale(loss).backward()}
+
+        \CommentTok{\# 每accumulation\_steps步执行一次优化器更新}
+        \ControlFlowTok{if}\NormalTok{ (step }\OperatorTok{+} \DecValTok{1}\NormalTok{) }\OperatorTok{\%}\NormalTok{ args.accumulation\_steps }\OperatorTok{==} \DecValTok{0}\NormalTok{:}
+            \CommentTok{\# 取消梯度缩放，准备梯度裁剪}
+\NormalTok{            scaler.unscale\_(optimizer)}
+            \CommentTok{\# 梯度裁剪，防止梯度爆炸}
+\NormalTok{            torch.nn.utils.clip\_grad\_norm\_(model.parameters(), args.grad\_clip)}
+
+            \CommentTok{\# 执行优化器步骤}
+\NormalTok{            scaler.step(optimizer)}
+            \CommentTok{\# 更新scaler的缩放因子}
+\NormalTok{            scaler.update()}
+
+            \CommentTok{\# 清零梯度，set\_to\_none=True可以节省内存}
+\NormalTok{            optimizer.zero\_grad(set\_to\_none}\OperatorTok{=}\VariableTok{True}\NormalTok{)}
+
+        \CommentTok{\# 每log\_interval步记录一次日志}
+        \ControlFlowTok{if}\NormalTok{ step }\OperatorTok{\%}\NormalTok{ args.log\_interval }\OperatorTok{==} \DecValTok{0}\NormalTok{:}
+\NormalTok{            spend\_time }\OperatorTok{=}\NormalTok{ time.time() }\OperatorTok{{-}}\NormalTok{ start\_time}
+            \CommentTok{\# 打印训练进度信息}
+\NormalTok{            Logger(}
+                \StringTok{\textquotesingle{}Epoch:[}\SpecialCharTok{\{\}}\StringTok{/}\SpecialCharTok{\{\}}\StringTok{](}\SpecialCharTok{\{\}}\StringTok{/}\SpecialCharTok{\{\}}\StringTok{) loss:}\SpecialCharTok{\{:.3f\}}\StringTok{ lr:}\SpecialCharTok{\{:.7f\}}\StringTok{ epoch\_Time:}\SpecialCharTok{\{\}}\StringTok{min;\textquotesingle{}}\NormalTok{.}\BuiltInTok{format}\NormalTok{(}
+\NormalTok{                    epoch }\OperatorTok{+} \DecValTok{1}\NormalTok{,}
+\NormalTok{                    args.epochs,}
+\NormalTok{                    step,}
+\NormalTok{                    iter\_per\_epoch,}
+\NormalTok{                    loss.item() }\OperatorTok{*}\NormalTok{ args.accumulation\_steps,  }\CommentTok{\# 恢复真实的loss值}
+\NormalTok{                    optimizer.param\_groups[}\OperatorTok{{-}}\DecValTok{1}\NormalTok{][}\StringTok{\textquotesingle{}lr\textquotesingle{}}\NormalTok{],}
+\NormalTok{                    spend\_time }\OperatorTok{/}\NormalTok{ (step }\OperatorTok{+} \DecValTok{1}\NormalTok{) }\OperatorTok{*}\NormalTok{ iter\_per\_epoch }\OperatorTok{//} \DecValTok{60} \OperatorTok{{-}}\NormalTok{ spend\_time }\OperatorTok{//} \DecValTok{60}\NormalTok{))}
+            
+            \CommentTok{\# 如果启用SwanLab，记录训练指标}
+            \ControlFlowTok{if}\NormalTok{ args.use\_swanlab:}
+\NormalTok{                swanlab.log(\{}
+                    \StringTok{"loss"}\NormalTok{: loss.item() }\OperatorTok{*}\NormalTok{ args.accumulation\_steps,}
+                    \StringTok{"lr"}\NormalTok{: optimizer.param\_groups[}\OperatorTok{{-}}\DecValTok{1}\NormalTok{][}\StringTok{\textquotesingle{}lr\textquotesingle{}}\NormalTok{]}
+\NormalTok{                \})}
+
+        \CommentTok{\# 每save\_interval步保存一次模型}
+        \ControlFlowTok{if}\NormalTok{ (step }\OperatorTok{+} \DecValTok{1}\NormalTok{) }\OperatorTok{\%}\NormalTok{ args.save\_interval }\OperatorTok{==} \DecValTok{0}\NormalTok{:}
+\NormalTok{            model.}\BuiltInTok{eval}\NormalTok{()  }\CommentTok{\# 切换到评估模式}
+            \CommentTok{\# 构建检查点文件名}
+\NormalTok{            ckp }\OperatorTok{=} \SpecialStringTok{f\textquotesingle{}}\SpecialCharTok{\{}\NormalTok{args}\SpecialCharTok{.}\NormalTok{save\_dir}\SpecialCharTok{\}}\SpecialStringTok{/pretrain\_}\SpecialCharTok{\{}\NormalTok{lm\_config}\SpecialCharTok{.}\NormalTok{dim}\SpecialCharTok{\}}\SpecialStringTok{\_}\SpecialCharTok{\{}\NormalTok{lm\_config}\SpecialCharTok{.}\NormalTok{n\_layers}\SpecialCharTok{\}}\SpecialStringTok{\_}\SpecialCharTok{\{}\NormalTok{lm\_config}\SpecialCharTok{.}\NormalTok{vocab\_size}\SpecialCharTok{\}}\SpecialStringTok{.pth\textquotesingle{}}
+
+            \CommentTok{\# 处理多卡保存：如果是DataParallel模型，需要访问.module属性}
+\NormalTok{            state\_dict }\OperatorTok{=}\NormalTok{ model.module.state\_dict() }\ControlFlowTok{if} \BuiltInTok{isinstance}\NormalTok{(model, torch.nn.DataParallel) }\ControlFlowTok{else}\NormalTok{ model.state\_dict()}
+\NormalTok{            torch.save(state\_dict, ckp)}
+\NormalTok{            model.train()  }\CommentTok{\# 切换回训练模式}
+        
+        \CommentTok{\# 每20000步保存一个带步数标记的检查点}
+        \ControlFlowTok{if}\NormalTok{ (step }\OperatorTok{+} \DecValTok{1}\NormalTok{) }\OperatorTok{\%} \DecValTok{20000} \OperatorTok{==} \DecValTok{0}\NormalTok{:}
+\NormalTok{            model.}\BuiltInTok{eval}\NormalTok{()}
+            \CommentTok{\# 构建带步数的检查点文件名}
+\NormalTok{            ckp }\OperatorTok{=} \SpecialStringTok{f\textquotesingle{}}\SpecialCharTok{\{}\NormalTok{args}\SpecialCharTok{.}\NormalTok{save\_dir}\SpecialCharTok{\}}\SpecialStringTok{/pretrain\_}\SpecialCharTok{\{}\NormalTok{lm\_config}\SpecialCharTok{.}\NormalTok{dim}\SpecialCharTok{\}}\SpecialStringTok{\_}\SpecialCharTok{\{}\NormalTok{lm\_config}\SpecialCharTok{.}\NormalTok{n\_layers}\SpecialCharTok{\}}\SpecialStringTok{\_}\SpecialCharTok{\{}\NormalTok{lm\_config}\SpecialCharTok{.}\NormalTok{vocab\_size}\SpecialCharTok{\}}\SpecialStringTok{\_step}\SpecialCharTok{\{}\NormalTok{step}\OperatorTok{+}\DecValTok{1}\SpecialCharTok{\}}\SpecialStringTok{.pth\textquotesingle{}}
+
+            \CommentTok{\# 保存模型状态字典}
+\NormalTok{            state\_dict }\OperatorTok{=}\NormalTok{ model.module.state\_dict() }\ControlFlowTok{if} \BuiltInTok{isinstance}\NormalTok{(model, torch.nn.DataParallel) }\ControlFlowTok{else}\NormalTok{ model.state\_dict()}
+\NormalTok{            torch.save(state\_dict, ckp)}
+\NormalTok{            model.train()}
+
+
+\KeywordTok{def}\NormalTok{ init\_model():}
+    \CommentTok{"""}
+\CommentTok{    初始化模型和分词器}
+\CommentTok{    }
+\CommentTok{    功能包括：}
+\CommentTok{    1. 加载预训练的分词器}
+\CommentTok{    2. 创建Transformer模型}
+\CommentTok{    3. 设置多GPU并行训练（如果可用）}
+\CommentTok{    4. 将模型移动到指定设备}
+\CommentTok{    5. 统计并打印模型参数量}
+\CommentTok{    }
+\CommentTok{    Returns:}
+\CommentTok{        tuple: (model, tokenizer) 初始化后的模型和分词器}
+\CommentTok{    """}
+    \KeywordTok{def}\NormalTok{ count\_parameters(model):}
+        \CommentTok{"""}
+\CommentTok{        统计模型中可训练参数的数量}
+\CommentTok{        }
+\CommentTok{        Args:}
+\CommentTok{            model: PyTorch模型}
+\CommentTok{            }
+\CommentTok{        Returns:}
+\CommentTok{            int: 可训练参数总数}
+\CommentTok{        """}
+        \ControlFlowTok{return} \BuiltInTok{sum}\NormalTok{(p.numel() }\ControlFlowTok{for}\NormalTok{ p }\KeywordTok{in}\NormalTok{ model.parameters() }\ControlFlowTok{if}\NormalTok{ p.requires\_grad)}
+
+    \CommentTok{\# 从本地路径加载预训练的分词器}
+\NormalTok{    tokenizer }\OperatorTok{=}\NormalTok{ AutoTokenizer.from\_pretrained(}\StringTok{\textquotesingle{}./tokenizer\_k/\textquotesingle{}}\NormalTok{)}
+
+    \CommentTok{\# 根据配置创建Transformer模型}
+\NormalTok{    model }\OperatorTok{=}\NormalTok{ Transformer(lm\_config)}
+    
+    \CommentTok{\# 多卡初始化：检查可用GPU数量并设置DataParallel}
+\NormalTok{    num\_gpus }\OperatorTok{=}\NormalTok{ torch.cuda.device\_count()}
+    \ControlFlowTok{if}\NormalTok{ num\_gpus }\OperatorTok{\textgreater{}} \DecValTok{1}\NormalTok{:}
+\NormalTok{        Logger(}\SpecialStringTok{f"Using }\SpecialCharTok{\{}\NormalTok{num\_gpus}\SpecialCharTok{\}}\SpecialStringTok{ GPUs with DataParallel!"}\NormalTok{)}
+        \CommentTok{\# 使用DataParallel包装模型以支持多GPU训练}
+\NormalTok{        model }\OperatorTok{=}\NormalTok{ torch.nn.DataParallel(model)}
+    
+    \CommentTok{\# 将模型移动到指定设备（GPU或CPU）}
+\NormalTok{    model }\OperatorTok{=}\NormalTok{ model.to(args.device)}
+    
+    \CommentTok{\# 计算并打印模型参数量（以百万为单位）}
+\NormalTok{    Logger(}\SpecialStringTok{f\textquotesingle{}LLM总参数量：}\SpecialCharTok{\{}\NormalTok{count\_parameters(model) }\OperatorTok{/} \FloatTok{1e6}\SpecialCharTok{:.3f\}}\SpecialStringTok{ 百万\textquotesingle{}}\NormalTok{)}
+    \ControlFlowTok{return}\NormalTok{ model, tokenizer}
+
+
+\ControlFlowTok{if} \VariableTok{\_\_name\_\_} \OperatorTok{==} \StringTok{"\_\_main\_\_"}\NormalTok{:}
+    \CommentTok{\# ==================== 命令行参数解析 ====================}
+\NormalTok{    parser }\OperatorTok{=}\NormalTok{ argparse.ArgumentParser(description}\OperatorTok{=}\StringTok{"Tiny{-}LLM Pretraining"}\NormalTok{)}
+    
+    \CommentTok{\# 基础训练参数}
+\NormalTok{    parser.add\_argument(}\StringTok{"{-}{-}out\_dir"}\NormalTok{, }\BuiltInTok{type}\OperatorTok{=}\BuiltInTok{str}\NormalTok{, default}\OperatorTok{=}\StringTok{"base\_model\_215M"}\NormalTok{, }\BuiltInTok{help}\OperatorTok{=}\StringTok{"模型输出目录"}\NormalTok{)}
+\NormalTok{    parser.add\_argument(}\StringTok{"{-}{-}epochs"}\NormalTok{, }\BuiltInTok{type}\OperatorTok{=}\BuiltInTok{int}\NormalTok{, default}\OperatorTok{=}\DecValTok{1}\NormalTok{, }\BuiltInTok{help}\OperatorTok{=}\StringTok{"训练轮数"}\NormalTok{)}
+\NormalTok{    parser.add\_argument(}\StringTok{"{-}{-}batch\_size"}\NormalTok{, }\BuiltInTok{type}\OperatorTok{=}\BuiltInTok{int}\NormalTok{, default}\OperatorTok{=}\DecValTok{64}\NormalTok{, }\BuiltInTok{help}\OperatorTok{=}\StringTok{"批次大小"}\NormalTok{)}
+\NormalTok{    parser.add\_argument(}\StringTok{"{-}{-}learning\_rate"}\NormalTok{, }\BuiltInTok{type}\OperatorTok{=}\BuiltInTok{float}\NormalTok{, default}\OperatorTok{=}\FloatTok{2e{-}4}\NormalTok{, }\BuiltInTok{help}\OperatorTok{=}\StringTok{"学习率"}\NormalTok{)}
+\NormalTok{    parser.add\_argument(}\StringTok{"{-}{-}device"}\NormalTok{, }\BuiltInTok{type}\OperatorTok{=}\BuiltInTok{str}\NormalTok{, default}\OperatorTok{=}\StringTok{"cuda:0"} \ControlFlowTok{if}\NormalTok{ torch.cuda.is\_available() }\ControlFlowTok{else} \StringTok{"cpu"}\NormalTok{, }\BuiltInTok{help}\OperatorTok{=}\StringTok{"训练设备"}\NormalTok{)}
+\NormalTok{    parser.add\_argument(}\StringTok{"{-}{-}dtype"}\NormalTok{, }\BuiltInTok{type}\OperatorTok{=}\BuiltInTok{str}\NormalTok{, default}\OperatorTok{=}\StringTok{"bfloat16"}\NormalTok{, }\BuiltInTok{help}\OperatorTok{=}\StringTok{"数据类型"}\NormalTok{)}
+    
+    \CommentTok{\# 实验跟踪和数据加载参数}
+\NormalTok{    parser.add\_argument(}\StringTok{"{-}{-}use\_swanlab"}\NormalTok{, action}\OperatorTok{=}\StringTok{"store\_true"}\NormalTok{, }\BuiltInTok{help}\OperatorTok{=}\StringTok{"是否使用SwanLab进行实验跟踪"}\NormalTok{)}
+\NormalTok{    parser.add\_argument(}\StringTok{"{-}{-}num\_workers"}\NormalTok{, }\BuiltInTok{type}\OperatorTok{=}\BuiltInTok{int}\NormalTok{, default}\OperatorTok{=}\DecValTok{8}\NormalTok{, }\BuiltInTok{help}\OperatorTok{=}\StringTok{"数据加载的工作进程数"}\NormalTok{)}
+\NormalTok{    parser.add\_argument(}\StringTok{"{-}{-}data\_path"}\NormalTok{, }\BuiltInTok{type}\OperatorTok{=}\BuiltInTok{str}\NormalTok{, default}\OperatorTok{=}\StringTok{"./seq\_monkey\_datawhale.jsonl"}\NormalTok{, }\BuiltInTok{help}\OperatorTok{=}\StringTok{"训练数据路径"}\NormalTok{)}
+    
+    \CommentTok{\# 训练优化参数}
+\NormalTok{    parser.add\_argument(}\StringTok{"{-}{-}accumulation\_steps"}\NormalTok{, }\BuiltInTok{type}\OperatorTok{=}\BuiltInTok{int}\NormalTok{, default}\OperatorTok{=}\DecValTok{8}\NormalTok{, }\BuiltInTok{help}\OperatorTok{=}\StringTok{"梯度累积步数"}\NormalTok{)}
+\NormalTok{    parser.add\_argument(}\StringTok{"{-}{-}grad\_clip"}\NormalTok{, }\BuiltInTok{type}\OperatorTok{=}\BuiltInTok{float}\NormalTok{, default}\OperatorTok{=}\FloatTok{1.0}\NormalTok{, }\BuiltInTok{help}\OperatorTok{=}\StringTok{"梯度裁剪阈值"}\NormalTok{)}
+\NormalTok{    parser.add\_argument(}\StringTok{"{-}{-}warmup\_iters"}\NormalTok{, }\BuiltInTok{type}\OperatorTok{=}\BuiltInTok{int}\NormalTok{, default}\OperatorTok{=}\DecValTok{0}\NormalTok{, }\BuiltInTok{help}\OperatorTok{=}\StringTok{"学习率预热迭代次数"}\NormalTok{)}
+    
+    \CommentTok{\# 日志和保存参数}
+\NormalTok{    parser.add\_argument(}\StringTok{"{-}{-}log\_interval"}\NormalTok{, }\BuiltInTok{type}\OperatorTok{=}\BuiltInTok{int}\NormalTok{, default}\OperatorTok{=}\DecValTok{100}\NormalTok{, }\BuiltInTok{help}\OperatorTok{=}\StringTok{"日志记录间隔"}\NormalTok{)}
+\NormalTok{    parser.add\_argument(}\StringTok{"{-}{-}save\_interval"}\NormalTok{, }\BuiltInTok{type}\OperatorTok{=}\BuiltInTok{int}\NormalTok{, default}\OperatorTok{=}\DecValTok{1000}\NormalTok{, }\BuiltInTok{help}\OperatorTok{=}\StringTok{"模型保存间隔"}\NormalTok{)}
+    
+    \CommentTok{\# 多GPU训练参数}
+\NormalTok{    parser.add\_argument(}\StringTok{"{-}{-}gpus"}\NormalTok{, }\BuiltInTok{type}\OperatorTok{=}\BuiltInTok{str}\NormalTok{, default}\OperatorTok{=}\StringTok{\textquotesingle{}0,1,2,3,4,5,6,7\textquotesingle{}}\NormalTok{, }\BuiltInTok{help}\OperatorTok{=}\StringTok{"使用的GPU ID，用逗号分隔 (例如: \textquotesingle{}0,1,2\textquotesingle{})"}\NormalTok{)}
+
+\NormalTok{    args }\OperatorTok{=}\NormalTok{ parser.parse\_args()}
+
+    \CommentTok{\# ==================== GPU环境设置 ====================}
+    \CommentTok{\# 设置可见的GPU设备}
+    \ControlFlowTok{if}\NormalTok{ args.gpus }\KeywordTok{is} \KeywordTok{not} \VariableTok{None}\NormalTok{:}
+\NormalTok{        os.environ[}\StringTok{"CUDA\_VISIBLE\_DEVICES"}\NormalTok{] }\OperatorTok{=}\NormalTok{ args.gpus}
+        \CommentTok{\# 自动设置主设备为第一个可用GPU}
+        \ControlFlowTok{if}\NormalTok{ torch.cuda.is\_available():}
+\NormalTok{            args.device }\OperatorTok{=} \StringTok{"cuda:0"}
+        \ControlFlowTok{else}\NormalTok{:}
+\NormalTok{            args.device }\OperatorTok{=} \StringTok{"cpu"}
+
+    \CommentTok{\# ==================== 实验跟踪初始化 ====================}
+    \ControlFlowTok{if}\NormalTok{ args.use\_swanlab:}
+        \CommentTok{\# 注意：使用前需要先登录 swanlab.login(api\_key=\textquotesingle{}your key\textquotesingle{})}
+\NormalTok{        run }\OperatorTok{=}\NormalTok{ swanlab.init(}
+\NormalTok{            project}\OperatorTok{=}\StringTok{"Happy{-}LLM"}\NormalTok{,  }\CommentTok{\# 项目名称}
+\NormalTok{            experiment\_name}\OperatorTok{=}\StringTok{"Pretrain{-}215M"}\NormalTok{,  }\CommentTok{\# 实验名称}
+\NormalTok{            config}\OperatorTok{=}\NormalTok{args,  }\CommentTok{\# 保存所有超参数}
+\NormalTok{        )}
+
+    \CommentTok{\# ==================== 模型配置 ====================}
+    \CommentTok{\# 定义语言模型的配置参数}
+\NormalTok{    lm\_config }\OperatorTok{=}\NormalTok{ ModelConfig(}
+\NormalTok{        dim}\OperatorTok{=}\DecValTok{1024}\NormalTok{,      }\CommentTok{\# 模型维度}
+\NormalTok{        n\_layers}\OperatorTok{=}\DecValTok{18}\NormalTok{,   }\CommentTok{\# Transformer层数}
+\NormalTok{    )}
+
+    \CommentTok{\# ==================== 训练环境设置 ====================}
+\NormalTok{    max\_seq\_len }\OperatorTok{=}\NormalTok{ lm\_config.max\_seq\_len  }\CommentTok{\# 最大序列长度}
+\NormalTok{    args.save\_dir }\OperatorTok{=}\NormalTok{ os.path.join(args.out\_dir)  }\CommentTok{\# 模型保存目录}
+    
+    \CommentTok{\# 创建必要的目录}
+\NormalTok{    os.makedirs(args.save\_dir, exist\_ok}\OperatorTok{=}\VariableTok{True}\NormalTok{)}
+\NormalTok{    os.makedirs(args.out\_dir, exist\_ok}\OperatorTok{=}\VariableTok{True}\NormalTok{)}
+    
+    \CommentTok{\# 设置随机种子以确保结果可复现}
+\NormalTok{    torch.manual\_seed(}\DecValTok{42}\NormalTok{)}
+    
+    \CommentTok{\# 确定设备类型（用于选择合适的上下文管理器）}
+\NormalTok{    device\_type }\OperatorTok{=} \StringTok{"cuda"} \ControlFlowTok{if} \StringTok{"cuda"} \KeywordTok{in}\NormalTok{ args.device }\ControlFlowTok{else} \StringTok{"cpu"}
+
+    \CommentTok{\# 设置混合精度训练的上下文管理器}
+    \CommentTok{\# CPU训练时使用nullcontext，GPU训练时使用autocast}
+\NormalTok{    ctx }\OperatorTok{=}\NormalTok{ nullcontext() }\ControlFlowTok{if}\NormalTok{ device\_type }\OperatorTok{==} \StringTok{"cpu"} \ControlFlowTok{else}\NormalTok{ torch.cuda.amp.autocast()}
+
+    \CommentTok{\# ==================== 模型和数据初始化 ====================}
+    \CommentTok{\# 初始化模型和分词器}
+\NormalTok{    model, tokenizer }\OperatorTok{=}\NormalTok{ init\_model()}
+    
+    \CommentTok{\# 创建训练数据集}
+\NormalTok{    train\_ds }\OperatorTok{=}\NormalTok{ PretrainDataset(args.data\_path, tokenizer, max\_length}\OperatorTok{=}\NormalTok{max\_seq\_len)}
+    
+    \CommentTok{\# 创建数据加载器}
+\NormalTok{    train\_loader }\OperatorTok{=}\NormalTok{ DataLoader(}
+\NormalTok{        train\_ds,}
+\NormalTok{        batch\_size}\OperatorTok{=}\NormalTok{args.batch\_size,  }\CommentTok{\# 批次大小}
+\NormalTok{        pin\_memory}\OperatorTok{=}\VariableTok{True}\NormalTok{,             }\CommentTok{\# 将数据加载到固定内存中，加速GPU传输}
+\NormalTok{        drop\_last}\OperatorTok{=}\VariableTok{False}\NormalTok{,             }\CommentTok{\# 不丢弃最后一个不完整的批次}
+\NormalTok{        shuffle}\OperatorTok{=}\VariableTok{True}\NormalTok{,                }\CommentTok{\# 随机打乱数据}
+\NormalTok{        num\_workers}\OperatorTok{=}\NormalTok{args.num\_workers }\CommentTok{\# 数据加载的并行工作进程数}
+\NormalTok{    )}
+
+    \CommentTok{\# ==================== 优化器和训练组件初始化 ====================}
+    \CommentTok{\# 初始化混合精度训练的梯度缩放器}
+    \CommentTok{\# 只有在使用float16或bfloat16时才启用}
+\NormalTok{    scaler }\OperatorTok{=}\NormalTok{ torch.cuda.amp.GradScaler(enabled}\OperatorTok{=}\NormalTok{(args.dtype }\KeywordTok{in}\NormalTok{ [}\StringTok{\textquotesingle{}float16\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}bfloat16\textquotesingle{}}\NormalTok{]))}
+    
+    \CommentTok{\# 初始化Adam优化器}
+\NormalTok{    optimizer }\OperatorTok{=}\NormalTok{ optim.Adam(model.parameters(), lr}\OperatorTok{=}\NormalTok{args.learning\_rate)}
+
+    \CommentTok{\# ==================== 开始训练 ====================}
+    \CommentTok{\# 计算每个epoch的迭代次数}
+\NormalTok{    iter\_per\_epoch }\OperatorTok{=} \BuiltInTok{len}\NormalTok{(train\_loader)}
+    
+    \CommentTok{\# 开始训练循环}
+    \ControlFlowTok{for}\NormalTok{ epoch }\KeywordTok{in} \BuiltInTok{range}\NormalTok{(args.epochs):}
+\NormalTok{        train\_epoch(epoch)}
+\end{Highlighting}
+\end{Shaded}
+
+\subsubsection{5.3.5 SFT 训练}\label{sft-ux8badux7ec3}
+
+SFT 训练和预训练的代码基本一样，只是导入的 Dataset
+不一样。在这里我们使用的是 SFTDataset，用于多轮对话的训练。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{import}\NormalTok{ os}
+\ImportTok{import}\NormalTok{ platform}
+\ImportTok{import}\NormalTok{ argparse}
+\ImportTok{import}\NormalTok{ time}
+\ImportTok{import}\NormalTok{ warnings}
+\ImportTok{import}\NormalTok{ math}
+\ImportTok{import}\NormalTok{ pandas }\ImportTok{as}\NormalTok{ pd}
+\ImportTok{import}\NormalTok{ torch}
+\ImportTok{from}\NormalTok{ torch }\ImportTok{import}\NormalTok{ optim}
+\ImportTok{from}\NormalTok{ torch.utils.data }\ImportTok{import}\NormalTok{ DataLoader}
+\ImportTok{from}\NormalTok{ contextlib }\ImportTok{import}\NormalTok{ nullcontext}
+
+\ImportTok{from}\NormalTok{ transformers }\ImportTok{import}\NormalTok{ AutoTokenizer}
+
+\ImportTok{from}\NormalTok{ k\_model }\ImportTok{import}\NormalTok{ ModelConfig, Transformer}
+\ImportTok{from}\NormalTok{ dataset }\ImportTok{import}\NormalTok{ SFTDataset}
+
+\ImportTok{import}\NormalTok{ swanlab}
+
+\CommentTok{\# 忽略警告}
+\NormalTok{warnings.filterwarnings(}\StringTok{\textquotesingle{}ignore\textquotesingle{}}\NormalTok{)}
+
+
+\KeywordTok{def}\NormalTok{ Logger(content):}
+    \CommentTok{"""日志记录器"""}
+    \BuiltInTok{print}\NormalTok{(content)}
+
+\KeywordTok{def}\NormalTok{ get\_lr(it, }\BuiltInTok{all}\NormalTok{):}
+    \CommentTok{"""获取学习率"""}
+    \CommentTok{\# 1) linear warmup for warmup\_iters steps}
+    \CommentTok{\# 1) 预热迭代的线性预热}
+\NormalTok{    warmup\_iters }\OperatorTok{=}\NormalTok{ args.warmup\_iters}
+\NormalTok{    lr\_decay\_iters }\OperatorTok{=} \BuiltInTok{all}
+\NormalTok{    min\_lr }\OperatorTok{=}\NormalTok{ args.learning\_rate }\OperatorTok{/} \DecValTok{10}
+
+    \ControlFlowTok{if}\NormalTok{ it }\OperatorTok{\textless{}}\NormalTok{ warmup\_iters:}
+        \ControlFlowTok{return}\NormalTok{ args.learning\_rate }\OperatorTok{*}\NormalTok{ it }\OperatorTok{/}\NormalTok{ warmup\_iters}
+    
+    \CommentTok{\# 2) if it \textgreater{} lr\_decay\_iters, return min learning rate}
+    \CommentTok{\# 2) 如果迭代次数超过学习率衰减迭代次数，则返回最小学习率}
+    \ControlFlowTok{if}\NormalTok{ it }\OperatorTok{\textgreater{}}\NormalTok{ lr\_decay\_iters:}
+        \ControlFlowTok{return}\NormalTok{ min\_lr}
+    
+    \CommentTok{\# 3) in between, use cosine decay down to min learning rate}
+    \CommentTok{\# 3) 在两者之间，使用余弦衰减至最小学习率}
+\NormalTok{    decay\_ratio }\OperatorTok{=}\NormalTok{ (it }\OperatorTok{{-}}\NormalTok{ warmup\_iters) }\OperatorTok{/}\NormalTok{ (lr\_decay\_iters }\OperatorTok{{-}}\NormalTok{ warmup\_iters)}
+    \ControlFlowTok{assert} \DecValTok{0} \OperatorTok{\textless{}=}\NormalTok{ decay\_ratio }\OperatorTok{\textless{}=} \DecValTok{1}
+\NormalTok{    coeff }\OperatorTok{=} \FloatTok{0.5} \OperatorTok{*}\NormalTok{ (}\FloatTok{1.0} \OperatorTok{+}\NormalTok{ math.cos(math.pi }\OperatorTok{*}\NormalTok{ decay\_ratio))}
+    \ControlFlowTok{return}\NormalTok{ min\_lr }\OperatorTok{+}\NormalTok{ coeff }\OperatorTok{*}\NormalTok{ (args.learning\_rate }\OperatorTok{{-}}\NormalTok{ min\_lr)}
+
+\KeywordTok{def}\NormalTok{ train\_epoch(epoch):}
+    \CommentTok{"""训练一个epoch"""}
+\NormalTok{    start\_time }\OperatorTok{=}\NormalTok{ time.time()}
+    \ControlFlowTok{for}\NormalTok{ step, (X, Y, loss\_mask) }\KeywordTok{in} \BuiltInTok{enumerate}\NormalTok{(train\_loader):}
+\NormalTok{        X }\OperatorTok{=}\NormalTok{ X.to(args.device)}
+\NormalTok{        Y }\OperatorTok{=}\NormalTok{ Y.to(args.device)}
+\NormalTok{        loss\_mask }\OperatorTok{=}\NormalTok{ loss\_mask.to(args.device)}
+
+        \CommentTok{\# 获取学习率并更新优化器}
+\NormalTok{        lr }\OperatorTok{=}\NormalTok{ get\_lr(epoch }\OperatorTok{*}\NormalTok{ iter\_per\_epoch }\OperatorTok{+}\NormalTok{ step, args.epochs }\OperatorTok{*}\NormalTok{ iter\_per\_epoch)}
+        \ControlFlowTok{for}\NormalTok{ param\_group }\KeywordTok{in}\NormalTok{ optimizer.param\_groups:}
+\NormalTok{            param\_group[}\StringTok{\textquotesingle{}lr\textquotesingle{}}\NormalTok{] }\OperatorTok{=}\NormalTok{ lr}
+
+        \CommentTok{\# 前向传播}
+        \ControlFlowTok{with}\NormalTok{ ctx:}
+\NormalTok{            out }\OperatorTok{=}\NormalTok{ model(X, Y)}
+\NormalTok{            loss }\OperatorTok{=}\NormalTok{ out.last\_loss }\OperatorTok{/}\NormalTok{ args.accumulation\_steps}
+\NormalTok{            loss\_mask }\OperatorTok{=}\NormalTok{ loss\_mask.view(}\OperatorTok{{-}}\DecValTok{1}\NormalTok{)}
+\NormalTok{            loss }\OperatorTok{=}\NormalTok{ torch.}\BuiltInTok{sum}\NormalTok{(loss }\OperatorTok{*}\NormalTok{ loss\_mask) }\OperatorTok{/}\NormalTok{ loss\_mask.}\BuiltInTok{sum}\NormalTok{()}
+
+        \CommentTok{\# 反向传播}
+\NormalTok{        scaler.scale(loss).backward()}
+
+        \CommentTok{\# 更新权重}
+        \ControlFlowTok{if}\NormalTok{ (step }\OperatorTok{+} \DecValTok{1}\NormalTok{) }\OperatorTok{\%}\NormalTok{ args.accumulation\_steps }\OperatorTok{==} \DecValTok{0}\NormalTok{:}
+\NormalTok{            scaler.unscale\_(optimizer)}
+\NormalTok{            torch.nn.utils.clip\_grad\_norm\_(model.parameters(), args.grad\_clip)}
+
+\NormalTok{            scaler.step(optimizer)}
+\NormalTok{            scaler.update()}
+
+\NormalTok{            optimizer.zero\_grad(set\_to\_none}\OperatorTok{=}\VariableTok{True}\NormalTok{)}
+
+        \CommentTok{\# 打印日志}
+        \ControlFlowTok{if}\NormalTok{ step }\OperatorTok{\%}\NormalTok{ args.log\_interval }\OperatorTok{==} \DecValTok{0}\NormalTok{:}
+\NormalTok{            spend\_time }\OperatorTok{=}\NormalTok{ time.time() }\OperatorTok{{-}}\NormalTok{ start\_time}
+\NormalTok{            Logger(}
+                \StringTok{\textquotesingle{}Epoch:[}\SpecialCharTok{\{\}}\StringTok{/}\SpecialCharTok{\{\}}\StringTok{](}\SpecialCharTok{\{\}}\StringTok{/}\SpecialCharTok{\{\}}\StringTok{) loss:}\SpecialCharTok{\{:.3f\}}\StringTok{ lr:}\SpecialCharTok{\{:.7f\}}\StringTok{ epoch\_Time:}\SpecialCharTok{\{\}}\StringTok{min:\textquotesingle{}}\NormalTok{.}\BuiltInTok{format}\NormalTok{(}
+\NormalTok{                    epoch }\OperatorTok{+} \DecValTok{1}\NormalTok{,}
+\NormalTok{                    args.epochs,}
+\NormalTok{                    step,}
+\NormalTok{                    iter\_per\_epoch,}
+\NormalTok{                    loss.item() }\OperatorTok{*}\NormalTok{ args.accumulation\_steps,}
+\NormalTok{                    optimizer.param\_groups[}\OperatorTok{{-}}\DecValTok{1}\NormalTok{][}\StringTok{\textquotesingle{}lr\textquotesingle{}}\NormalTok{],}
+\NormalTok{                    spend\_time }\OperatorTok{/}\NormalTok{ (step }\OperatorTok{+} \DecValTok{1}\NormalTok{) }\OperatorTok{*}\NormalTok{ iter\_per\_epoch }\OperatorTok{//} \DecValTok{60} \OperatorTok{{-}}\NormalTok{ spend\_time }\OperatorTok{//} \DecValTok{60}\NormalTok{))}
+            \ControlFlowTok{if}\NormalTok{ args.use\_swanlab:}
+\NormalTok{                swanlab.log(\{}
+                    \StringTok{"loss"}\NormalTok{: loss.item() }\OperatorTok{*}\NormalTok{ args.accumulation\_steps,}
+                    \StringTok{"lr"}\NormalTok{: optimizer.param\_groups[}\OperatorTok{{-}}\DecValTok{1}\NormalTok{][}\StringTok{\textquotesingle{}lr\textquotesingle{}}\NormalTok{]}
+\NormalTok{                \})}
+
+        \CommentTok{\# 保存模型}
+        \ControlFlowTok{if}\NormalTok{ (step }\OperatorTok{+} \DecValTok{1}\NormalTok{) }\OperatorTok{\%}\NormalTok{ args.save\_interval }\OperatorTok{==} \DecValTok{0}\NormalTok{:}
+\NormalTok{            model.}\BuiltInTok{eval}\NormalTok{()}
+\NormalTok{            ckp }\OperatorTok{=} \SpecialStringTok{f\textquotesingle{}}\SpecialCharTok{\{}\NormalTok{args}\SpecialCharTok{.}\NormalTok{save\_dir}\SpecialCharTok{\}}\SpecialStringTok{/sft\_dim}\SpecialCharTok{\{}\NormalTok{lm\_config}\SpecialCharTok{.}\NormalTok{dim}\SpecialCharTok{\}}\SpecialStringTok{\_layers}\SpecialCharTok{\{}\NormalTok{lm\_config}\SpecialCharTok{.}\NormalTok{n\_layers}\SpecialCharTok{\}}\SpecialStringTok{\_vocab\_size}\SpecialCharTok{\{}\NormalTok{lm\_config}\SpecialCharTok{.}\NormalTok{vocab\_size}\SpecialCharTok{\}}\SpecialStringTok{.pth\textquotesingle{}}
+
+            \CommentTok{\# 处理多卡保存}
+\NormalTok{            state\_dict }\OperatorTok{=}\NormalTok{ model.module.state\_dict() }\ControlFlowTok{if} \BuiltInTok{isinstance}\NormalTok{(model, torch.nn.DataParallel) }\ControlFlowTok{else}\NormalTok{ model.state\_dict()}
+\NormalTok{            torch.save(state\_dict, ckp)}
+\NormalTok{            model.train()}
+        
+        \CommentTok{\# 定期保存模型}
+        \ControlFlowTok{if}\NormalTok{ (step }\OperatorTok{+} \DecValTok{1}\NormalTok{) }\OperatorTok{\%} \DecValTok{20000} \OperatorTok{==} \DecValTok{0}\NormalTok{:}
+\NormalTok{            model.}\BuiltInTok{eval}\NormalTok{()}
+\NormalTok{            ckp }\OperatorTok{=} \SpecialStringTok{f\textquotesingle{}}\SpecialCharTok{\{}\NormalTok{args}\SpecialCharTok{.}\NormalTok{save\_dir}\SpecialCharTok{\}}\SpecialStringTok{/sft\_dim}\SpecialCharTok{\{}\NormalTok{lm\_config}\SpecialCharTok{.}\NormalTok{dim}\SpecialCharTok{\}}\SpecialStringTok{\_layers}\SpecialCharTok{\{}\NormalTok{lm\_config}\SpecialCharTok{.}\NormalTok{n\_layers}\SpecialCharTok{\}}\SpecialStringTok{\_vocab\_size}\SpecialCharTok{\{}\NormalTok{lm\_config}\SpecialCharTok{.}\NormalTok{vocab\_size}\SpecialCharTok{\}}\SpecialStringTok{\_step}\SpecialCharTok{\{}\NormalTok{step}\OperatorTok{+}\DecValTok{1}\SpecialCharTok{\}}\SpecialStringTok{.pth\textquotesingle{}}
+
+\NormalTok{            state\_dict }\OperatorTok{=}\NormalTok{ model.module.state\_dict() }\ControlFlowTok{if} \BuiltInTok{isinstance}\NormalTok{(model, torch.nn.DataParallel) }\ControlFlowTok{else}\NormalTok{ model.state\_dict()}
+\NormalTok{            torch.save(state\_dict, ckp)}
+\NormalTok{            model.train()}
+
+
+\KeywordTok{def}\NormalTok{ init\_model():}
+    \CommentTok{"""初始化模型"""}
+    \KeywordTok{def}\NormalTok{ count\_parameters(model):}
+        \CommentTok{"""计算模型参数量"""}
+        \ControlFlowTok{return} \BuiltInTok{sum}\NormalTok{(p.numel() }\ControlFlowTok{for}\NormalTok{ p }\KeywordTok{in}\NormalTok{ model.parameters() }\ControlFlowTok{if}\NormalTok{ p.requires\_grad)}
+
+    \CommentTok{\# 加载分词器}
+\NormalTok{    tokenizer }\OperatorTok{=}\NormalTok{ AutoTokenizer.from\_pretrained(}\StringTok{\textquotesingle{}./tokenizer\_k/\textquotesingle{}}\NormalTok{)}
+
+    \CommentTok{\# 初始化模型}
+\NormalTok{    model }\OperatorTok{=}\NormalTok{ Transformer(lm\_config)}
+
+    \CommentTok{\# 加载预训练权重}
+\NormalTok{    ckp }\OperatorTok{=} \StringTok{\textquotesingle{}./base\_model\_215M/pretrain\_1024\_18\_6144.pth\textquotesingle{}}
+\NormalTok{    state\_dict }\OperatorTok{=}\NormalTok{ torch.load(ckp, map\_location}\OperatorTok{=}\NormalTok{args.device)}
+\NormalTok{    unwanted\_prefix }\OperatorTok{=} \StringTok{\textquotesingle{}\_orig\_mod.\textquotesingle{}}
+    \ControlFlowTok{for}\NormalTok{ k, v }\KeywordTok{in} \BuiltInTok{list}\NormalTok{(state\_dict.items()):}
+        \ControlFlowTok{if}\NormalTok{ k.startswith(unwanted\_prefix):}
+\NormalTok{            state\_dict[k[}\BuiltInTok{len}\NormalTok{(unwanted\_prefix):]] }\OperatorTok{=}\NormalTok{ state\_dict.pop(k)}
+\NormalTok{    model.load\_state\_dict(state\_dict, strict}\OperatorTok{=}\VariableTok{False}\NormalTok{)}
+    
+    \CommentTok{\# 多卡初始化}
+\NormalTok{    num\_gpus }\OperatorTok{=}\NormalTok{ torch.cuda.device\_count()}
+    \ControlFlowTok{if}\NormalTok{ num\_gpus }\OperatorTok{\textgreater{}} \DecValTok{1}\NormalTok{:}
+\NormalTok{        Logger(}\SpecialStringTok{f"Using }\SpecialCharTok{\{}\NormalTok{num\_gpus}\SpecialCharTok{\}}\SpecialStringTok{ GPUs with DataParallel!"}\NormalTok{)}
+\NormalTok{        model }\OperatorTok{=}\NormalTok{ torch.nn.DataParallel(model)}
+    
+\NormalTok{    model }\OperatorTok{=}\NormalTok{ model.to(args.device)}
+\NormalTok{    Logger(}\SpecialStringTok{f\textquotesingle{}LLM总参数量：}\SpecialCharTok{\{}\NormalTok{count\_parameters(model) }\OperatorTok{/} \FloatTok{1e6}\SpecialCharTok{:.3f\}}\SpecialStringTok{ 百万\textquotesingle{}}\NormalTok{)}
+    \ControlFlowTok{return}\NormalTok{ model, tokenizer}
+
+
+\ControlFlowTok{if} \VariableTok{\_\_name\_\_} \OperatorTok{==} \StringTok{"\_\_main\_\_"}\NormalTok{:}
+\NormalTok{    parser }\OperatorTok{=}\NormalTok{ argparse.ArgumentParser(description}\OperatorTok{=}\StringTok{"Tiny{-}LLM Pretraining"}\NormalTok{)}
+\NormalTok{    parser.add\_argument(}\StringTok{"{-}{-}out\_dir"}\NormalTok{, }\BuiltInTok{type}\OperatorTok{=}\BuiltInTok{str}\NormalTok{, default}\OperatorTok{=}\StringTok{"sft\_model\_215M"}\NormalTok{, }\BuiltInTok{help}\OperatorTok{=}\StringTok{"输出目录"}\NormalTok{)}
+\NormalTok{    parser.add\_argument(}\StringTok{"{-}{-}epochs"}\NormalTok{, }\BuiltInTok{type}\OperatorTok{=}\BuiltInTok{int}\NormalTok{, default}\OperatorTok{=}\DecValTok{1}\NormalTok{, }\BuiltInTok{help}\OperatorTok{=}\StringTok{"训练轮数"}\NormalTok{)}
+\NormalTok{    parser.add\_argument(}\StringTok{"{-}{-}batch\_size"}\NormalTok{, }\BuiltInTok{type}\OperatorTok{=}\BuiltInTok{int}\NormalTok{, default}\OperatorTok{=}\DecValTok{64}\NormalTok{, }\BuiltInTok{help}\OperatorTok{=}\StringTok{"批处理大小"}\NormalTok{)}
+\NormalTok{    parser.add\_argument(}\StringTok{"{-}{-}learning\_rate"}\NormalTok{, }\BuiltInTok{type}\OperatorTok{=}\BuiltInTok{float}\NormalTok{, default}\OperatorTok{=}\FloatTok{2e{-}4}\NormalTok{, }\BuiltInTok{help}\OperatorTok{=}\StringTok{"学习率"}\NormalTok{)}
+\NormalTok{    parser.add\_argument(}\StringTok{"{-}{-}device"}\NormalTok{, }\BuiltInTok{type}\OperatorTok{=}\BuiltInTok{str}\NormalTok{, default}\OperatorTok{=}\StringTok{"cuda:0"} \ControlFlowTok{if}\NormalTok{ torch.cuda.is\_available() }\ControlFlowTok{else} \StringTok{"cpu"}\NormalTok{, }\BuiltInTok{help}\OperatorTok{=}\StringTok{"使用的设备"}\NormalTok{)}
+\NormalTok{    parser.add\_argument(}\StringTok{"{-}{-}dtype"}\NormalTok{, }\BuiltInTok{type}\OperatorTok{=}\BuiltInTok{str}\NormalTok{, default}\OperatorTok{=}\StringTok{"bfloat16"}\NormalTok{, }\BuiltInTok{help}\OperatorTok{=}\StringTok{"数据类型"}\NormalTok{)}
+\NormalTok{    parser.add\_argument(}\StringTok{"{-}{-}use\_swanlab"}\NormalTok{, action}\OperatorTok{=}\StringTok{"store\_true"}\NormalTok{, }\BuiltInTok{help}\OperatorTok{=}\StringTok{"是否使用SwanLab进行实验跟踪"}\NormalTok{)}
+\NormalTok{    parser.add\_argument(}\StringTok{"{-}{-}num\_workers"}\NormalTok{, }\BuiltInTok{type}\OperatorTok{=}\BuiltInTok{int}\NormalTok{, default}\OperatorTok{=}\DecValTok{8}\NormalTok{, }\BuiltInTok{help}\OperatorTok{=}\StringTok{"数据加载的工作进程数"}\NormalTok{)}
+\NormalTok{    parser.add\_argument(}\StringTok{"{-}{-}data\_path"}\NormalTok{, }\BuiltInTok{type}\OperatorTok{=}\BuiltInTok{str}\NormalTok{, default}\OperatorTok{=}\StringTok{"./BelleGroup\_sft.jsonl"}\NormalTok{, }\BuiltInTok{help}\OperatorTok{=}\StringTok{"训练数据路径"}\NormalTok{)}
+\NormalTok{    parser.add\_argument(}\StringTok{"{-}{-}accumulation\_steps"}\NormalTok{, }\BuiltInTok{type}\OperatorTok{=}\BuiltInTok{int}\NormalTok{, default}\OperatorTok{=}\DecValTok{8}\NormalTok{, }\BuiltInTok{help}\OperatorTok{=}\StringTok{"梯度累积步数"}\NormalTok{)}
+\NormalTok{    parser.add\_argument(}\StringTok{"{-}{-}grad\_clip"}\NormalTok{, }\BuiltInTok{type}\OperatorTok{=}\BuiltInTok{float}\NormalTok{, default}\OperatorTok{=}\FloatTok{1.0}\NormalTok{, }\BuiltInTok{help}\OperatorTok{=}\StringTok{"梯度裁剪阈值"}\NormalTok{)}
+\NormalTok{    parser.add\_argument(}\StringTok{"{-}{-}warmup\_iters"}\NormalTok{, }\BuiltInTok{type}\OperatorTok{=}\BuiltInTok{int}\NormalTok{, default}\OperatorTok{=}\DecValTok{0}\NormalTok{, }\BuiltInTok{help}\OperatorTok{=}\StringTok{"预热迭代次数"}\NormalTok{)}
+\NormalTok{    parser.add\_argument(}\StringTok{"{-}{-}log\_interval"}\NormalTok{, }\BuiltInTok{type}\OperatorTok{=}\BuiltInTok{int}\NormalTok{, default}\OperatorTok{=}\DecValTok{100}\NormalTok{, }\BuiltInTok{help}\OperatorTok{=}\StringTok{"日志记录间隔"}\NormalTok{)}
+\NormalTok{    parser.add\_argument(}\StringTok{"{-}{-}save\_interval"}\NormalTok{, }\BuiltInTok{type}\OperatorTok{=}\BuiltInTok{int}\NormalTok{, default}\OperatorTok{=}\DecValTok{1000}\NormalTok{, }\BuiltInTok{help}\OperatorTok{=}\StringTok{"模型保存间隔"}\NormalTok{)}
+    \CommentTok{\# 添加多卡参数}
+\NormalTok{    parser.add\_argument(}\StringTok{"{-}{-}gpus"}\NormalTok{, }\BuiltInTok{type}\OperatorTok{=}\BuiltInTok{str}\NormalTok{, default}\OperatorTok{=}\StringTok{\textquotesingle{}0,1,2,3,4,5,6,7\textquotesingle{}}\NormalTok{, }\BuiltInTok{help}\OperatorTok{=}\StringTok{"逗号分隔的GPU ID (例如 \textquotesingle{}0,1,2\textquotesingle{})"}\NormalTok{)}
+
+\NormalTok{    args }\OperatorTok{=}\NormalTok{ parser.parse\_args()}
+
+    \CommentTok{\# 设置可见GPU}
+    \ControlFlowTok{if}\NormalTok{ args.gpus }\KeywordTok{is} \KeywordTok{not} \VariableTok{None}\NormalTok{:}
+\NormalTok{        os.environ[}\StringTok{"CUDA\_VISIBLE\_DEVICES"}\NormalTok{] }\OperatorTok{=}\NormalTok{ args.gpus}
+        \CommentTok{\# 自动设置主设备为第一个GPU}
+        \ControlFlowTok{if}\NormalTok{ torch.cuda.is\_available():}
+\NormalTok{            args.device }\OperatorTok{=} \StringTok{"cuda:0"}
+        \ControlFlowTok{else}\NormalTok{:}
+\NormalTok{            args.device }\OperatorTok{=} \StringTok{"cpu"}
+
+    \CommentTok{\# 初始化swanlab}
+    \ControlFlowTok{if}\NormalTok{ args.use\_swanlab:}
+\NormalTok{        run }\OperatorTok{=}\NormalTok{ swanlab.init(}
+\NormalTok{            project}\OperatorTok{=}\StringTok{"Happy{-}LLM"}\NormalTok{,}
+\NormalTok{            experiment\_name}\OperatorTok{=}\StringTok{"SFT{-}215M"}\NormalTok{,}
+\NormalTok{            config}\OperatorTok{=}\NormalTok{args,}
+\NormalTok{        )}
+
+    \CommentTok{\# 模型配置}
+\NormalTok{    lm\_config }\OperatorTok{=}\NormalTok{ ModelConfig(}
+\NormalTok{        dim}\OperatorTok{=}\DecValTok{1024}\NormalTok{,}
+\NormalTok{        n\_layers}\OperatorTok{=}\DecValTok{18}\NormalTok{,}
+\NormalTok{    )}
+\NormalTok{    max\_seq\_len }\OperatorTok{=}\NormalTok{ lm\_config.max\_seq\_len}
+\NormalTok{    args.save\_dir }\OperatorTok{=}\NormalTok{ os.path.join(args.out\_dir)}
+\NormalTok{    os.makedirs(args.save\_dir, exist\_ok}\OperatorTok{=}\VariableTok{True}\NormalTok{)}
+\NormalTok{    os.makedirs(args.out\_dir, exist\_ok}\OperatorTok{=}\VariableTok{True}\NormalTok{)}
+\NormalTok{    torch.manual\_seed(}\DecValTok{42}\NormalTok{)}
+\NormalTok{    device\_type }\OperatorTok{=} \StringTok{"cuda"} \ControlFlowTok{if} \StringTok{"cuda"} \KeywordTok{in}\NormalTok{ args.device }\ControlFlowTok{else} \StringTok{"cpu"}
+
+    \CommentTok{\# 上下文管理器}
+\NormalTok{    ctx }\OperatorTok{=}\NormalTok{ nullcontext() }\ControlFlowTok{if}\NormalTok{ device\_type }\OperatorTok{==} \StringTok{"cpu"} \ControlFlowTok{else}\NormalTok{ torch.cuda.amp.autocast()}
+
+    \CommentTok{\# 初始化模型和分词器}
+\NormalTok{    model, tokenizer }\OperatorTok{=}\NormalTok{ init\_model()}
+    
+    \CommentTok{\# 创建数据集和数据加载器}
+\NormalTok{    train\_ds }\OperatorTok{=}\NormalTok{ SFTDataset(args.data\_path, tokenizer, max\_length}\OperatorTok{=}\NormalTok{max\_seq\_len)}
+\NormalTok{    train\_loader }\OperatorTok{=}\NormalTok{ DataLoader(}
+\NormalTok{        train\_ds,}
+\NormalTok{        batch\_size}\OperatorTok{=}\NormalTok{args.batch\_size,}
+\NormalTok{        pin\_memory}\OperatorTok{=}\VariableTok{True}\NormalTok{,}
+\NormalTok{        drop\_last}\OperatorTok{=}\VariableTok{False}\NormalTok{,}
+\NormalTok{        shuffle}\OperatorTok{=}\VariableTok{True}\NormalTok{,}
+\NormalTok{        num\_workers}\OperatorTok{=}\NormalTok{args.num\_workers}
+\NormalTok{    )}
+
+    \CommentTok{\# 缩放器和优化器}
+\NormalTok{    scaler }\OperatorTok{=}\NormalTok{ torch.cuda.amp.GradScaler(enabled}\OperatorTok{=}\NormalTok{(args.dtype }\KeywordTok{in}\NormalTok{ [}\StringTok{\textquotesingle{}float16\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}bfloat16\textquotesingle{}}\NormalTok{]))}
+\NormalTok{    optimizer }\OperatorTok{=}\NormalTok{ optim.AdamW(model.parameters(), lr}\OperatorTok{=}\NormalTok{args.learning\_rate)}
+
+    \CommentTok{\# 开始训练}
+\NormalTok{    iter\_per\_epoch }\OperatorTok{=} \BuiltInTok{len}\NormalTok{(train\_loader)}
+    \ControlFlowTok{for}\NormalTok{ epoch }\KeywordTok{in} \BuiltInTok{range}\NormalTok{(args.epochs):}
+\NormalTok{        train\_epoch(epoch)}
+\end{Highlighting}
+\end{Shaded}
+
+\subsubsection{5.3.6
+使用模型生成文本}\label{ux4f7fux7528ux6a21ux578bux751fux6210ux6587ux672c}
+
+在模型训练完成后，会在\texttt{output}目录下生成模型文件，这个文件就是我们训练好的模型。我们可以使用以下命令生成文本。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{python}\NormalTok{ model\_sample.py}
+\end{Highlighting}
+\end{Shaded}
+
+我们来看下\texttt{model\_sample.py}文件中的代码，这个文件中定义了一个\texttt{TextGenerator}类，用于生成文本。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{import}\NormalTok{ os}
+\ImportTok{import}\NormalTok{ pickle}
+\ImportTok{from}\NormalTok{ contextlib }\ImportTok{import}\NormalTok{ nullcontext}
+\ImportTok{import}\NormalTok{ torch}
+\ImportTok{from}\NormalTok{ k\_model }\ImportTok{import}\NormalTok{ ModelConfig, Transformer}
+\ImportTok{from}\NormalTok{ transformers }\ImportTok{import}\NormalTok{ AutoTokenizer, AutoModelForCausalLM}
+\ImportTok{import}\NormalTok{ argparse}
+
+\KeywordTok{class}\NormalTok{ TextGenerator:}
+    \KeywordTok{def} \FunctionTok{\_\_init\_\_}\NormalTok{(}\VariableTok{self}\NormalTok{, }
+\NormalTok{                 checkpoint}\OperatorTok{=}\StringTok{\textquotesingle{}./base\_model\_215M/pretrain\_1024\_18\_6144.pth\textquotesingle{}}\NormalTok{,  }\CommentTok{\# 模型检查点路径}
+\NormalTok{                 tokenizer\_model\_path}\OperatorTok{=}\StringTok{\textquotesingle{}./tokenizer\_k/\textquotesingle{}}\NormalTok{,  }\CommentTok{\# 分词器模型路径}
+\NormalTok{                 seed}\OperatorTok{=}\DecValTok{42}\NormalTok{,  }\CommentTok{\# 随机种子，确保可重复性}
+\NormalTok{                 device}\OperatorTok{=}\VariableTok{None}\NormalTok{,  }\CommentTok{\# 设备，优先使用 CUDA，如果没有可用的 CUDA，则使用 CPU}
+\NormalTok{                 dtype}\OperatorTok{=}\StringTok{"bfloat16"}\NormalTok{):  }\CommentTok{\# 数据类型，默认为 float32，可以选择 float16 或 bfloat16}
+        \CommentTok{"""}
+\CommentTok{        初始化 TextGenerator 类，加载模型、设置设备和分词器等。}
+\CommentTok{        """}
+        \CommentTok{\# 模型加载配置}
+        \VariableTok{self}\NormalTok{.checkpoint }\OperatorTok{=}\NormalTok{ checkpoint  }\CommentTok{\# 保存的模型检查点路径}
+        \VariableTok{self}\NormalTok{.tokenizer\_model\_path }\OperatorTok{=}\NormalTok{ tokenizer\_model\_path  }\CommentTok{\# 分词器模型文件路径}
+        \VariableTok{self}\NormalTok{.seed }\OperatorTok{=}\NormalTok{ seed  }\CommentTok{\# 随机数种子，用于生成的可重复性}
+        \VariableTok{self}\NormalTok{.device }\OperatorTok{=}\NormalTok{ device }\KeywordTok{or}\NormalTok{ (}\StringTok{\textquotesingle{}cuda:0\textquotesingle{}} \ControlFlowTok{if}\NormalTok{ torch.cuda.is\_available() }\ControlFlowTok{else} \StringTok{\textquotesingle{}cpu\textquotesingle{}}\NormalTok{)  }\CommentTok{\# 根据硬件条件选择设备}
+        \VariableTok{self}\NormalTok{.dtype }\OperatorTok{=}\NormalTok{ dtype  }\CommentTok{\# 模型的浮点数类型}
+        \VariableTok{self}\NormalTok{.device\_type }\OperatorTok{=} \StringTok{\textquotesingle{}cuda\textquotesingle{}} \ControlFlowTok{if} \StringTok{\textquotesingle{}cuda\textquotesingle{}} \KeywordTok{in} \VariableTok{self}\NormalTok{.device }\ControlFlowTok{else} \StringTok{\textquotesingle{}cpu\textquotesingle{}}  \CommentTok{\# 判断当前设备是否为 CUDA}
+        
+        \CommentTok{\# 设置随机种子，确保生成的可重复性}
+\NormalTok{        torch.manual\_seed(seed)  }\CommentTok{\# 设置 CPU 随机种子}
+\NormalTok{        torch.cuda.manual\_seed(seed)  }\CommentTok{\# 设置 CUDA 随机种子}
+\NormalTok{        torch.backends.cuda.matmul.allow\_tf32 }\OperatorTok{=} \VariableTok{True}  \CommentTok{\# 允许 CUDA 使用 TF32 精度进行矩阵乘法运算}
+\NormalTok{        torch.backends.cudnn.allow\_tf32 }\OperatorTok{=} \VariableTok{True}  \CommentTok{\# 允许 cuDNN 使用 TF32 精度加速}
+        
+        \CommentTok{\# 根据 dtype 选择适当的自动混合精度上下文}
+\NormalTok{        ptdtype }\OperatorTok{=}\NormalTok{ \{}\StringTok{\textquotesingle{}float32\textquotesingle{}}\NormalTok{: torch.float32, }\StringTok{\textquotesingle{}bfloat16\textquotesingle{}}\NormalTok{: torch.bfloat16, }\StringTok{\textquotesingle{}float16\textquotesingle{}}\NormalTok{: torch.float16\}[}\VariableTok{self}\NormalTok{.dtype]}
+        \VariableTok{self}\NormalTok{.ctx }\OperatorTok{=}\NormalTok{ nullcontext() }\ControlFlowTok{if} \VariableTok{self}\NormalTok{.device\_type }\OperatorTok{==} \StringTok{\textquotesingle{}cpu\textquotesingle{}} \ControlFlowTok{else}\NormalTok{ torch.amp.autocast(device\_type}\OperatorTok{=}\VariableTok{self}\NormalTok{.device\_type, dtype}\OperatorTok{=}\NormalTok{ptdtype)}
+        
+        \CommentTok{\# 加载模型检查点文件}
+\NormalTok{        checkpoint\_dict }\OperatorTok{=}\NormalTok{ torch.load(}\VariableTok{self}\NormalTok{.checkpoint, map\_location}\OperatorTok{=}\VariableTok{self}\NormalTok{.device)  }\CommentTok{\# 加载模型参数 \# 初始化模型参数}
+        \VariableTok{self}\NormalTok{.model }\OperatorTok{=}\NormalTok{ Transformer(ModelConfig(dim}\OperatorTok{=}\DecValTok{1024}\NormalTok{, n\_layers}\OperatorTok{=}\DecValTok{18}\NormalTok{))  }\CommentTok{\# 实例化 Transformer 模型}
+\NormalTok{        sunwanted\_prefix }\OperatorTok{=} \StringTok{\textquotesingle{}\_orig\_mod.\textquotesingle{}}
+        \ControlFlowTok{for}\NormalTok{ k, v }\KeywordTok{in} \BuiltInTok{list}\NormalTok{(checkpoint\_dict.items()):}
+            \ControlFlowTok{if}\NormalTok{ k.startswith(sunwanted\_prefix):}
+\NormalTok{                checkpoint\_dict[k[}\BuiltInTok{len}\NormalTok{(sunwanted\_prefix):]] }\OperatorTok{=}\NormalTok{ checkpoint\_dict.pop(k)}
+        \VariableTok{self}\NormalTok{.model.load\_state\_dict(checkpoint\_dict, strict}\OperatorTok{=}\VariableTok{False}\NormalTok{)}
+        
+        \CommentTok{\# 计算模型参数量}
+\NormalTok{        num\_params }\OperatorTok{=} \BuiltInTok{sum}\NormalTok{(p.numel() }\ControlFlowTok{for}\NormalTok{ p }\KeywordTok{in} \VariableTok{self}\NormalTok{.model.parameters() }\ControlFlowTok{if}\NormalTok{ p.requires\_grad)}
+        \BuiltInTok{print}\NormalTok{(}\SpecialStringTok{f"Model has }\SpecialCharTok{\{}\NormalTok{num\_params }\OperatorTok{/} \FloatTok{1e6}\SpecialCharTok{:.3f\}}\SpecialStringTok{ M parameters."}\NormalTok{)}
+        \CommentTok{\# 设置模型为评估模式（evaluation mode），防止训练模式下的 dropout 等操作影响结果}
+        \VariableTok{self}\NormalTok{.model.}\BuiltInTok{eval}\NormalTok{()}
+        \CommentTok{\# 将模型放置到正确的设备上（GPU 或 CPU）}
+        \VariableTok{self}\NormalTok{.model.to(}\VariableTok{self}\NormalTok{.device)}
+        \CommentTok{\# 初始化分词器}
+        \VariableTok{self}\NormalTok{.tokenizer }\OperatorTok{=}\NormalTok{ AutoTokenizer.from\_pretrained(}\VariableTok{self}\NormalTok{.tokenizer\_model\_path)  }\CommentTok{\# 根据指定的路径加载分词器}
+
+    \KeywordTok{def}\NormalTok{ chat\_template(}\VariableTok{self}\NormalTok{, prompt):}
+\NormalTok{        message }\OperatorTok{=}\NormalTok{ [}
+\NormalTok{            \{}\StringTok{"role"}\NormalTok{: }\StringTok{"system"}\NormalTok{, }\StringTok{"content"}\NormalTok{: }\StringTok{"你是一个AI助手，你的名字叫小明。"}\NormalTok{\},}
+\NormalTok{            \{}\StringTok{"role"}\NormalTok{: }\StringTok{"user"}\NormalTok{, }\StringTok{"content"}\NormalTok{: prompt\}}
+\NormalTok{        ]}
+        \ControlFlowTok{return} \VariableTok{self}\NormalTok{.tokenizer.apply\_chat\_template(message, tokenize}\OperatorTok{=}\VariableTok{False}\NormalTok{, add\_generation\_prompt}\OperatorTok{=}\VariableTok{True}\NormalTok{)}
+
+    \KeywordTok{def}\NormalTok{ sft\_sample(}\VariableTok{self}\NormalTok{, }
+\NormalTok{               start}\OperatorTok{=}\StringTok{"Hello!"}\NormalTok{,  }\CommentTok{\# 生成文本的起始提示词，可以是任意字符串}
+\NormalTok{               num\_samples}\OperatorTok{=}\DecValTok{3}\NormalTok{,  }\CommentTok{\# 生成样本的数量，默认生成 3 个样本}
+\NormalTok{               max\_new\_tokens}\OperatorTok{=}\DecValTok{256}\NormalTok{,  }\CommentTok{\# 每个样本生成的最大 token 数，默认最多生成 256 个 token}
+\NormalTok{               temperature}\OperatorTok{=}\FloatTok{0.7}\NormalTok{,  }\CommentTok{\# 控制生成的随机性，1.0 为标准，值越大越随机}
+\NormalTok{               top\_k}\OperatorTok{=}\DecValTok{300}\NormalTok{):  }\CommentTok{\# 保留概率最高的 top\_k 个 token，限制生成时的选择范围}
+        \CommentTok{"""}
+\CommentTok{        根据给定的起始文本生成样本。}
+\CommentTok{        }
+\CommentTok{        :param start: 生成文本的起始提示词}
+\CommentTok{        :param num\_samples: 要生成的文本样本数}
+\CommentTok{        :param max\_new\_tokens: 每个样本生成的最大 token 数}
+\CommentTok{        :param temperature: 控制生成的随机性，值越小生成越确定，值越大生成越随机}
+\CommentTok{        :param top\_k: 限制生成时选择的 token 范围}
+\CommentTok{        :return: 生成的文本样本列表}
+\CommentTok{        """}
+\NormalTok{        start }\OperatorTok{=} \VariableTok{self}\NormalTok{.chat\_template(start)}
+        \CommentTok{\# 将起始文本编码为 token id 序列}
+\NormalTok{        start\_ids }\OperatorTok{=} \VariableTok{self}\NormalTok{.tokenizer(start).data[}\StringTok{\textquotesingle{}input\_ids\textquotesingle{}}\NormalTok{]}
+        \CommentTok{\# print(\textquotesingle{}start\_ids:\textquotesingle{}, start\_ids)}
+\NormalTok{        x }\OperatorTok{=}\NormalTok{ (torch.tensor(start\_ids, dtype}\OperatorTok{=}\NormalTok{torch.}\BuiltInTok{long}\NormalTok{, device}\OperatorTok{=}\VariableTok{self}\NormalTok{.device)[}\VariableTok{None}\NormalTok{, ...])  }\CommentTok{\# 将编码后的 token id 转为 PyTorch 张量}
+\NormalTok{        generated\_texts }\OperatorTok{=}\NormalTok{ []  }\CommentTok{\# 用于保存生成的文本样本}
+        \ControlFlowTok{with}\NormalTok{ torch.no\_grad():  }\CommentTok{\# 禁用梯度计算，提升效率}
+            \ControlFlowTok{with} \VariableTok{self}\NormalTok{.ctx:  }\CommentTok{\# 进入自动混合精度的上下文（如果是 GPU 并使用 float16 时）}
+                \ControlFlowTok{for}\NormalTok{ k }\KeywordTok{in} \BuiltInTok{range}\NormalTok{(num\_samples):  }\CommentTok{\# 循环生成指定数量的样本}
+\NormalTok{                    y }\OperatorTok{=} \VariableTok{self}\NormalTok{.model.generate(x, }\VariableTok{self}\NormalTok{.tokenizer.eos\_token\_id, max\_new\_tokens, temperature}\OperatorTok{=}\NormalTok{temperature, top\_k}\OperatorTok{=}\NormalTok{top\_k)  }\CommentTok{\# 生成文本}
+\NormalTok{                    generated\_texts.append(}\VariableTok{self}\NormalTok{.tokenizer.decode(y[}\DecValTok{0}\NormalTok{].tolist()))  }\CommentTok{\# 解码生成的 token 序列为可读文本}
+        \ControlFlowTok{return}\NormalTok{ generated\_texts  }\CommentTok{\# 返回生成的文本样本}
+
+
+    \KeywordTok{def}\NormalTok{ pretrain\_sample(}\VariableTok{self}\NormalTok{, }
+\NormalTok{               start}\OperatorTok{=}\StringTok{"Hello!"}\NormalTok{,  }\CommentTok{\# 生成文本的起始提示词，可以是任意字符串}
+\NormalTok{               num\_samples}\OperatorTok{=}\DecValTok{3}\NormalTok{,  }\CommentTok{\# 生成样本的数量，默认生成 3 个样本}
+\NormalTok{               max\_new\_tokens}\OperatorTok{=}\DecValTok{256}\NormalTok{,  }\CommentTok{\# 每个样本生成的最大 token 数，默认最多生成 256 个 token}
+\NormalTok{               temperature}\OperatorTok{=}\FloatTok{0.7}\NormalTok{,  }\CommentTok{\# 控制生成的随机性，1.0 为标准，值越大越随机}
+\NormalTok{               top\_k}\OperatorTok{=}\DecValTok{300}\NormalTok{):  }\CommentTok{\# 保留概率最高的 top\_k 个 token，限制生成时的选择范围}
+        \CommentTok{"""}
+\CommentTok{        根据给定的起始文本生成样本。}
+\CommentTok{        }
+\CommentTok{        :param start: 生成文本的起始提示词}
+\CommentTok{        :param num\_samples: 要生成的文本样本数}
+\CommentTok{        :param max\_new\_tokens: 每个样本生成的最大 token 数}
+\CommentTok{        :param temperature: 控制生成的随机性，值越小生成越确定，值越大生成越随机}
+\CommentTok{        :param top\_k: 限制生成时选择的 token 范围}
+\CommentTok{        :return: 生成的文本样本列表}
+\CommentTok{        """}
+        \CommentTok{\# 如果 start 是以 \textquotesingle{}FILE:\textquotesingle{} 开头，表示从文件中读取起始文本}
+        \ControlFlowTok{if}\NormalTok{ start.startswith(}\StringTok{\textquotesingle{}FILE:\textquotesingle{}}\NormalTok{):}
+            \ControlFlowTok{with} \BuiltInTok{open}\NormalTok{(start[}\DecValTok{5}\NormalTok{:], }\StringTok{\textquotesingle{}r\textquotesingle{}}\NormalTok{, encoding}\OperatorTok{=}\StringTok{\textquotesingle{}utf{-}8\textquotesingle{}}\NormalTok{) }\ImportTok{as}\NormalTok{ f:}
+\NormalTok{                start }\OperatorTok{=}\NormalTok{ f.read()  }\CommentTok{\# 读取文件内容作为起始文本}
+        
+        \CommentTok{\# 将起始文本编码为 token id 序列}
+\NormalTok{        start\_ids }\OperatorTok{=} \VariableTok{self}\NormalTok{.tokenizer(start).data[}\StringTok{\textquotesingle{}input\_ids\textquotesingle{}}\NormalTok{]}
+        \CommentTok{\# print(\textquotesingle{}start\_ids:\textquotesingle{}, start\_ids)}
+\NormalTok{        x }\OperatorTok{=}\NormalTok{ (torch.tensor(start\_ids, dtype}\OperatorTok{=}\NormalTok{torch.}\BuiltInTok{long}\NormalTok{, device}\OperatorTok{=}\VariableTok{self}\NormalTok{.device)[}\VariableTok{None}\NormalTok{, ...])  }\CommentTok{\# 将编码后的 token id 转为 PyTorch 张量}
+        \CommentTok{\# print(x.shape)}
+\NormalTok{        generated\_texts }\OperatorTok{=}\NormalTok{ []  }\CommentTok{\# 用于保存生成的文本样本}
+        \ControlFlowTok{with}\NormalTok{ torch.no\_grad():  }\CommentTok{\# 禁用梯度计算，提升效率}
+            \ControlFlowTok{with} \VariableTok{self}\NormalTok{.ctx:  }\CommentTok{\# 进入自动混合精度的上下文（如果是 GPU 并使用 float16 时）}
+                \ControlFlowTok{for}\NormalTok{ k }\KeywordTok{in} \BuiltInTok{range}\NormalTok{(num\_samples):  }\CommentTok{\# 循环生成指定数量的样本}
+\NormalTok{                    y }\OperatorTok{=} \VariableTok{self}\NormalTok{.model.generate(x, max\_new\_tokens}\OperatorTok{=}\NormalTok{max\_new\_tokens, temperature}\OperatorTok{=}\NormalTok{temperature, top\_k}\OperatorTok{=}\NormalTok{top\_k)  }\CommentTok{\# 生成文本}
+\NormalTok{                    generated\_texts.append(}\VariableTok{self}\NormalTok{.tokenizer.decode(y[}\DecValTok{0}\NormalTok{].tolist()))  }\CommentTok{\# 解码生成的 token 序列为可读文本}
+        
+        \ControlFlowTok{return}\NormalTok{ generated\_texts  }\CommentTok{\# 返回生成的文本样本}
+    
+\ControlFlowTok{if} \VariableTok{\_\_name\_\_} \OperatorTok{==} \StringTok{"\_\_main\_\_"}\NormalTok{:}
+    \BuiltInTok{print}\NormalTok{(}\StringTok{"{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-} Pretrain Sample {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-} }\CharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+
+\NormalTok{    pretrain\_prompt\_datas }\OperatorTok{=}\NormalTok{ [}
+        \StringTok{\textquotesingle{}\textless{}|im\_start|\textgreater{}北京大学是\textquotesingle{}}\NormalTok{,}
+        \StringTok{\textquotesingle{}\textless{}|im\_start|\textgreater{}中国矿业大学（北京）地球科学与测绘工程学院\textquotesingle{}}\NormalTok{,}
+\NormalTok{    ]}
+
+\NormalTok{    generator }\OperatorTok{=}\NormalTok{ TextGenerator(checkpoint}\OperatorTok{=}\StringTok{\textquotesingle{}./base\_model\_215M/pretrain\_1024\_18\_6144.pth\textquotesingle{}}\NormalTok{)  }\CommentTok{\# 初始化生成器}
+    \ControlFlowTok{for}\NormalTok{ i }\KeywordTok{in} \BuiltInTok{range}\NormalTok{(}\BuiltInTok{len}\NormalTok{(pretrain\_prompt\_datas)):}
+\NormalTok{        samples }\OperatorTok{=}\NormalTok{ generator.pretrain\_sample(start}\OperatorTok{=}\NormalTok{pretrain\_prompt\_datas[i], num\_samples}\OperatorTok{=}\DecValTok{1}\NormalTok{, max\_new\_tokens}\OperatorTok{=}\DecValTok{120}\NormalTok{, temperature}\OperatorTok{=}\FloatTok{0.75}\NormalTok{)}
+        \BuiltInTok{print}\NormalTok{(}\SpecialStringTok{f"}\CharTok{\textbackslash{}n}\SpecialStringTok{Sample }\SpecialCharTok{\{}\NormalTok{i}\OperatorTok{+}\DecValTok{1}\SpecialCharTok{\}}\SpecialStringTok{:}\CharTok{\textbackslash{}n}\SpecialCharTok{\{}\NormalTok{pretrain\_prompt\_datas[i]}\SpecialCharTok{\}\{}\NormalTok{samples[}\DecValTok{0}\NormalTok{]}\SpecialCharTok{\}}\CharTok{\textbackslash{}n}\SpecialCharTok{\{}\StringTok{\textquotesingle{}{-}\textquotesingle{}}\OperatorTok{*}\DecValTok{20}\SpecialCharTok{\}}\SpecialStringTok{"}\NormalTok{)  }\CommentTok{\# 打印生成的样本并用分隔线分割}
+
+    \BuiltInTok{print}\NormalTok{(}\StringTok{"}\CharTok{\textbackslash{}n}\StringTok{ {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-} SFT Sample {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-} }\CharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+
+\NormalTok{    sft\_prompt\_datas }\OperatorTok{=}\NormalTok{ [}
+        \StringTok{\textquotesingle{}你好呀\textquotesingle{}}\NormalTok{,}
+        \StringTok{"中国的首都是哪里？"}\NormalTok{,}
+        \StringTok{"1+12等于多少？"}\NormalTok{,}
+        \StringTok{"你是谁？"}
+\NormalTok{    ]}
+\NormalTok{    generator }\OperatorTok{=}\NormalTok{ TextGenerator(checkpoint}\OperatorTok{=}\StringTok{\textquotesingle{}./sft\_model\_215M/sft\_dim1024\_layers18\_vocab\_size6144.pth\textquotesingle{}}\NormalTok{)  }\CommentTok{\# 初始化生成器}
+    \ControlFlowTok{for}\NormalTok{ i }\KeywordTok{in} \BuiltInTok{range}\NormalTok{(}\BuiltInTok{len}\NormalTok{(sft\_prompt\_datas)):}
+\NormalTok{        samples }\OperatorTok{=}\NormalTok{ generator.sft\_sample(start}\OperatorTok{=}\NormalTok{sft\_prompt\_datas[i], num\_samples}\OperatorTok{=}\DecValTok{1}\NormalTok{, max\_new\_tokens}\OperatorTok{=}\DecValTok{128}\NormalTok{, temperature}\OperatorTok{=}\FloatTok{0.6}\NormalTok{)}
+        \BuiltInTok{print}\NormalTok{(}\SpecialStringTok{f"}\CharTok{\textbackslash{}n}\SpecialStringTok{Sample }\SpecialCharTok{\{}\NormalTok{i}\OperatorTok{+}\DecValTok{1}\SpecialCharTok{\}}\SpecialStringTok{:}\CharTok{\textbackslash{}n}\SpecialStringTok{Question: }\SpecialCharTok{\{}\NormalTok{sft\_prompt\_datas[i]}\SpecialCharTok{\}}\SpecialStringTok{ }\CharTok{\textbackslash{}n}\SpecialStringTok{AI answer: }\SpecialCharTok{\{}\NormalTok{samples[}\DecValTok{0}\NormalTok{]}\SpecialCharTok{\}}\CharTok{\textbackslash{}n}\SpecialCharTok{\{}\StringTok{\textquotesingle{}{-}\textquotesingle{}}\OperatorTok{*}\DecValTok{20}\SpecialCharTok{\}}\SpecialStringTok{"}\NormalTok{)  }\CommentTok{\# 打印生成的样本并用分隔线分割}
+\end{Highlighting}
+\end{Shaded}
+
+最后我们来看一下模型输出的结果：
+
+\begin{verbatim}
+------------------- SFT Sample ------------------- 
+
+Model has 215.127 M parameters.
+
+Sample 1:
+Question: 你好呀 
+AI answer: 你好!有什么我可以帮你的吗?
+--------------------
+
+Sample 2:
+Question: 中国的首都是哪里？ 
+AI answer: 中国的首都是北京。
+--------------------
+
+Sample 3:
+Question: 1+1等于多少？ 
+AI answer: 1+1等于2。
+--------------------
+------------------- Pretrain Sample ------------------- 
+
+Model has 215.127 M parameters.
+
+Sample 1:
+<|im_start|>北京大学是中国最早建立的研究型大学之一,是我国最早设置研究生院的高校之一,是第一、二国教育委员会师资培训基地;北京大学是第一、二所国立大学,其校名与北京大学相同。
+北京大学录取标准:本科三批1万元,本科一批1万元,本科一批2000元,专科一批2000元,高中起点:非本科一批
+--------------------
+
+Sample 2:
+<|im_start|>中国矿业大学（北京）地球科学与测绘工程学院副教授黄河流域地质学科带头人古建平教授为大家介绍世界地质变化的概念及工作经验。
+古建平教授介绍了最近几年的植物学和地质学的基本概念,尤其是树都黄河、松涛、暗河等都有地质学工作者的身影,其中树都黄河以分布面积最大,是树都黄河中华砂岩公园的主景区。
+黄河内蒙古
+--------------------
+\end{verbatim}
+
+到这里，我们的模型就训绽完成了，恭喜你训练了一个属于你自己的大模型。
+
+\begin{quote}
+大家在训练的时候可以将 batch
+调的低一些，这样可以减少显存的占用，避免显存不足的问题。当然这样会增加训练时间，可以根据自己的显卡显存大小来调整
+batch 的大小。实测 Pretrain batch 为 4 的情况下只需要 7G
+显存，训练时长预计 533 小时。作者是在 8卡4090
+上进行训练的，预训练一共耗时 46 小时，SFT 阶段在 BelleGroup
+350万条中文指令训练 24 小时。
+\end{quote}
+
+作者也在魔搭平台上传了本章节训来的模型，如果大家的设备不足以训练大模型，大家也可以在魔搭平台下载模型进行调试和模型体验。模型下载地址如下：
+
+\begin{quote}
+\emph{ModelScope
+模型下载地址：\href{https://www.modelscope.cn/collections/Happy-LLM-e98b91b10b684a}{🤖
+ModelScope}}\\
+\emph{ModelScope
+创空间体验地址：\href{https://www.modelscope.cn/studios/kmno4zx/happy_llm_215M_sft}{🤖
+创空间}}
+\end{quote}
+
+\textbf{参考资料}
+
+{[}1{]} Andrej Karpathy. (2023). \emph{llama2.c: Fullstack Llama 2 LLM
+solution in pure C}. GitHub repository.
+https://github.com/karpathy/llama2.c
+
+{[}2{]} Andrej Karpathy. (2023). \emph{llm.c: GPT-2/GPT-3 pretraining in
+C/CUDA}. GitHub repository. https://github.com/karpathy/llm.c
+
+{[}3{]} Hugging Face. (2023). \emph{Tokenizers documentation}.
+https://huggingface.co/docs/tokenizers/index
+
+{[}4{]} Skywork Team. (2023). \emph{SkyPile-150B: A large-scale
+bilingual dataset}. Hugging Face dataset.
+https://huggingface.co/datasets/Skywork/SkyPile-150B
+
+{[}5{]} BelleGroup. (2022). \emph{train\_3.5M\_CN: Chinese dialogue
+dataset}. Hugging Face dataset.
+https://huggingface.co/datasets/BelleGroup/train\_3.5M\_CN
+
+{[}6{]} Jingyao Gong. (2023). \emph{minimind: Minimalist LLM
+implementation}. GitHub repository.
+https://github.com/jingyaogong/minimind
+
+{[}7{]} Mobvoi. (2023). \emph{seq-monkey-data: Llama2 training/inference
+data}. GitHub repository. https://github.com/mobvoi/seq-monkey-data
+
+\end{document}
+
+
+\end{document}

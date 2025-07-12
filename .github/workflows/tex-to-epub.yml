@@ -24,42 +24,31 @@ jobs:
         sudo apt-get install -y texlive-xetex texlive-lang-chinese texlive-fonts-recommended
         sudo apt-get install -y fonts-noto-cjk
         
-    - name: Check main tex file and structure
+    - name: Check single chapter tex files
       run: |
-        echo "检查main.tex文件..."
-        if [ ! -f "docs/tex_output/main.tex" ]; then
-          echo "❌ main.tex 文件不存在"
-          exit 1
-        fi
-        
-        echo "✓ main.tex 文件存在"
-        
-        # 检查所有input的文件是否存在
-        echo "检查\\input文件..."
+        echo "检查各章节的独立tex文件..."
         cd docs/tex_output
         
-        # 提取所有input文件并检查
-        input_files=(
-          "前言"
-          "chapter1/第一章 NLP基础概念"
-          "chapter2/第二章 Transformer架构"
-          "chapter3/第三章 预训练语言模型"
-          "chapter4/第四章 大语言模型"
-          "chapter5/第五章 动手搭建大模型"
-          "chapter6/第六章 大模型训练流程实践"
-          "chapter7/第七章 大模型应用"
-          "Extra-Chapter/Readme"
+        chapter_files=(
+          "main_前言.tex"
+          "main_第一章.tex"
+          "main_第二章.tex"
+          "main_第三章.tex"
+          "main_第四章.tex"
+          "main_第五章.tex"
+          "main_第六章.tex"
+          "main_第七章.tex"
         )
         
-        for file in "${input_files[@]}"; do
-          if [ ! -f "${file}.tex" ]; then
-            echo "❌ ${file}.tex 文件不存在"
+        for file in "${chapter_files[@]}"; do
+          if [ ! -f "$file" ]; then
+            echo "❌ $file 文件不存在"
             exit 1
           fi
-          echo "✓ ${file}.tex 存在"
+          echo "✓ $file 存在"
         done
         
-        echo "✓ 所有\\input文件检查完成"
+        echo "✓ 所有章节文件检查完成"
         
     - name: Create EPUB metadata
       run: |
@@ -88,11 +77,67 @@ jobs:
         
         echo "✓ EPUB样式文件检查完成"
         
-    - name: Convert TEX to EPUB
+    - name: Test each chapter individually
       run: |
         cd docs/tex_output
         
-        echo "开始使用main.tex文件编译epub..."
+        echo "🔍 开始测试每个章节的编译..."
+        
+        chapter_files=(
+          "main_前言.tex:前言"
+          "main_第一章.tex:第一章"
+          "main_第二章.tex:第二章"
+          "main_第三章.tex:第三章"
+          "main_第四章.tex:第四章"
+          "main_第五章.tex:第五章"
+          "main_第六章.tex:第六章"
+          "main_第七章.tex:第七章"
+        )
+        
+        failed_chapters=()
+        
+        for file_info in "${chapter_files[@]}"; do
+          IFS=':' read -r file chapter_name <<< "$file_info"
+          
+          echo "📖 测试 $chapter_name ($file)..."
+          
+          # 尝试编译为EPUB
+          if pandoc "$file" \
+            --from latex \
+            --to epub \
+            --output "${chapter_name}_test.epub" \
+            --metadata-file=metadata.yaml \
+            --css=epub-style.css \
+            --toc \
+            --number-sections \
+            --epub-cover-image=../images/head.jpg 2>&1; then
+            
+            echo "✅ $chapter_name 编译成功"
+            rm -f "${chapter_name}_test.epub"
+          else
+            echo "❌ $chapter_name 编译失败"
+            failed_chapters+=("$chapter_name")
+          fi
+        done
+        
+        echo ""
+        echo "📊 编译结果汇总:"
+        if [ ${#failed_chapters[@]} -eq 0 ]; then
+          echo "🎉 所有章节编译成功！"
+        else
+          echo "⚠️  以下章节编译失败:"
+          for chapter in "${failed_chapters[@]}"; do
+            echo "   - $chapter"
+          done
+          echo ""
+          echo "请检查上述章节的tex文件内容"
+        fi
+        
+    - name: Convert main tex to EPUB
+      run: |
+        cd docs/tex_output
+        
+        echo "📚 开始编译完整的main.tex为EPUB..."
         
         # 使用main.tex编译为EPUB
         pandoc main.tex \
