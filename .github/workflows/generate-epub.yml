@@ -259,7 +259,7 @@ jobs:
         
         # 生成EPUB
         pandoc \
-          --from markdown \
+          --from markdown+raw_html \
           --to epub \
           --metadata-file=metadata.yaml \
           --css=epub-style.css \
