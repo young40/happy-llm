@@ -12,7 +12,7 @@
 </div>
 
 <div align="center">
-  <a href="https://trendshift.io/repositories/14175" target="_blank"><img src="https://trendshift.io/api/badge/repositories/14175" alt="datawhalechina%2Fhappy-llm | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
+  <a href="https://trendshift.io/repositories/14175" target="_blank"><img src="https://trendshift.io/api/badge/repositories/14175" alt="datawhalechina%2Fhappy-llm | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"></a>
 </div>
 
 <div align="center">
@@ -99,7 +99,7 @@
 
 <div align=center style="margin-top: 30px;">
   <a href="https://github.com/datawhalechina/happy-llm/graphs/contributors">
-    <img src="https://contrib.rocks/image?repo=datawhalechina/happy-llm" />
+    <img src="https://contrib.rocks/image?repo=datawhalechina/happy-llm" alt="Contributors">
   </a>
 </div>
 
