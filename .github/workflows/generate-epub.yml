@@ -205,23 +205,23 @@ jobs:
         # 创建临时目录
         mkdir -p temp_epub
         
-        # 定义要处理的文件列表
-        declare -A files=(
-          ["docs/README.md"]="00-README.md"
-          ["docs/前言.md"]="01-前言.md"
-          ["docs/chapter1/第一章 NLP基础概念.md"]="02-第一章-NLP基础概念.md"
-          ["docs/chapter2/第二章 Transformer架构.md"]="03-第二章-Transformer架构.md"
-          ["docs/chapter3/第三章 预训练语言模型.md"]="04-第三章-预训练语言模型.md"
-          ["docs/chapter4/第四章 大语言模型.md"]="05-第四章-大语言模型.md"
-          ["docs/chapter5/第五章 动手搭建大模型.md"]="06-第五章-动手搭建大模型.md"
-          ["docs/chapter6/第六章 大模型训练流程实践.md"]="07-第六章-大模型训练流程实践.md"
-          ["docs/chapter7/第七章 大模型应用.md"]="08-第七章-大模型应用.md"
+        # 定义要处理的文件列表（使用数组而不是关联数组，更兼容）
+        files=(
+          "docs/README.md:00-README.md"
+          "docs/前言.md:01-前言.md"
+          "docs/chapter1/第一章 NLP基础概念.md:02-第一章-NLP基础概念.md"
+          "docs/chapter2/第二章 Transformer架构.md:03-第二章-Transformer架构.md"
+          "docs/chapter3/第三章 预训练语言模型.md:04-第三章-预训练语言模型.md"
+          "docs/chapter4/第四章 大语言模型.md:05-第四章-大语言模型.md"
+          "docs/chapter5/第五章 动手搭建大模型.md:06-第五章-动手搭建大模型.md"
+          "docs/chapter6/第六章 大模型训练流程实践.md:07-第六章-大模型训练流程实践.md"
+          "docs/chapter7/第七章 大模型应用.md:08-第七章-大模型应用.md"
         )
         
         # 复制文件并检查
         copied_count=0
-        for source in "${!files[@]}"; do
-          target="${files[$source]}"
+        for file_pair in "${files[@]}"; do
+          IFS=':' read -r source target <<< "$file_pair"
           if [[ -f "$source" ]]; then
             cp "$source" "temp_epub/$target"
             echo "✓ 复制: $(basename "$source")"
