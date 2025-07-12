@@ -310,7 +310,7 @@ jobs:
         pandoc main_combined.tex \
           --from latex \
           --to epub \
-          --output "Happy-LLM-Tutorial.epub" \
+          --output "Happy-LLM-教程.epub" \
           --metadata-file=metadata.yaml \
           --css=epub-style.css \
           --toc \
@@ -318,46 +318,80 @@ jobs:
           --epub-cover-image=../images/head.jpg
         
         echo "EPUB生成完成！"
-        ls -lh Happy-LLM-Tutorial.epub
+        ls -lh Happy-LLM-教程.epub
+        
+        # 检查文件大小
+        file_size=$(stat -c%s "Happy-LLM-教程.epub")
+        echo "文件大小: $file_size 字节"
+        
+        if [ $file_size -lt 1000 ]; then
+          echo "❌ EPUB文件过小，可能生成失败"
+          exit 1
+        fi
         
     - name: Upload EPUB artifact
       uses: actions/upload-artifact@v4
       with:
-        name: happy-llm-epub
-        path: docs/tex_output/Happy-LLM-Tutorial.epub
+        name: Happy-LLM-教程.epub
+        path: docs/tex_output/Happy-LLM-教程.epub
         retention-days: 30
         
     - name: Create Release
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: softprops/action-gh-release@v1
       with:
-        tag_name: epub-v${{ github.run_number }}
-        release_name: Happy-LLM EPUB v${{ github.run_number }}
+        files: docs/tex_output/Happy-LLM-教程.epub
+        tag_name: v${{ github.run_number }}
+        name: Release v${{ github.run_number }} - Happy-LLM教程EPUB
         body: |
           ## Happy-LLM 大语言模型教程 EPUB版本
           
           自动生成的EPUB电子书，包含完整的教程内容。
           
-          ### 更新内容
-          - 从tex文件转换生成
-          - 包含所有章节内容
-          - 优化的阅读体验
+          ### 📚 包含章节
+          - 前言
+          - 第一章 NLP基础概念
+          - 第二章 Transformer架构
+          - 第三章 预训练语言模型
+          - 第四章 大语言模型
+          - 第五章 动手搭建大模型
+          - 第六章 大模型训练流程实践
+          - 第七章 大模型应用
           
-          ### 下载
-          请下载附件中的EPUB文件。
-        draft: false
-        prerelease: false
-        
-    - name: Upload Release Asset
-      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-      uses: actions/upload-release-asset@v1
+          ### 📖 阅读建议
+          - 支持目录导航
+          - 包含代码高亮
+          - 适配中文显示
+          - 包含图片和表格
+          
+          ### 🔧 技术细节
+          - 使用pandoc转换
+          - 自定义CSS样式
+          - 支持中文排版
+          - 自动生成目录
+          
+          ### 📋 更新日志
+          - 从tex文件直接转换生成
+          - 优化了图片显示效果
+          - 改进了代码块样式
+          - 增强了阅读体验
+          
+          ### 🚀 快速开始
+          1. 下载附件中的EPUB文件
+          2. 使用支持EPUB的阅读器打开
+          3. 推荐使用Calibre、Apple Books或Kindle阅读
+          
+          ### 📞 反馈与支持
+          - GitHub Issues: [报告问题](https://github.com/datawhalechina/happy-llm/issues)
+          - 讨论区: [参与讨论](https://github.com/datawhalechina/happy-llm/discussions)
+          
+          ---
+          
+          *此文件由GitHub Actions自动生成于 ${{ github.event.head_commit.timestamp }}*
+          
+          **构建信息:**
+          - 构建编号: #${{ github.run_number }}
+          - 提交: ${{ github.sha }}
+          - 分支: ${{ github.ref_name }}
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: docs/tex_output/Happy-LLM-Tutorial.epub
-        asset_name: Happy-LLM-Tutorial.epub
-        asset_content_type: application/epub+zip 
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
