@@ -216,6 +216,8 @@ jobs:
         
         # 复制文件并检查
         copied_count=0
+        missing_files=()
+        
         for file_pair in "${files[@]}"; do
           IFS=':' read -r source target <<< "$file_pair"
           if [[ -f "$source" ]]; then
@@ -224,17 +226,24 @@ jobs:
             ((copied_count++))
           else
             echo "⚠️  警告: $source 不存在"
+            missing_files+=("$source")
           fi
         done
+        
+        echo "📊 成功复制 $copied_count 个文件"
+        
+        if [[ ${#missing_files[@]} -gt 0 ]]; then
+          echo "⚠️  缺失的文件:"
+          printf '%s\n' "${missing_files[@]}"
+        fi
         
         if [[ $copied_count -eq 0 ]]; then
           echo "❌ 错误: 没有找到任何markdown文件"
           exit 1
         fi
         
-        echo "📊 成功复制 $copied_count 个文件"
         echo "📁 文件列表:"
-        ls -la temp_epub/
+        ls -la temp_epub/ || true
         
     - name: Generate EPUB
       run: |
