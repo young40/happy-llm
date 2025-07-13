@@ -187,7 +187,7 @@ attention(x, x, x)
     <BOS>    I   【MASK】 【MASK】【MASK】
     <BOS>    I     like  【MASK】【MASK】
     <BOS>    I     like    you  【MASK】
-    <BoS>    I     like    you   </EOS>
+    <BOS>    I     like    you   </EOS>
 
 在每一行输入中，模型仍然是只看到前面的 token，预测下一个 token。但是注意，上述输入不再是串行的过程，而可以一起并行地输入到模型中，模型只需要每一个样本根据未被遮蔽的 token 来预测下一个 token 即可，从而实现了并行的语言模型。
 
