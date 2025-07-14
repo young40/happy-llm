@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN">
+<head>
+    <title>第三章 预训练语言模型</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" type="text/css" href="epub-style.css"/>
+</head>
+<body>
+
+<h1>第三章 预训练语言模型</h1>
+
+<h2>3.1 Encoder-only PLM</h2>
+
+<p>在上一章，我们详细讲解了给 NLP 领域带来巨大变革注意力机制以及使用注意力机制搭建的模型 Transformer，NLP 模型的里程碑式转变也就自此而始。在上文对 Transformer 的讲解中我们可以看到，Transformer 结构主要由 Encoder、Decoder 两个部分组成，两个部分分别具有不一样的结构和输入输出。</p>
+
+<p>针对 Encoder、Decoder 的特点，引入 ELMo 的预训练思路，开始出现不同的、对 Transformer 进行优化的思路。例如，Google 仅选择了 Encoder 层，通过将 Encoder 层进行堆叠，再提出不同的预训练任务-掩码语言模型（Masked Language Model，MLM），打造了一统自然语言理解（Natural Language Understanding，NLU）任务的代表模型——BERT。而 OpenAI 则选择了 Decoder 层，使用原有的语言模型（Language Model，LM）任务，通过不断增加模型参数和预训练语料，打造了在 NLG（Natural Language Generation，自然语言生成）任务上优势明显的 GPT 系列模型，也是现今大火的 LLM 的基座模型。当然，还有一种思路是同时保留 Encoder 与 Decoder，打造预训练的 Transformer 模型，例如由 Google 发布的 T5模型。</p>
+
+<p>在本章中，我们将以 Encoder-Only、Encoder-Decoder、Decoder-Only 的顺序来依次介绍 Transformer 时代的各个主流预训练模型，分别介绍三种核心的模型架构、每种主流模型选择的预训练任务及其独特优势，这也是目前所有主流 LLM 的模型基础。</p>
+
+<h3>3.1.1 BERT</h3>
+
+<p>BERT，全名为 Bidirectional Encoder Representations from Transformers，是由 Google 团队在 2018年发布的预训练语言模型。该模型发布于论文《BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding》，实现了包括 GLUE、MultiNLI 等七个自然语言处理评测任务的最优性能（State Of The Art，SOTA），堪称里程碑式的成果。自 BERT 推出以来，预训练+微调的模式开始成为自然语言处理任务的主流，不仅 BERT 自身在不断更新迭代提升模型性能，也出现了如 MacBERT、BART 等基于 BERT 进行优化提升的模型。可以说，BERT 是自然语言处理的一个阶段性成果，标志着各种自然语言处理任务的重大进展以及预训练模型的统治地位建立，一直到 LLM 的诞生，NLP 领域的主导地位才从 BERT 系模型进行迁移。即使在 LLM 时代，要深入理解 LLM 与 NLP，BERT 也是无法绕过的一环。</p>
+
+<h4>（1）思想沿承</h4>
+
+<p>BERT 是一个统一了多种思想的预训练模型。其所沿承的核心思想包括：</p>
+
+<ul>
+<li>Transformer 架构。正如我们在上一章所介绍的，在 2017年发表的《Attention is All You Need》论文提出了完全使用 注意力机制而抛弃 RNN、LSTM 结构的 Transformer 模型，带来了新的模型架构。BERT 正沿承了 Transformer 的思想，在 Transformer 的模型基座上进行优化，通过将 Encoder 结构进行堆叠，扩大模型参数，打造了在 NLU 任务上独居天分的模型架构；</li>
+<li>预训练+微调范式。同样在 2018年，ELMo 的诞生标志着预训练+微调范式的诞生。ELMo 模型基于双向 LSTM 架构，在训练数据上基于语言模型进行预训练，再针对下游任务进行微调，表现出了更加优越的性能，将 NLP 领域导向预训练+微调的研究思路。而 BERT 也采用了该范式，并通过将模型架构调整为 Transformer，引入更适合文本理解、能捕捉深层双向语义关系的预训练任务 MLM，将预训练-微调范式推向了高潮。</li>
+</ul>
+
+<h4>（2）模型架构——Encoder Only</h4>
+
+<p>BERT 的模型架构是取了 Transformer 的 Encoder 部分堆叠而成，其主要结构如图3.1所示：</p>
+
+<div class="figure">
+  <img src="https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/3-figures/1-0.png" alt="图片描述" width="100%"/>
+  <p>图3.1 BERT 模型结构</p>
+</div>
+
+<p>BERT 是针对于 NLU 任务打造的预训练模型，其输入一般是文本序列，而输出一般是 Label，例如情感分类的积极、消极 Label。但是，正如 Transformer 是一个 Seq2Seq 模型，使用 Encoder 堆叠而成的 BERT 本质上也是一个 Seq2Seq 模型，只是没有加入对特定任务的 Decoder，因此，为适配各种 NLU 任务，在模型的最顶层加入了一个分类头 prediction_heads，用于将多维度的隐藏状态通过线性层转换到分类维度（例如，如果一共有两个类别，prediction_heads 输出的就是两维向量）。</p>
+
+<div class="figure">
+  <img src="https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/3-figures/1-1.png" alt="图片描述" width="70%"/>
+  <p>图3.2 BERT 模型简略结构</p>
+</div>
+
+<blockquote>
+<p>BERT 采用 WordPiece 作为分词方法。WordPiece 是一种基于统计的子词切分算法，其核心在于将单词拆解为子词（例如，"playing" -&gt; ["play", "##ing"]）。其合并操作的依据是最大化语言模型的似然度。对于中文等非空格分隔的语言，通常将单个汉字作为原子分词单位（token）处理。</p>
+</blockquote>
+
+<h4>（3）预训练任务——MLM + NSP</h4>
+
+<p>相较于基本沿承 Transformer 的模型架构，BERT 更大的创新点在于其提出的两个新的预训练任务上——MLM 和 NSP（Next Sentence Prediction，下一句预测）。预训练-微调范式的核心优势在于，通过将预训练和微调分离，完成一次预训练的模型可以仅通过微调应用在几乎所有下游任务上，只要微调的成本较低，即使预训练成本是之前的数倍甚至数十倍，模型仍然有更大的应用价值。因此，可以进一步扩大模型参数和预训练数据量，使用海量的预训练语料来让模型拟合潜在语义与底层知识，从而让模型通过长时间、大规模的预训练获得强大的语言理解和生成能力。</p>
+
+<p>在具体进行 MLM 训练时，会随机选择训练语料中 15% 的 token 用于遮蔽。但是这 15% 的 token 并非全部被遮蔽为 <code>&lt;MASK&gt;</code>，而是有 80% 的概率被遮蔽，10% 的概率被替换为任意一个 token，还有 10% 的概率保持不变。</p>
+
+<h4>（4）下游任务微调</h4>
+
+<p>作为 NLP 领域里程碑式的成果，BERT 的一个重大意义就是正式确立了预训练-微调的两阶段思想，即在海量无监督语料上进行预训练来获得通用的文本理解与生成能力，再在对应的下游任务上进行微调。</p>
+
+<h3>3.1.2 RoBERTa</h3>
+
+<p>RoBERTa 的模型架构与 BERT 完全一致，也就是使用了 BERT-large（24层 Encoder Layer，1024 的隐藏层维度，总参数量 340M）的模型参数。RoBERTa 通过实验发现，去掉 NSP 预训练任务、使用更大规模的预训练数据、更大的 batch size 和更长的训练时间，可以显著提升模型性能。</p>
+
+<h4>（1）优化一：去掉 NSP 预训练任务</h4>
+
+<p>RoBERTa 通过实验证明了后两组（去掉 NSP 任务）显著优于前两组（保留 NSP 任务），且单文档的 MLM 组在下游任务上微调时性能最佳。因此，RoBERTa 在预训练中去掉了 NSP，只使用 MLM 任务。</p>
+
+<h4>（2）优化二：更大规模的预训练数据和预训练步长</h4>
+
+<p>RoBERTa 使用了 160GB 的数据，十倍于 BERT，并在 8K 的 batch size 下训练了 500K Step（约合 66个 Epoch）。</p>
+
+<h4>（3）优化三：更大的 bpe 词表</h4>
+
+<p>RoBERTa 使用了 BPE 作为 Tokenizer 的编码策略，选择了 50K 大小的词表来优化模型的编码能力。</p>
+
+<h3>3.1.3 ALBERT</h3>
+
+<p>ALBERT 通过对模型结构进行优化并对 NSP 预训练任务进行改进，成功地以更小规模的参数实现了超越 BERT 的能力。</p>
+
+<h4>（1）优化一：将 Embedding 参数进行分解</h4>
+
+<p>ALBERT 对 Embedding 层的参数矩阵进行了分解，让 Embedding 层的输出维度和隐藏层维度解绑，从而减少了参数量。</p>
+
+<h4>（2）优化二：跨层进行参数共享</h4>
+
+<p>ALBERT 让各个 Encoder 层共享模型参数，来减少模型的参数量，使得 24层 Encoder 但将隐藏层维度设为 2048 的 ALBERT（xlarge 版本）仅有 59M 的参数量。</p>
+
+<h4>（3）优化三：提出 SOP 预训练任务</h4>
+
+<p>ALBERT 提出了 SOP（Sentence Order Prediction）预训练任务，通过要求模型判断两个句子的顺序关系来提升预训练难度。</p>
+
+<h2>3.2 Encoder-Decoder PLM</h2>
+
+<p>在上一节，我们学习了 Encoder-Only 结构的模型，主要介绍了 BERT 的模型架构、预训练任务和下游任务微调。本节将学习 Encoder-Decoder 结构的模型，主要介绍 T5 的模型架构和预训练任务。</p>
+
+<h3>3.2.1 T5</h3>
+
+<p>T5（Text-To-Text Transfer Transformer）是由 Google 提出的一种预训练语言模型，通过将所有 NLP 任务统一表示为文本到文本的转换问题，大大简化了模型设计和任务处理。</p>
+
+<h4>（1）模型结构：Encoder-Decoder</h4>
+
+<div class="figure">
+  <img src="https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/3-figures/2-1.png" alt="图片描述" width="100%"/>
+  <p>图3.7 T5 模型详细结构</p>
+</div>
+
+<div class="figure">
+  <img src="https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/3-figures/2-2.png" alt="图片描述" width="70%"/>
+  <p>图3.8 T5 模型整体结构</p>
+</div>
+
+<h4>（2）预训练任务</h4>
+
+<p>T5 使用 MLM（掩码语言模型）作为预训练任务，在输入文本中随机遮蔽15%的token，然后让模型预测这些被遮蔽的token。</p>
+
+<h4>（3）大一统思想</h4>
+
+<div class="figure">
+  <img src="https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/3-figures/2-0.png" alt="图片描述" width="90%"/>
+  <p>图3.11 T5 的大一统思想</p>
+</div>
+
+<p>T5模型的一个核心理念是"大一统思想"，即所有的 NLP 任务都可以统一为文本到文本的任务，通过在输入前加上任务描述前缀来适配不同任务。</p>
+
+<h2>3.3 Decoder-Only PLM</h2>
+
+<p>Decoder-Only 就是目前大火的 LLM 的基础架构，目前所有的 LLM 基本都是 Decoder-Only 模型。而引发 LLM 热潮的 ChatGPT，正是 Decoder-Only 系列的代表模型 GPT 系列模型的大成之作。</p>
+
+<h3>3.3.1 GPT</h3>
+
+<p>GPT，即 Generative Pre-Training Language Model，是由 OpenAI 团队于 2018年发布的预训练语言模型。虽然学界普遍认可 BERT 作为预训练语言模型时代的代表，但首先明确提出预训练-微调思想的模型其实是 GPT。</p>
+
+<h4>（1）模型架构——Decoder Only</h4>
+
+<div class="figure">
+  <img src="https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/3-figures/3-0.png" alt="图片描述" width="100%"/>
+  <p>图3.12 GPT 模型结构</p>
+</div>
+
+<p>GPT 的整体结构和 BERT 类似，只是选择使用了 Decoder 来进行模型结构的堆叠。由于 Decoder-Only 结构也天生适用于文本生成任务。</p>
+
+<h4>（2）预训练任务——CLM</h4>
+
+<p>Decoder-Only 的模型结构选择了最传统也最直接的预训练任务——因果语言模型（Casual Language Model，CLM）。</p>
+
+<h4>（3）GPT 系列模型的发展</h4>
+
+<p>从 GPT-1 到 GPT-3 的模型参数和预训练语料规模不断扩大：</p>
+
+<table class="data-table">
+<tr><th>模型</th><th>Decoder Layer</th><th>Hidden_size</th><th>注意力头数</th><th>注意力维度</th><th>总参数量</th><th>预训练语料</th></tr>
+<tr><td>GPT-1</td><td>12</td><td>3072</td><td>12</td><td>768</td><td>0.12B</td><td>5GB</td></tr>
+<tr><td>GPT-2</td><td>48</td><td>6400</td><td>25</td><td>1600</td><td>1.5B</td><td>40GB</td></tr>
+<tr><td>GPT-3</td><td>96</td><td>49152</td><td>96</td><td>12288</td><td>175B</td><td>570GB</td></tr>
+</table>
+
+<h3>3.3.2 LLaMA</h3>
+
+<p>LLaMA模型是由Meta（前Facebook）开发的一系列大型预训练语言模型。从LLaMA-1到LLaMA-3，LLaMA系列模型展示了大规模预训练语言模型的演进及其在实际应用中的显著潜力。</p>
+
+<h4>（1）模型架构——Decoder Only</h4>
+
+<div class="figure">
+  <img src="https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/3-figures/3-1.png" alt="图片描述" width="100%"/>
+  <p>图3.13 LLaMA-3 模型结构</p>
+</div>
+
+<h4>（2）LLaMA模型的发展历程</h4>
+
+<p><strong>LLaMA-1 系列</strong>：Meta于2023年2月发布了LLaMA-1，包括7B、13B、30B和65B四个参数量版本。</p>
+
+<p><strong>LLaMA-2 系列</strong>：2023年7月，Meta发布了LLaMA-2，包含7B、13B、34B和70B四个参数量版本。</p>
+
+<p><strong>LLaMA-3 系列</strong>：2024年4月，Meta发布了LLaMA-3，包括8B和70B两个参数量版本。</p>
+
+<h3>3.3.3 GLM</h3>
+
+<p>GLM 系列模型是由智谱开发的主流中文 LLM 之一，包括 ChatGLM1、2、3及 GLM-4 系列模型。</p>
+
+<h4>（1）模型架构-相对于 GPT 的略微修正</h4>
+
+<p>GLM 在整体模型结构上，和 GPT 大致类似，均是 Decoder-Only 的结构，仅有三点细微差异：</p>
+
+<ol>
+<li>使用 Post Norm 而非 Pre Norm</li>
+<li>使用单个线性层实现最终 token 的预测，而不是使用 MLP</li>
+<li>激活函数从 ReLU 换成了 GeLUS</li>
+</ol>
+
+<h4>（2）预训练任务-GLM</h4>
+
+<p>GLM 的核心创新点主要在于其提出的 GLM（General Language Model，通用语言模型）任务，结合了自编码思想和自回归思想。</p>
+
+<h4>（3）GLM 家族的发展</h4>
+
+<p>在 GLM 模型的基础上，智谱发布了 ChatGLM-6B、ChatGLM2-6B、ChatGLM3-6B 和 GLM-4 系列模型。</p>
+
+<div class="figure">
+  <img src="https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/3-figures/3-3.png" alt="图片描述" width="90%"/>
+  <p>图3.15 GLM 系列模型在基准集上的表现演进</p>
+</div>
+
+<h2>参考资料</h2>
+
+<ol>
+<li>Jacob Devlin, Ming-Wei Chang, Kenton Lee, Kristina Toutanova. (2019). <em>BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding.</em> arXiv preprint arXiv:1810.04805.</li>
+
+<li>Yinhan Liu, Myle Ott, Naman Goyal, Jingfei Du, Mandar Joshi, Danqi Chen, Omer Levy, Mike Lewis, Luke Zettlemoyer, Veselin Stoyanov. (2019). <em>RoBERTa: A Robustly Optimized BERT Pretraining Approach.</em> arXiv preprint arXiv:1907.11692.</li>
+
+<li>Zhenzhong Lan, Mingda Chen, Sebastian Goodman, Kevin Gimpel, Piyush Sharma, Radu Soricut. (2020). <em>ALBERT: A Lite BERT for Self-supervised Learning of Language Representations.</em> arXiv preprint arXiv:1909.11942.</li>
+
+<li>Colin Raffel, Noam Shazeer, Adam Roberts, Katherine Lee, Sharan Narang, Michael Matena, Yanqi Zhou, Wei Li, Peter J. Liu. (2023). <em>Exploring the Limits of Transfer Learning with a Unified Text-to-Text Transformer.</em> arXiv preprint arXiv:1910.10683.</li>
+
+<li>Alec Radford, Karthik Narasimhan. (2018). <em>Improving Language Understanding by Generative Pre-Training</em>. Retrieved from https://api.semanticscholar.org/CorpusID:49313245</li>
+
+<li>Tom B. Brown, Benjamin Mann, Nick Ryder, Melanie Subbiah, Jared Kaplan, Prafulla Dhariwal, Arvind Neelakantan, Pranav Shyam, Girish Sastry, Amanda Askell, Sandhini Agarwal, Ariel Herbert-Voss, Gretchen Krueger, Tom Henighan, Rewon Child, Aditya Ramesh, Daniel M. Ziegler, Jeffrey Wu, Clemens Winter, Christopher Hesse, Mark Chen, Eric Sigler, Mateusz Litwin, Scott Gray, Benjamin Chess, Jack Clark, Christopher Berner, Sam McCandlish, Alec Radford, Ilya Sutskever, Dario Amodei. (2020). <em>Language Models are Few-Shot Learners.</em> arXiv preprint arXiv:2005.14165.</li>
+
+<li>张帆, 陈安东的文章"万字长文带你梳理Llama开源家族：从Llama-1到Llama-3"，来源：https://mp.weixin.qq.com/s/5_VnzP3JmOB0D5geV5HRFg</li>
+
+<li>Team GLM, Aohan Zeng, Bin Xu, Bowen Wang, Chenhui Zhang, Da Yin, Dan Zhang, Diego Rojas, Guanyu Feng, Hanlin Zhao, Hanyu Lai, Hao Yu, Hongning Wang, Jiadai Sun, Jiajie Zhang, Jiale Cheng, Jiayi Gui, Jie Tang, Jing Zhang, Jingyu Sun, Juanzi Li, Lei Zhao, Lindong Wu, Lucen Zhong, Mingdao Liu, Minlie Huang, Peng Zhang, Qinkai Zheng, Rui Lu, Shuaiqi Duan, Shudan Zhang, Shulin Cao, Shuxun Yang, Weng Lam Tam, Wenyi Zhao, Xiao Liu, Xiao Xia, Xiaohan Zhang, Xiaotao Gu, Xin Lv, Xinghan Liu, Xinyi Liu, Xinyue Yang, Xixuan Song, Xunkai Zhang, Yifan An, Yifan Xu, Yilin Niu, Yuantao Yang, Yueyan Li, Yushi Bai, Yuxiao Dong, Zehan Qi, Zhaoyu Wang, Zhen Yang, Zhengxiao Du, Zhenyu Hou, and Zihan Wang. (2024). <em>ChatGLM: A Family of Large Language Models from GLM-130B to GLM-4 All Tools.</em> arXiv preprint arXiv:2406.12793.</li>
+
+<li>Zhengxiao Du, Yujie Qian, Xiao Liu, Ming Ding, Jiezhong Qiu, Zhilin Yang 和 Jie Tang. (2022). <em>GLM: General Language Model Pretraining with Autoregressive Blank Infilling.</em> arXiv preprint arXiv:2103.10360.</li>
+</ol>
+
+</body>
+</html>

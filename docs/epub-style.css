@@ -1,0 +1,224 @@
+/* Common EPUB Stylesheet for Happy-LLM */
+
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Source Han Serif CN", "Noto Serif CJK SC", "SimSun", "宋体", serif;
+    line-height: 1.8;
+    color: #333333;
+    background-color: #ffffff;
+    font-size: 1em;
+    margin: 1.5em;
+    text-align: justify;
+}
+
+/* Typography */
+h1 {
+    color: #2c3e50;
+    font-size: 2.2em;
+    font-weight: bold;
+    margin: 1.5em 0 0.8em 0;
+    border-bottom: 3px solid #3498db;
+    padding-bottom: 0.3em;
+    page-break-before: always;
+}
+
+h2 {
+    color: #34495e;
+    font-size: 1.8em;
+    font-weight: bold;
+    margin: 1.8em 0 0.6em 0;
+    border-bottom: 2px solid #bdc3c7;
+    padding-bottom: 0.2em;
+}
+
+h3 {
+    color: #7f8c8d;
+    font-size: 1.5em;
+    font-weight: bold;
+    margin: 1.5em 0 0.5em 0;
+}
+
+h4 {
+    color: #95a5a6;
+    font-size: 1.3em;
+    font-weight: bold;
+    margin: 1.2em 0 0.4em 0;
+    font-style: italic;
+}
+
+h5 {
+    color: #95a5a6;
+    font-size: 1.1em;
+    font-weight: bold;
+    margin: 1em 0 0.3em 0;
+}
+
+/* Paragraphs */
+p {
+    margin: 0.8em 0;
+    text-indent: 2em;
+    line-height: 1.8;
+}
+
+/* Links */
+a {
+    color: #3498db;
+    text-decoration: none;
+    border-bottom: 1px dotted #3498db;
+}
+
+a:hover {
+    color: #2980b9;
+    border-bottom-style: solid;
+}
+
+/* Lists */
+ul, ol {
+    margin: 1em 0;
+    padding-left: 2em;
+}
+
+li {
+    margin: 0.5em 0;
+    line-height: 1.6;
+}
+
+/* Tables */
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 1.5em 0;
+    font-size: 0.9em;
+}
+
+th, td {
+    border: 1px solid #bdc3c7;
+    padding: 8px 12px;
+    text-align: left;
+}
+
+th {
+    background-color: #f8f9fa;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+/* Code blocks */
+pre, code {
+    font-family: "Source Code Pro", "Consolas", "Monaco", "Courier New", monospace;
+}
+
+code {
+    background-color: #f8f9fa;
+    color: #e74c3c;
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+    font-size: 0.85em;
+}
+
+pre {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 1em;
+    margin: 1.5em 0;
+    overflow-x: auto;
+    font-size: 0.9em;
+    line-height: 1.4;
+}
+
+pre code {
+    background: none;
+    color: #333;
+    padding: 0;
+    border-radius: 0;
+}
+
+/* Images */
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 1.5em auto;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Captions */
+.caption, figcaption {
+    text-align: center;
+    font-style: italic;
+    color: #7f8c8d;
+    margin: 0.5em 0 1.5em 0;
+    font-size: 0.9em;
+}
+
+/* Blockquotes */
+blockquote {
+    border-left: 4px solid #3498db;
+    margin: 1.5em 0;
+    padding: 0.5em 1em;
+    background-color: #f8f9fa;
+    font-style: italic;
+}
+
+/* Emphasis and strong */
+em {
+    font-style: italic;
+}
+
+strong {
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+/* Horizontal rules */
+hr {
+    border: none;
+    border-top: 1px solid #bdc3c7;
+    margin: 2em 0;
+}
+
+/* EPUB-specific styles */
+@page {
+    margin: 1in;
+}
+
+/* Mobile optimizations */
+@media screen and (max-width: 600px) {
+    body {
+        margin: 1em;
+        font-size: 0.95em;
+    }
+    
+    h1 { font-size: 1.8em; }
+    h2 { font-size: 1.5em; }
+    h3 { font-size: 1.3em; }
+    h4 { font-size: 1.1em; }
+}
+
+/* Print styles */
+@media print {
+    body {
+        font-size: 12pt;
+        line-height: 1.5;
+    }
+    
+    h1, h2, h3, h4 {
+        page-break-after: avoid;
+    }
+    
+    pre, blockquote {
+        page-break-inside: avoid;
+    }
+}

@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN">
+<head>
+    <title>第五章 动手搭建大模型</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" type="text/css" href="epub-style.css"/>
+</head>
+<body>
+
+<h1>第五章 动手搭建大模型</h1>
+
+<h2>5.1 动手实现一个 LLaMA2 大模型</h2>
+
+<p>Meta（原Facebook）于2023年2月发布第一款基于Transformer结构的大型语言模型LLaMA，并于同年7月发布同系列模型LLaMA2。我们在第四章已经学习和了解了LLM，以及如何训练LLM等内容。本小节我们就来学习如何动手实现一个LLaMA2模型。</p>
+
+<div class="figure">
+  <img src="https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/5-images/LLama2.png" alt="LLaMA2 模型结构" width="100%"/>
+  <p>图 5.1 LLaMA2结构</p>
+</div>
+
+<h3>5.1.1 定义超参数</h3>
+
+<p>首先我们需要定义一些超参数，这些超参数包括模型的大小、层数、头数、词嵌入维度、隐藏层维度等等。这些超参数可以根据实际情况进行调整。</p>
+
+<p>这里我们自定义一个<code>ModelConfig</code>类，来存储和记录我们的超参数，这里我们继承了<code>PretrainedConfig</code>类，这是<code>transformers</code>库中的参数类，我们可以通过继承这个类来方便的使用<code>transformers</code>库中的一些功能，也方便在后续导出Hugging Face模型。</p>
+
+<pre class="code-block"><code>from transformers import PretrainedConfig
+
+class ModelConfig(PretrainedConfig):
+    model_type = "Tiny-K"
+    def __init__(
+            self,
+            dim: int = 768, # 模型维度
+            n_layers: int = 12, # Transformer的层数
+            n_heads: int = 16, # 注意力机制的头数
+            n_kv_heads: int = 8, # 键值头的数量
+            vocab_size: int = 6144, # 词汇表大小
+            hidden_dim: int = None, # 隐藏层维度
+            multiple_of: int = 64, 
+            norm_eps: float = 1e-5, # 归一化层的eps
+            max_seq_len: int = 512, # 最大序列长度
+            dropout: float = 0.0, # dropout概率
+            flash_attn: bool = True, # 是否使用Flash Attention
+            **kwargs,
+    ):
+        self.dim = dim
+        self.n_layers = n_layers
+        self.n_heads = n_heads
+        self.n_kv_heads = n_kv_heads
+        self.vocab_size = vocab_size
+        self.hidden_dim = hidden_dim
+        self.multiple_of = multiple_of
+        self.norm_eps = norm_eps
+        self.max_seq_len = max_seq_len
+        self.dropout = dropout
+        self.flash_attn = flash_attn
+        super().__init__(**kwargs)</code></pre>
+
+<blockquote>
+<p>在以下代码中出现 <code>args</code> 时，即默认为以上 <code>ModelConfig</code> 参数配置。</p>
+</blockquote>
+
+<p>我们来看一下其中的一些超参数的含义，比如<code>dim</code>是模型维度，<code>n_layers</code>是Transformer的层数，<code>n_heads</code>是注意力机制的头数，<code>vocab_size</code>是词汇表大小，<code>max_seq_len</code>是输入的最大序列长度等等。上面的代码中也对每一个参数做了详细的注释，在后面的代码中我们会根据这些超参数来构建我们的模型。</p>
+
+<h3>5.1.2 构建 RMSNorm</h3>
+
+<p><code>RMSNorm</code>可以用如下的数学公式表示：</p>
+
+<div class="formula">
+$$\text{RMSNorm}(x) = \frac{x}{\sqrt{\frac{1}{n}\sum_{i=1}^{n}x_i^2 + \epsilon}} \cdot \gamma$$
+</div>
+
+<p>其中：</p>
+<ul>
+<li>$x_i$ 是输入向量的第 $i$ 个元素</li>
+<li>$\gamma$ 是可学习的缩放参数（对应代码中的 <code>self.weight</code>）</li>
+<li>$n$ 是输入向量的维度数量</li>
+<li>$\epsilon$ 是一个小常数，用于数值稳定性（以避免除以零的情况）</li>
+</ul>
+
+<p>这种归一化有助于通过确保权重的规模不会变得过大或过小来稳定学习过程，这在具有许多层的深度学习模型中特别有用。</p>
+
+<h3>5.1.3 构建 LLaMA2 Attention</h3>
+
+<p>在 LLaMA2 模型中，虽然只有 LLaMA2-70B模型使用了分组查询注意力机制（Grouped-Query Attention，GQA），但我们依然选择使用 GQA 来构建我们的 LLaMA Attention 模块，它可以提高模型的效率，并节省一些显存占用。</p>
+
+<div class="figure">
+  <img src="https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/5-images/llama2-attention.png" alt="LLaMA2 Attention 结构" width="50%"/>
+  <p>图 5.2 LLaMA2 Attention 结构</p>
+</div>
+
+<h3>5.1.4 构建 LLaMA2 MLP模块</h3>
+
+<p>相对于前面我们实现的LLaMA2 Attention模块，LLaMA2 MLP模块的实现要简单一些。我们可以通过如下代码实现<code>MLP</code>。</p>
+
+<h3>5.1.5 LLaMA2 Decoder Layer</h3>
+
+<p>到这里，我们已经实现了<code>LLaMA2</code>模型的<code>Attention</code>模块和<code>MLP</code>模块，接下来我们就可以构建<code>LLaMA2</code>的<code>Decoder Layer</code>了。</p>
+
+<h3>5.1.6 构建 LLaMA2 模型</h3>
+
+<p>好了，我们已经完了上述所有的模块的实现，接下来就是激动人心的时刻，我们可以构建<code>LLaMA2</code>模型了。，<code>LLaMA2</code>模型就是将<code>DecoderLayer</code>模块堆叠起来，构成一个完整的<code>Transformer</code>模型。</p>
+
+<h2>5.2 训练 Tokenizer</h2>
+
+<p>在自然语言处理 (NLP) 中，Tokenizer 是一种将文本分解为较小单位（称为 token）的工具。这些 token 可以是词、子词、字符，甚至是特定的符号。Tokenization 是 NLP 中的第一步，直接影响后续处理和分析的效果。不同类型的 tokenizer 适用于不同的应用场景，以下是几种常见的 tokenizer 及其特点。</p>
+
+<h3>5.2.1 Word-based Tokenizer</h3>
+
+<p><strong>Word-based Tokenizer</strong> 是最简单和直观的一种分词方法。它将文本按空格和标点符号分割成单词。这种方法的优点在于其简单和直接，易于实现，且与人类对语言的直觉相符。然而，它也存在一些明显的缺点，如无法处理未登录词（OOV，out-of-vocabulary）和罕见词，对复合词（如"New York"）或缩略词（如"don't"）的处理也不够精细。此外，Word-based Tokenizer 在处理不同语言时也会遇到挑战，因为一些语言（如中文、日文）没有显式的单词分隔符。</p>
+
+<h3>5.2.2 Character-based Tokenizer</h3>
+
+<p><strong>Character-based Tokenizer</strong> 将文本中的每个字符视为一个独立的 token。这种方法能非常精细地处理文本，适用于处理拼写错误、未登录词或新词。由于每个字符都是一个独立的 token，因此这种方法可以捕捉到非常细微的语言特征。</p>
+
+<h3>5.2.3 Subword Tokenizer</h3>
+
+<p><strong>Subword Tokenizer</strong> 介于词和字符之间，能够更好地平衡分词的细粒度和处理未登录词的能力。</p>
+
+<h4>（1）Byte Pair Encoding (BPE)</h4>
+
+<p><strong>BPE</strong> 是一种基于统计方法，通过反复合并频率最高的字符或字符序列对来生成子词词典。</p>
+
+<h4>（2）WordPiece</h4>
+
+<p><strong>WordPiece</strong> 是另一种基于子词的分词方法，最初用于谷歌的 BERT 模型。</p>
+
+<h4>（3）Unigram</h4>
+
+<p><strong>Unigram</strong> 分词方法基于概率模型，通过选择具有最高概率的子词来分割文本。</p>
+
+<h3>5.2.4 训练一个 Tokenizer</h3>
+
+<p>这里我们选择使用 BPE 算法来训练一个 Subword Tokenizer。BPE 是一种简单而有效的分词方法，能够处理未登录词和罕见词，同时保持较小的词典大小。我们将使用 Hugging Face 的 <code>tokenizers</code> 库来训练一个 BPE Tokenizer。</p>
+
+<h4>Step 1: 安装和导入依赖库</h4>
+
+<p>首先，我们需要安装 <code>tokenizers</code> 库，除此之外还需要安装 <code>datasets</code> 和 <code>transformers</code> 库，用于加载训练数据和加载训练完成后的 Tokenizer。</p>
+
+<h4>Step 2: 加载训练数据</h4>
+
+<p>这里我们使用与预训练相同的数据集（出门问问序列猴子开源数据集）训练tokenizer。</p>
+
+<h4>Step 3: 创建配置文件</h4>
+
+<p>在训练 BPE Tokenizer 之前，我们需要创建一个完整的 <code>Tokenizer</code> 配置文件，包括 <code>tokenizer_config.json</code> 和 <code>special_tokens_map.json</code>。</p>
+
+<h4>Step 4: 训练 BPE Tokenizer</h4>
+
+<p>在训练 BPE Tokenizer 之前，我们需要定义一个训练函数，用于训练 Tokenizer 并保存训练好的 Tokenizer 文件。</p>
+
+<h4>Step 5: 使用训练好的 Tokenizer</h4>
+
+<p>我们可以使用训练好的 Tokenizer 来处理文本数据，如编码、解码、生成对话等。</p>
+
+<h2>5.3 预训练一个小型LLM</h2>
+
+<p>在前面的章节中，我们熟悉了各种大模型的模型结构，以及如如何训练Tokenizer。在本节中，我们将动手训练一个八千万参数的LLM。</p>
+
+<h3>5.3.1 数据下载</h3>
+
+<p>首先，我们需要下载预训练数据集。在这里，我们使用两个开源的数据集，包含了大量的中文对话数据，可以用于训练对话生成模型。</p>
+
+<ul>
+<li>出门问问序列猴子开源数据集：出门问问序列猴子通用文本数据集由来自网页、百科、博客、问答、开源代码、书籍、报刊、专利、教材、考题等多种公开可获取的数据进行汇总清洗之后而形成的大语言模型预训练语料。总量大概在 10B Token。</li>
+<li>BelleGroup：350万条中文对话数据集，包含了人机对话、人人对话、人物对话等多种对话数据，可以用于训练对话生成模型。</li>
+</ul>
+
+<h3>5.3.2 训练 Tokenizer</h3>
+
+<p>首先，我们需要为文本处理训练一个Tokenizer。Tokenizer的作用是将文本转换为数字序列，以便模型能够理解和处理。</p>
+
+<h3>5.3.3 Dataset</h3>
+
+<h4>PretrainDataset</h4>
+
+<p>在将数据送入到模型之前，我们还需要进行一些处理用于将文本数据转化为模型能够理解的Token。在这里我们使用的是Pytorch的Dataset类，用于加载数据集。</p>
+
+<div class="figure">
+  <img src="https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/5-images/pretrain_dataset.png" alt="预训练损失函数计算" width="100%"/>
+  <p>图5.3 预训练损失函数计算</p>
+</div>
+
+<h4>SFTDataset</h4>
+
+<p><code>SFTDataset</code> 其实是一个多轮对话数据集，我们的目标是让模型学会如何进行多轮对话。</p>
+
+<div class="figure">
+  <img src="https://raw.githubusercontent.com/datawhalechina/happy-llm/main/docs/images/5-images/sftdataset.png" alt="SFT 损失函数计算" width="90%"/>
+  <p>图5.4 SFT 损失函数计算</p>
+</div>
+
+<h3>5.3.4 预训练</h3>
+
+<p>在数据预处理完成后，我们就可以开始训练模型了。我们使用的模型是一个和LLama2结构一样的 Decoder only Transformer模型，使用Pytorch实现。</p>
+
+<h3>5.3.5 SFT 训练</h3>
+
+<p>SFT 训练和预训练的代码基本一样，只是导入的 Dataset 不一样。在这里我们使用的是 SFTDataset，用于多轮对话的训练。</p>
+
+<h3>5.3.6 使用模型生成文本</h3>
+
+<p>在模型训练完成后，会在<code>output</code>目录下生成模型文件，这个文件就是我们训练好的模型。我们可以使用以下命令生成文本。</p>
+
+<blockquote>
+<p>大家在训练的时候可以将 batch 调的低一些，这样可以减少显存的占用，避免显存不足的问题。当然这样会增加训练时间，可以根据自己的显卡显存大小来调整 batch 的大小。实测 Pretrain batch 为 4 的情况下只需要 7G 显存，训练时长预计 533 小时。作者是在 8卡4090 上进行训练的，预训练一共耗时 46 小时，SFT 阶段在 BelleGroup 350万条中文指令训练 24 小时。</p>
+</blockquote>
+
+<p>作者也在魔搭平台上传了本章节训来的模型，如果大家的设备不足以训练大模型，大家也可以在魔搭平台下载模型进行调试和模型体验。</p>
+
+<h2>参考资料</h2>
+
+<ol>
+<li>Andrej Karpathy. (2023). <em>llama2.c: Fullstack Llama 2 LLM solution in pure C</em>. GitHub repository. https://github.com/karpathy/llama2.c</li>
+<li>Andrej Karpathy. (2023). <em>llm.c: GPT-2/GPT-3 pretraining in C/CUDA</em>. GitHub repository. https://github.com/karpathy/llm.c</li>
+<li>Hugging Face. (2023). <em>Tokenizers documentation</em>. https://huggingface.co/docs/tokenizers/index</li>
+<li>Skywork Team. (2023). <em>SkyPile-150B: A large-scale bilingual dataset</em>. Hugging Face dataset. https://huggingface.co/datasets/Skywork/SkyPile-150B</li>
+<li>BelleGroup. (2022). <em>train_3.5M_CN: Chinese dialogue dataset</em>. Hugging Face dataset. https://huggingface.co/datasets/BelleGroup/train_3.5M_CN</li>
+<li>Jingyao Gong. (2023). <em>minimind: Minimalist LLM implementation</em>. GitHub repository. https://github.com/jingyaogong/minimind</li>
+<li>Mobvoi. (2023). <em>seq-monkey-data: Llama2 training/inference data</em>. GitHub repository. https://github.com/mobvoi/seq-monkey-data</li>
+</ol>
+
+</body>
+</html>
