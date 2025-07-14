@@ -83,7 +83,7 @@ jobs:
           --from=html \
           --to=epub \
           --output=happy-llm-pandoc.epub \
-          --epub-stylesheet=docs/epub-style.css \
+          --css=docs/epub-style.css \
           --metadata-file=metadata.yaml \
           --toc \
           --toc-depth=3 \
