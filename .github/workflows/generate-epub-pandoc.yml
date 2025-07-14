@@ -60,10 +60,10 @@ jobs:
         docs/chapter4/chapter4_large_language_models.xhtml
         docs/chapter5_building_large_models.xhtml
         docs/chapter6/第六章 大模型训练流程实践.xhtml
-        docs/chapter7/第七章 大模型应用.xhtml
         docs/chapter6/6.4[WIP] 偏好对齐.xhtml
-        Extra-Chapter/why-fine-tune-small-large-language-models/readme.xhtml
+        docs/chapter7/第七章 大模型应用.xhtml
         Extra-Chapter/transformer-architecture/readme.xhtml
+        Extra-Chapter/why-fine-tune-small-large-language-models/readme.xhtml
         EOF
         
         # Check if all files exist
@@ -112,7 +112,7 @@ jobs:
           --epub-metadata=metadata.yaml \
           --resource-path=.:temp_epub:docs:Extra-Chapter \
           --verbose \
-          temp_epub/*.xhtml
+          $(for f in $(cat chapter-order.txt); do echo "temp_epub/$(basename $f)"; done)
           
         echo "EPUB generation completed!"
         
