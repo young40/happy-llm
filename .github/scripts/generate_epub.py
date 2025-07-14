@@ -72,7 +72,7 @@ def create_epub():
         },
         {
             'title': '第四章 大语言模型',
-            'file': 'docs/chapter4_large_language_models.xhtml',
+            'file': 'docs/chapter4/chapter4_large_language_models.xhtml',
             'id': 'chapter4'
         },
         {
