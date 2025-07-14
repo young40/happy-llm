@@ -133,10 +133,10 @@ jobs:
         retention-days: 30
         
     - name: Create or update release
-      uses: ncipollo/release-action@v1
+      uses: softprops/action-gh-release@v1
       with:
-        artifacts: "happy-llm-pandoc.epub"
-        tag: "epub-${{ github.run_number }}"
+        files: "happy-llm-pandoc.epub"
+        tag_name: "epub-${{ github.run_number }}"
         name: "Happy-LLM EPUB ${{ github.run_number }}"
         body: |
           使用Pandoc自动生成的Happy-LLM电子书
@@ -155,20 +155,18 @@ jobs:
           生成工具：Pandoc 3.1.11
           样式文件：docs/epub-style.css
         token: ${{ secrets.GITHUB_TOKEN }}
-        allowUpdates: true
         prerelease: false
         
     - name: Update latest release
       if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
-      uses: ncipollo/release-action@v1
+      uses: softprops/action-gh-release@v1
       with:
-        artifacts: "happy-llm-pandoc.epub"
-        tag: "latest"
+        files: "happy-llm-pandoc.epub"
+        tag_name: "latest"
         name: "Happy-LLM EPUB (Latest)"
         body: |
           最新版本的Happy-LLM电子书（主分支自动构建）
           
           包含所有最新章节内容和修正
         token: ${{ secrets.GITHUB_TOKEN }}
-        allowUpdates: true
         prerelease: false
