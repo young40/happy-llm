@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>大模型都这么厉害了，微调0.6B的小模型有什么意义？</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" type="text/css" href="../../docs/epub-style.css"/>
+</head>
+<body>
+    <h1>大模型都这么厉害了，微调0.6B的小模型有什么意义？</h1>
+
+    <p>大家在日常使用Deepseek-R1或者是阿里新发布的Qwen3模型，他们的模型都是能力很强，所提供的API服也都可以满足大家的日常或者是公司开发所需。但大家也可以想一个简单的问题几个简单的问题，如下：</p>
+
+    <ol>
+        <li>公司的数据是够敏感，是否需要保密？</li>
+        <li>日常使用大模型的任务是否很困难，对推理链是否刚需？</li>
+        <li>任务调用的大模型API并发量是多少？每日资金消耗有多少？</li>
+    </ol>
+
+    <p>对于问题1，如果公司数据敏感，那我建议不要调用供应商提供的大模型API。就算供应商保证不会拿你们数据做训练，但你们的数据还是泄漏了（会有不必要的风险），建议本地部署大模型。</p>
+
+    <p>对于问题2，如果使用大模型的场景问题很困难并且刚需推理链，那可以使用供应商的API，这样可以保证推理链的上下文不会爆显存。如果问题很简单，没有刚需推理链，那建议本地部署小模型即可。</p>
+
+    <p>对于问题3，如果任务很简单，且调用的大模型API并发量很高，那我建议微调一个特定任务的小模型，本地部署。这样可以满足高并发，并且可以减少资金消耗。（本地部署，默认硬件环境单卡4090）</p>
+
+    <p>看到这里，想必大家已经思考完了以上三个问题，心中有了答案。那我给出一个小小的案例。</p>
+
+    <h2>微调模型的需求性</h2>
+
+    <p>假如你的公司有一个从投诉的文本中抽取用户信息的任务。比如，你需要从以下文本中抽取用户姓名、住址、邮箱、投诉的问题等等。</p>
+
+    <blockquote>
+        <p>这只是一个小小的案例，数据也是我用大模型批量制造的。真正的投诉数据不会这么"干净、整洁"。</p>
+    </blockquote>
+
+    <p><strong>INPUT：</strong></p>
+    <pre><code>龙琳，宁夏回族自治区璐市城东林街g座 955491，邮箱 nafan@example.com。小区垃圾堆积成山，晚上噪音扰人清梦，停车难上加难，简直无法忍受！</code></pre>
+
+    <p><strong>OUTPUT：</strong></p>
+    <pre><code>{
+    "name": "龙琳",
+    "address": "宁夏回族自治区璐市城东林街g座 955491",
+    "email": "nafan@example.com",
+    "question": "小区垃圾堆积成山，晚上噪音扰人清梦，停车难上加难，简直无法忍受！"
+}</code></pre>
+
+    <p>那你当然可以调用 Deepseek最强大的模型R1，也可以调用阿里最新发布最强大的模型 Qwen3-235B-A22B等等，这些模型的信息抽取效果也很非常的棒。</p>
+
+    <p>但有个问题，如果你有几百万条这样的数据要处理，全部调用最新的，最好的大模型可能需要消耗几万块钱。并且，如果这些投诉数据，比如电信投诉数据，电网投诉数据，这些数据是敏感的不可以直接放到外网的。</p>
+
+    <p>所以，综合数据敏感，和资金消耗。最好的选择就是微调一个小模型（如Qwen3-0.6B），既可以保证高并发，可以保证数据不泄漏，保证模型抽取的效果，还可以省钱！！！</p>
+
+    <p>那下面，用一个小案例带大家实操一下，微调Qwen3-0.6B小模型完成文本信息抽取任务。</p>
+
+    <h2>配置环境 下载数据</h2>
+
+    <blockquote>
+        <p>Colab 文件地址：<a href="https://colab.research.google.com/drive/18ByY11KVhIy6zWx1uKUjSzqeHTme-TtU?usp=drive_link">https://colab.research.google.com/drive/18ByY11KVhIy6zWx1uKUjSzqeHTme-TtU?usp=drive_link</a></p>
+    </blockquote>
+
+    <pre><code>!pip install datasets swanlab -q</code></pre>
+
+    <pre><code>!wget --no-check-certificate 'https://docs.google.com/uc?export=download&amp;id=1a0sf5C209CLW5824TJkUM4olMy0zZWpg' -O fake_sft.json</code></pre>
+
+    <h2>处理数据</h2>
+
+    <pre><code>from datasets import Dataset
+import pandas as pd
+from transformers import AutoTokenizer, AutoModelForCausalLM, DataCollatorForSeq2Seq, TrainingArguments, Trainer, GenerationConfig
+from peft import LoraConfig, TaskType, get_peft_model
+import torch</code></pre>
+
+    <pre><code># 将JSON文件转换为CSV文件
+df = pd.read_json('fake_sft.json')
+ds = Dataset.from_pandas(df)
+ds[:3]</code></pre>
+
+    <pre><code>model_id = "Qwen/Qwen3-0.6B"</code></pre>
+
+    <pre><code>tokenizer = AutoTokenizer.from_pretrained(model_id, use_fast=False)
+tokenizer</code></pre>
+
+    <p>对大语言模型进行 <code>supervised-finetuning</code>（<code>sft</code>，有监督微调）的数据格式如下：</p>
+
+    <pre><code>{
+  "instruction": "回答以下用户问题，仅输出答案。",
+  "input": "1+1等于几?",
+  "output": "2"
+}</code></pre>
+
+    <p>其中，<code>instruction</code> 是用户指令，告知模型其需要完成的任务；<code>input</code> 是用户输入，是完成用户指令所必须的输入内容；<code>output</code> 是模型应该给出的输出。</p>
+
+    <p>有监督微调的目标是让模型具备理解并遵循用户指令的能力。因此，在构建数据集时，我们应针对我们的目标任务，针对性构建数据。比如，如果我们的目标是通过大量人物的对话数据微调得到一个能够 role-play 甄嬛对话风格的模型，因此在该场景下的数据示例如下：</p>
+
+    <pre><code>{
+  "instruction": "你父亲是谁？",
+  "input": "",
+  "output": "家父是大理寺少卿甄远道。"
+}</code></pre>
+
+    <p><code>Qwen3</code> 采用的 <code>Chat Template</code>格式如下：</p>
+
+    <p>由于 <code>Qwen3</code> 是混合推理模型，因此可以手动选择开启思考模式</p>
+
+    <h3>不开启 <code>thinking mode</code></h3>
+
+    <pre><code>messages = [
+    {"role": "system", "content": "You are a helpful AI"},
+    {"role": "user", "content": "How are you?"},
+    {"role": "assistant", "content": "I'm fine, think you. and you?"},
+]
+
+text = tokenizer.apply_chat_template(
+    messages,
+    tokenize=False,
+    add_generation_prompt=True,
+    enable_thinking=False
+)
+print(text)</code></pre>
+
+    <pre><code>&lt;|im_start|&gt;system
+You are a helpful AI&lt;|im_end|&gt;
+&lt;|im_start|&gt;user
+How are you?&lt;|im_end|&gt;
+&lt;|im_start|&gt;assistant
+&lt;think&gt;
+
+&lt;/think&gt;
+
+I'm fine, think you. and you?&lt;|im_end|&gt;</code></pre>
+
+    <p><code>LoRA</code>（<code>Low-Rank Adaptation</code>）训练的数据是需要经过格式化、编码之后再输入给模型进行训练的，我们需要先将输入文本编码为 <code>input_ids</code>，将输出文本编码为 <code>labels</code>，编码之后的结果是向量。我们首先定义一个预处理函数，这个函数用于对每一个样本，同时编码其输入、输出文本并返回一个编码后的字典：</p>
+
+    <pre><code>def process_func(example):
+    MAX_LENGTH = 1024 # 设置最大序列长度为1024个token
+    input_ids, attention_mask, labels = [], [], [] # 初始化返回值
+    # 适配chat_template
+    instruction = tokenizer(
+        f"&lt;s&gt;&lt;|im_start|&gt;system\n{example['system']}&lt;|im_end|&gt;\n"
+        f"&lt;|im_start|&gt;user\n{example['instruction'] + example['input']}&lt;|im_end|&gt;\n"
+        f"&lt;|im_start|&gt;assistant\n&lt;think&gt;\n\n&lt;/think&gt;\n\n",
+        add_special_tokens=False
+    )
+    response = tokenizer(f"{example['output']}", add_special_tokens=False)
+    # 将instructio部分和response部分的input_ids拼接，并在末尾添加eos token作为标记结束的token
+    input_ids = instruction["input_ids"] + response["input_ids"] + [tokenizer.pad_token_id]
+    # 注意力掩码，表示模型需要关注的位置
+    attention_mask = instruction["attention_mask"] + response["attention_mask"] + [1]
+    # 对于instruction，使用-100表示这些位置不计算loss（即模型不需要预测这部分）
+    labels = [-100] * len(instruction["input_ids"]) + response["input_ids"] + [tokenizer.pad_token_id]
+    if len(input_ids) &gt; MAX_LENGTH:  # 超出最大序列长度截断
+        input_ids = input_ids[:MAX_LENGTH]
+        attention_mask = attention_mask[:MAX_LENGTH]
+        labels = labels[:MAX_LENGTH]
+    return {
+        "input_ids": input_ids,
+        "attention_mask": attention_mask,
+        "labels": labels
+    }</code></pre>
+
+    <pre><code>tokenized_id = ds.map(process_func, remove_columns=ds.column_names)
+tokenized_id</code></pre>
+
+    <pre><code>tokenizer.decode(tokenized_id[0]['input_ids'])</code></pre>
+
+    <pre><code>tokenizer.decode(list(filter(lambda x: x != -100, tokenized_id[1]["labels"])))</code></pre>
+
+    <h2>加载模型</h2>
+
+    <p>加载模型并配置LoraConfig</p>
+
+    <pre><code>model = AutoModelForCausalLM.from_pretrained(model_id, device_map="auto",torch_dtype=torch.bfloat16)
+model</code></pre>
+
+    <pre><code>model.enable_input_require_grads() # 开启梯度检查点时，要执行该方法</code></pre>
+
+    <h2>Lora Config</h2>
+
+    <p><code>LoraConfig</code>这个类中可以设置很多参数，比较重要的如下：</p>
+
+    <ul>
+        <li><code>task_type</code>：模型类型，现在绝大部分 <code>decoder_only</code> 的模型都是因果语言模型 <code>CAUSAL_LM</code></li>
+        <li><code>target_modules</code>：需要训练的模型层的名字，主要就是 <code>attention</code>部分的层，不同的模型对应的层的名字不同</li>
+        <li><code>r</code>：<code>LoRA</code> 的秩，决定了低秩矩阵的维度，较小的 <code>r</code> 意味着更少的参数</li>
+        <li><code>lora_alpha</code>：缩放参数，与 <code>r</code> 一起决定了 <code>LoRA</code> 更新的强度。实际缩放比例为<code>lora_alpha/r</code>，在当前示例中是 <code>32 / 8 = 4</code> 倍</li>
+        <li><code>lora_dropout</code>：应用于 <code>LoRA</code> 层的 <code>dropout rate</code>，用于防止过拟合</li>
+    </ul>
+
+    <pre><code>from peft import LoraConfig, TaskType, get_peft_model
+
+config = LoraConfig(
+    task_type=TaskType.CAUSAL_LM,
+    target_modules=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"],
+    inference_mode=False, # 训练模式
+    r=8, # Lora 秩
+    lora_alpha=32, # Lora alaph，具体作用参见 Lora 原理
+    lora_dropout=0.1# Dropout 比例
+)
+config</code></pre>
+
+    <pre><code>model = get_peft_model(model, config)
+config</code></pre>
+
+    <pre><code>model.print_trainable_parameters()  # 模型参数训练量只有0.8395%</code></pre>
+
+    <blockquote>
+        <p>trainable params: 5,046,272 || all params: 601,096,192 || trainable%: 0.8395</p>
+    </blockquote>
+
+    <h2>Training Arguments</h2>
+
+    <ul>
+        <li><code>output_dir</code>：模型的输出路径</li>
+        <li><code>per_device_train_batch_size</code>：每张卡上的 <code>batch_size</code></li>
+        <li><code>gradient_accumulation_steps</code>: 梯度累计</li>
+        <li><code>num_train_epochs</code>：顾名思义 <code>epoch</code></li>
+    </ul>
+
+    <pre><code>args = TrainingArguments(
+    output_dir="Qwen3_instruct_lora",
+    per_device_train_batch_size=4,
+    gradient_accumulation_steps=4,
+    logging_steps=1,
+    num_train_epochs=3,
+    save_steps=50,
+    learning_rate=1e-4,
+    save_on_each_node=True,
+    gradient_checkpointing=True,
+    report_to="none",
+)</code></pre>
+
+    <h2>SwanLab 简介</h2>
+
+    <p><a href="https://github.com/swanhubx/swanlab">SwanLab</a> 是一个开源的模型训练记录工具，面向 AI 研究者，提供了训练可视化、自动日志记录、超参数记录、实验对比、多人协同等功能。在 <code>SwanLab</code> 上，研究者能基于直观的可视化图表发现训练问题，对比多个实验找到研究灵感，并通过在线链接的分享与基于组织的多人协同训练，打破团队沟通的壁垒。</p>
+
+    <h3>为什么要记录训练</h3>
+
+    <p>相较于软件开发，模型训练更像一个实验科学。一个品质优秀的模型背后，往往是成千上万次实验。研究者需要不断尝试、记录、对比，积累经验，才能找到最佳的模型结构、超参数与数据配比。在这之中，如何高效进行记录与对比，对于研究效率的提升至关重要。</p>
+
+    <p><code>(2) Use an existing SwanLab account</code> 并使用 private API Key 登录</p>
+
+    <pre><code>import swanlab
+from swanlab.integration.transformers import SwanLabCallback
+
+# 实例化SwanLabCallback
+swanlab_callback = SwanLabCallback(
+    project="Qwen3-Lora",  # 注意修改
+    experiment_name="Qwen3-8B-LoRA-experiment"  # 注意修改
+)</code></pre>
+
+    <pre><code>import swanlab
+from swanlab.integration.transformers import SwanLabCallback
+
+# 实例化SwanLabCallback
+swanlab_callback = SwanLabCallback(
+    project="Qwen3-Lora",
+    experiment_name="Qwen3-0.6B-extarct-lora-2"
+)</code></pre>
+
+    <pre><code>trainer = Trainer(
+    model=model,
+    args=args,
+    train_dataset=tokenized_id,
+    data_collator=DataCollatorForSeq2Seq(tokenizer=tokenizer, padding=True),
+    callbacks=[swanlab_callback]
+)</code></pre>
+
+    <pre><code>trainer.train()</code></pre>
+
+    <h2>测试文本</h2>
+
+    <pre><code>prompt = "龙琳   ，宁夏回族自治区璐市城东林街g座 955491，nafan@example.com。小区垃圾堆积成山，晚上噪音扰人清梦，停车难上加难，简直无法忍受！太插件了阿萨德看见啊啥的健康仨都会撒娇看到撒谎的、"
+
+messages = [
+    {"role": "system", "content": "将文本中的name、address、email、question提取出来，以json格式输出，字段为name、address、email、question，值为文本中提取出来的内容。"},
+    {"role": "user", "content": prompt}
+]
+
+inputs = tokenizer.apply_chat_template(messages,
+                                       add_generation_prompt=True,
+                                       tokenize=True,
+                                       return_tensors="pt",
+                                       return_dict=True,
+                                       enable_thinking=False).to('cuda')
+
+gen_kwargs = {"max_length": 2500, "do_sample": True, "top_k": 1}
+with torch.no_grad():
+    outputs = model.generate(**inputs, **gen_kwargs)
+    outputs = outputs[:, inputs['input_ids'].shape[1]:]
+    print(tokenizer.decode(outputs[0], skip_special_tokens=True))</code></pre>
+
+    <pre><code>{
+    "name": "龙琳",
+    "address": "宁夏回族自治区璐市城东林街g座 955491",
+    "email": "nafan@example.com",
+    "question": "小区垃圾堆积成山，晚上噪音扰人清梦，停车难上加难，简直无法忍受！太插件了阿萨德看见啊啥的健康仨都会撒娇看到撒谎的、"
+}</code></pre>
+
+</body>
+</html>

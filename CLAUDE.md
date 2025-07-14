@@ -143,7 +143,7 @@ Most chapters include runnable demos. Check the individual README files in each 
 - [x] `docs/前言.md` → `docs/preface.xhtml`
 
 ### Pending (TODO)
-- [ ] `Extra-Chapter/why-fine-tune-small-large-language-models/readme.md`
+- [x] `Extra-Chapter/why-fine-tune-small-large-language-models/readme.md` → `Extra-Chapter/why-fine-tune-small-large-language-models/readme.xhtml`
 - [ ] `docs/chapter6/6.4[WIP] 偏好对齐.md`
 - [ ] `docs/chapter6/第六章 大模型训练流程实践.md`
 - [ ] `docs/chapter7/第七章 大模型应用.md`
