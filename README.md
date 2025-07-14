@@ -63,8 +63,10 @@
 
 - [大模型都这么厉害了，微调0.6B的小模型有什么意义？](./Extra-Chapter/why-fine-tune-small-large-language-models/readme.md) @[不要葱姜蒜](https://github.com/KMnO4-zx) 2025-7-11
 
+- [Transformer 整体模块设计解读](./Extra-Chapter/transformer-architecture/) @[ditingdapeng](https://github.com/ditingdapeng) 2025-7-14
 
-> &emsp;&emsp;***如果大家在学习 Happy-LLM 项目或 LLM 相关知识中有自己独到的见解、认知、实践，欢迎大家 PR 在 [Extra Chapter LLM Blog](./Extra-Chapter/) 中。请遵守 Extra Chapter LLM Blog 的 [PR 规范](./Extra-Chapter/Readme.md)，我们会视 PR 内容的质量和价值来决定是否合并或补充到 Happy-LLM 正文中来。***
+
+> &emsp;&emsp;*如果大家在学习 Happy-LLM 项目或 LLM 相关知识中有自己独到的见解、认知、实践，欢迎大家 PR 在 [Extra Chapter LLM Blog](./Extra-Chapter/) 中。请遵守 Extra Chapter LLM Blog 的 [PR 规范](./Extra-Chapter/Readme.md)，我们会视 PR 内容的质量和价值来决定是否合并或补充到 Happy-LLM 正文中来。*
 
 ### 模型下载
 
@@ -108,6 +110,10 @@
 - [宋志学-项目负责人](https://github.com/KMnO4-zx) (Datawhale成员-中国矿业大学(北京))
 - [邹雨衡-项目负责人](https://github.com/logan-zou) (Datawhale成员-对外经济贸易大学)
 - [朱信忠-指导专家](https://xinzhongzhu.github.io/)（Datawhale首席科学家-浙江师范大学杭州人工智能研究院教授）
+
+### Extra-Chapter 贡献者
+
+- [ditingdapeng](https://github.com/ditingdapeng)（内容贡献者-云原生基础架构工程师）
 
 ### 特别感谢
 - 感谢 [@Sm1les](https://github.com/Sm1les) 对本项目的帮助与支持
