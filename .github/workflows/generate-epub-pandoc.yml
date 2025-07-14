@@ -91,15 +91,13 @@ jobs:
         
         # Process each XHTML file to fix image paths
         for file in "${files[@]}"; do
-          temp_file="temp_epub/$(basename "$file")"
+          filename=$(basename "$file")
+          temp_file="temp_epub/$filename"
           # Fix image paths in XHTML files
           sed 's|src="\./images/|src="images/|g' "$file" > "$temp_file"
           sed -i 's|src="\../images/|src="images/|g' "$temp_file" || true
           sed -i 's|src="\../../images/|src="images/|g' "$temp_file" || true
         done
-        
-        # Update file list for temp files
-        ls temp_epub/*.xhtml > temp-chapter-order.txt
         
         # Generate EPUB using pandoc
         pandoc \
@@ -114,7 +112,7 @@ jobs:
           --epub-metadata=metadata.yaml \
           --resource-path=.:temp_epub:docs:Extra-Chapter \
           --verbose \
-          $(cat temp-chapter-order.txt)
+          temp_epub/*.xhtml
           
         echo "EPUB generation completed!"
         
