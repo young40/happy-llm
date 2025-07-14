@@ -112,7 +112,7 @@ jobs:
           --epub-metadata=metadata.yaml \
           --resource-path=.:temp_epub:docs:Extra-Chapter \
           --verbose \
-          $(for f in $(cat chapter-order.txt); do echo "temp_epub/$(basename $f)"; done)
+          $(while IFS= read -r file; do echo "temp_epub/$(basename "$file")"; done < chapter-order.txt)
           
         echo "EPUB generation completed!"
         
