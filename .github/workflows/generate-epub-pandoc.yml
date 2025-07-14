@@ -79,6 +79,8 @@ jobs:
         
         # Generate EPUB using pandoc
         echo "Generating EPUB with Pandoc..."
+        # Read files into array to handle spaces in filenames
+        mapfile -t files < chapter-order.txt
         pandoc \
           --from=html \
           --to=epub \
@@ -90,7 +92,7 @@ jobs:
           --epub-cover-image=docs/images/datawhale.png \
           --epub-metadata=metadata.yaml \
           --fail-if-warnings \
-          $(cat chapter-order.txt)
+          "${files[@]}"
           
         echo "EPUB generation completed!"
         
