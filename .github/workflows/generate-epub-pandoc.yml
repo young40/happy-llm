@@ -57,7 +57,7 @@ jobs:
         docs/chapter1.xhtml
         docs/chapter2_transformer_architecture.xhtml
         docs/chapter3_pretrained_language_models.xhtml
-        docs/chapter4_large_language_models.xhtml
+        docs/chapter4/chapter4_large_language_models.xhtml
         docs/chapter5_building_large_models.xhtml
         docs/chapter6/第六章 大模型训练流程实践.xhtml
         docs/chapter7/第七章 大模型应用.xhtml
