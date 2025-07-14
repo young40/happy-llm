@@ -131,3 +131,37 @@ Most chapters include runnable demos. Check the individual README files in each 
 - Requires understanding of both NLP concepts and PyTorch
 - Some paths are hardcoded for Chinese cloud environments (autodl-tmp)
 - GPU required for training (CUDA_VISIBLE_DEVICES usage throughout)
+
+## XHTML Conversion TODO
+
+### Completed (Done)
+- [x] `docs/chapter1/第一章 NLP基础概念.md` → `docs/chapter1.xhtml`
+- [x] `docs/chapter2/第二章 Transformer架构.md` → `docs/chapter2_transformer_architecture.xhtml`
+- [x] `docs/chapter3/第三章 预训练语言模型.md` → `docs/chapter3_pretrained_language_models.xhtml`
+- [x] `docs/chapter4/第四章 大语言模型.md` → `docs/chapter4_large_language_models.xhtml`
+- [x] `docs/chapter5/第五章 动手搭建大模型.md` → `docs/chapter5_building_large_models.xhtml`
+- [x] `docs/前言.md` → `docs/preface.xhtml`
+
+### Pending (TODO)
+- [ ] `Extra-Chapter/why-fine-tune-small-large-language-models/readme.md`
+- [ ] `docs/chapter6/6.4[WIP] 偏好对齐.md`
+- [ ] `docs/chapter6/第六章 大模型训练流程实践.md`
+- [ ] `docs/chapter7/第七章 大模型应用.md`
+- [ ] `Extra-Chapter/transformer-architecture/readme.md`
+
+## XHTML Conversion Requirements
+
+### Requirements
+1. **目标格式**：将markdown文件转换为xhtml格式，后续用于转换为epub电子书
+2. **标准要求**：生成的xhtml必须符合epub规范要求
+3. **样式文件**：使用 `./docs/epub-style.css` 作为样式表（可修改）
+
+### 转换规范
+- 使用标准XHTML 1.1或XHTML5格式
+- 确保所有标签正确闭合
+- 图片路径需要相对化
+- 数学公式优先使用MathML格式
+- 代码块使用`<pre><code>`标签
+- 表格使用标准HTML表格格式
+- 目录结构符合epub规范
+- 字符编码统一为UTF-8
