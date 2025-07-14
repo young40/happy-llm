@@ -59,9 +59,9 @@ jobs:
         docs/chapter3_pretrained_language_models.xhtml
         docs/chapter4/chapter4_large_language_models.xhtml
         docs/chapter5_building_large_models.xhtml
-        docs/chapter6/第六章 大模型训练流程实践.xhtml
-        docs/chapter6/6.4[WIP] 偏好对齐.xhtml
-        docs/chapter7/第七章 大模型应用.xhtml
+        docs/chapter6/chapter6_training_pipeline.xhtml
+        docs/chapter6/chapter6_preference_alignment.xhtml
+        docs/chapter7/chapter7_applications.xhtml
         Extra-Chapter/transformer-architecture/readme.xhtml
         Extra-Chapter/why-fine-tune-small-large-language-models/readme.xhtml
         EOF
