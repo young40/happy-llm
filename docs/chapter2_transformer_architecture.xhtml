@@ -102,8 +102,16 @@ $$v·w = \sum_{i}v_iw_i$$
 
 <p>那么，我们就可以用点积来计算词之间的相似度。假设我们的 Query 为"fruit"，对应的词向量为 $q$ ；我们的 Key 对应的词向量为 $k = [v_{apple} v_{banana} v_{chair}]$ ,则我们可以计算 Query 和每一个键的相似程度：</p>
 
-<div class="formula">
-$$x = qK^T$$
+<div class="math-display">
+  <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+    <mi>x</mi>
+    <mo>=</mo>
+    <mi>q</mi>
+    <msup>
+      <mi>K</mi>
+      <mi>T</mi>
+    </msup>
+  </math>
 </div>
 
 <p>此处的 K 即为将所有 Key 对应的词向量堆叠形成的矩阵。基于矩阵乘法的定义，x 即为 q 与每一个 k 值的点积。现在我们得到的 x 即反映了 Query 和每一个 Key 的相似程度，我们再通过一个 Softmax 层将其转化为和为 1 的权重：</p>
