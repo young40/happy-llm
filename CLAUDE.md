@@ -142,12 +142,12 @@ Most chapters include runnable demos. Check the individual README files in each 
 - [x] `docs/chapter5/第五章 动手搭建大模型.md` → `docs/chapter5_building_large_models.xhtml`
 - [x] `docs/前言.md` → `docs/preface.xhtml`
 
-### Pending (TODO)
+### Completed (All XHTML files generated)
 - [x] `Extra-Chapter/why-fine-tune-small-large-language-models/readme.md` → `Extra-Chapter/why-fine-tune-small-large-language-models/readme.xhtml`
-- [ ] `docs/chapter6/6.4[WIP] 偏好对齐.md`
-- [ ] `docs/chapter6/第六章 大模型训练流程实践.md`
-- [ ] `docs/chapter7/第七章 大模型应用.md`
-- [ ] `Extra-Chapter/transformer-architecture/readme.md`
+- [x] `docs/chapter6/6.4[WIP] 偏好对齐.md` → `docs/chapter6/6.4[WIP] 偏好对齐.xhtml`
+- [x] `docs/chapter6/第六章 大模型训练流程实践.md` → `docs/chapter6/第六章 大模型训练流程实践.xhtml`
+- [x] `docs/chapter7/第七章 大模型应用.md` → `docs/chapter7/第七章 大模型应用.xhtml`
+- [x] `Extra-Chapter/transformer-architecture/readme.md` → `Extra-Chapter/transformer-architecture/readme.xhtml`
 
 ## XHTML Conversion Requirements
 

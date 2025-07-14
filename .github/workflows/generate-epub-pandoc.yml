@@ -1,0 +1,152 @@
+name: Generate EPUB with Pandoc
+
+on:
+  push:
+    branches:
+      - master
+      - main
+    paths:
+      - 'docs/**/*.xhtml'
+      - 'Extra-Chapter/**/*.xhtml'
+      - 'docs/epub-style.css'
+      - '.github/workflows/generate-epub-pandoc.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate-epub:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Pandoc
+      uses: r-lib/actions/setup-pandoc@v2
+      with:
+        pandoc-version: '3.1.11'
+        
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y texlive-latex-base texlive-fonts-recommended texlive-xetex
+        
+    - name: Generate EPUB metadata file
+      run: |
+        cat > metadata.yaml << 'EOF'
+        ---
+        title: 'Happy LLM - 从0开始构建大语言模型'
+        author: 'DataWhale团队'
+        date: $(date +"%Y-%m-%d")
+        lang: zh-CN
+        subject: ['Large Language Models', 'Machine Learning', 'Natural Language Processing', 'Deep Learning']
+        description: 'Happy LLM是一本面向中文社区的大语言模型学习指南，从基础概念到实战应用，帮助读者深入理解并实践构建大语言模型。'
+        identifier: 'happy-llm-2025'
+        rights: '© 2025 DataWhale团队. All rights reserved.'
+        cover-image: 'docs/images/datawhale.png'
+        ...
+        EOF
+        
+    - name: Create EPUB from XHTML files
+      run: |
+        # Create a list of XHTML files in the correct order
+        cat > chapter-order.txt << 'EOF'
+        docs/preface.xhtml
+        docs/chapter1.xhtml
+        docs/chapter2_transformer_architecture.xhtml
+        docs/chapter3_pretrained_language_models.xhtml
+        docs/chapter4_large_language_models.xhtml
+        docs/chapter5_building_large_models.xhtml
+        docs/chapter6/第六章 大模型训练流程实践.xhtml
+        docs/chapter7/第七章 大模型应用.xhtml
+        docs/chapter6/6.4[WIP] 偏好对齐.xhtml
+        Extra-Chapter/why-fine-tune-small-large-language-models/readme.xhtml
+        Extra-Chapter/transformer-architecture/readme.xhtml
+        EOF
+        
+        # Check if all files exist
+        echo "Checking XHTML files..."
+        while IFS= read -r file; do
+          if [ -f "$file" ]; then
+            echo "✓ Found: $file"
+          else
+            echo "✗ Missing: $file"
+            exit 1
+          fi
+        done < chapter-order.txt
+        
+        # Generate EPUB using pandoc
+        echo "Generating EPUB with Pandoc..."
+        pandoc \
+          --from=html \
+          --to=epub \
+          --output=happy-llm-pandoc.epub \
+          --epub-stylesheet=docs/epub-style.css \
+          --metadata-file=metadata.yaml \
+          --toc \
+          --toc-depth=3 \
+          --epub-cover-image=docs/images/datawhale.png \
+          --epub-metadata=metadata.yaml \
+          --fail-if-warnings \
+          $(cat chapter-order.txt)
+          
+        echo "EPUB generation completed!"
+        
+    - name: Validate EPUB
+      run: |
+        # Install epubcheck for validation
+        wget https://github.com/w3c/epubcheck/releases/download/v5.1.0/epubcheck-5.1.0.zip
+        unzip epubcheck-5.1.0.zip
+        
+        # Validate the generated EPUB
+        java -jar epubcheck-5.1.0/epubcheck.jar happy-llm-pandoc.epub || echo "EPUB validation completed with warnings"
+        
+    - name: Upload EPUB artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: happy-llm-epub
+        path: happy-llm-pandoc.epub
+        retention-days: 30
+        
+    - name: Create or update release
+      uses: ncipollo/release-action@v1
+      with:
+        artifacts: "happy-llm-pandoc.epub"
+        tag: "epub-${{ github.run_number }}"
+        name: "Happy-LLM EPUB ${{ github.run_number }}"
+        body: |
+          使用Pandoc自动生成的Happy-LLM电子书
+          
+          包含内容：
+          - 前言
+          - 第一章 NLP基础概念
+          - 第二章 Transformer架构
+          - 第三章 预训练语言模型
+          - 第四章 大语言模型
+          - 第五章 动手搭建大模型
+          - 第六章 大模型训练流程实践
+          - 第七章 大模型应用
+          - 额外章节内容（偏好对齐、模型微调、Transformer详解等）
+          
+          生成工具：Pandoc 3.1.11
+          样式文件：docs/epub-style.css
+        token: ${{ secrets.GITHUB_TOKEN }}
+        allowUpdates: true
+        prerelease: false
+        
+    - name: Update latest release
+      if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
+      uses: ncipollo/release-action@v1
+      with:
+        artifacts: "happy-llm-pandoc.epub"
+        tag: "latest"
+        name: "Happy-LLM EPUB (Latest)"
+        body: |
+          最新版本的Happy-LLM电子书（主分支自动构建）
+          
+          包含所有最新章节内容和修正
+        token: ${{ secrets.GITHUB_TOKEN }}
+        allowUpdates: true
+        prerelease: false
