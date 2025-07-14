@@ -67,8 +67,31 @@ class ModelConfig(PretrainedConfig):
 
 <p><code>RMSNorm</code>可以用如下的数学公式表示：</p>
 
-<div class="formula">
-$$\text{RMSNorm}(x) = \frac{x}{\sqrt{\frac{1}{n}\sum_{i=1}^{n}x_i^2 + \epsilon}} \cdot \gamma$$
+<div class="math-display">
+  <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+    <mrow>
+      <mi>RMSNorm</mi>
+      <mo>(</mo><mi>x</mi><mo>)</mo>
+      <mo>=</mo>
+      <mfrac>
+        <mi>x</mi>
+        <msqrt>
+          <mrow>
+            <mfrac>
+              <mn>1</mn>
+              <mi>n</mi>
+            </mfrac>
+            <mo>&#x2211;</mo>
+            <msubsup><mi>x</mi><mi>i</mi><mn>2</mn></msubsup>
+            <mo>+</mo>
+            <mi>&#x03B5;</mi>
+          </mrow>
+        </msqrt>
+      </mfrac>
+      <mo>&#x22C5;</mo>
+      <mi>&#x03B3;</mi>
+    </mrow>
+  </math>
 </div>
 
 <p>其中：</p>
