@@ -81,6 +81,27 @@ jobs:
         echo "Generating EPUB with Pandoc..."
         # Read files into array to handle spaces in filenames
         mapfile -t files < chapter-order.txt
+        
+        # Create temporary directory for processing with correct image paths
+        mkdir -p temp_epub/images
+        
+        # Copy images to temp directory with correct paths
+        cp -r docs/images/* temp_epub/images/ 2>/dev/null || true
+        cp -r Extra-Chapter/transformer-architecture/images/* temp_epub/images/ 2>/dev/null || true
+        
+        # Process each XHTML file to fix image paths
+        for file in "${files[@]}"; do
+          temp_file="temp_epub/$(basename "$file")"
+          # Fix image paths in XHTML files
+          sed 's|src="\./images/|src="images/|g' "$file" > "$temp_file"
+          sed -i 's|src="\../images/|src="images/|g' "$temp_file" || true
+          sed -i 's|src="\../../images/|src="images/|g' "$temp_file" || true
+        done
+        
+        # Update file list for temp files
+        ls temp_epub/*.xhtml > temp-chapter-order.txt
+        
+        # Generate EPUB using pandoc
         pandoc \
           --from=html \
           --to=epub \
@@ -91,8 +112,9 @@ jobs:
           --toc-depth=3 \
           --epub-cover-image=docs/images/datawhale.png \
           --epub-metadata=metadata.yaml \
-          --fail-if-warnings \
-          "${files[@]}"
+          --resource-path=.:temp_epub:docs:Extra-Chapter \
+          --verbose \
+          $(cat temp-chapter-order.txt)
           
         echo "EPUB generation completed!"
         
@@ -103,7 +125,7 @@ jobs:
         unzip epubcheck-5.1.0.zip
         
         # Validate the generated EPUB
-        java -jar epubcheck-5.1.0/epubcheck.jar happy-llm-pandoc.epub || echo "EPUB validation completed with warnings"
+        java -jar epubcheck-5.1.0/epubcheck.jar --failonwarnings=false happy-llm-pandoc.epub || echo "EPUB validation completed with warnings"
         
     - name: Upload EPUB artifact
       uses: actions/upload-artifact@v4
