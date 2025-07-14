@@ -1,0 +1,55 @@
+name: Generate EPUB from XHTML
+
+on:
+  push:
+    branches:
+      - master
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate-epub:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install ebooklib beautifulsoup4 lxml
+        
+    - name: Generate EPUB
+      run: |
+        python .github/scripts/generate_epub.py
+        
+    - name: Upload to releases
+      uses: ncipollo/release-action@v1
+      with:
+        artifacts: "happy-llm.epub"
+        tag: "epub-${{ github.run_number }}"
+        name: "Happy-LLM EPUB ${{ github.run_number }}"
+        body: |
+          自动生成的Happy-LLM电子书
+          
+          包含内容：
+          - 第一章 NLP基础概念
+          - 第二章 Transformer架构
+          - 第三章 预训练语言模型
+          - 第四章 大语言模型
+          - 第五章 动手搭建大模型
+          - 第六章 大模型训练流程实践
+          - 第七章 大模型应用
+          - 额外章节内容
+        
+        token: ${{ secrets.GITHUB_TOKEN }}
+        allowUpdates: true
