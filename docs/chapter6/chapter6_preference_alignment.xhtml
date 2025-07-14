@@ -47,7 +47,7 @@
 
     <p>强化学习的目标十分明确：<strong><em>通过在给定环境中反复试探和学习，使得智能体能够选择一系列动作从而最大化其总累计奖励。</em></strong> 这听起来可能有些抽象，我们可以用玩游戏来比喻。在游戏中，玩家的目标是通过一系列操作（比如走路、跳跃、打怪）来赢得高分数或完成关卡。在强化学习中，这种高分或成功通过关卡的概念对应于"最大化奖励"。</p>
 
-    <p>在数学上，这个目标可以表示为训练一个策略 <span class="math">π</span>，使得在所有状态 <span class="math">s</span> 下，智能体选择的动作能够使得回报 <span class="math">R(τ)</span> 的期望值最大化。具体来说，我们希望最大化以下期望值：</p>
+    <p>在数学上，这个目标可以表示为训练一个策略 <math xmlns="http://www.w3.org/1998/Math/MathML"><mi>&#x03C0;</mi></math>，使得在所有状态 <math xmlns="http://www.w3.org/1998/Math/MathML"><mi>s</mi></math> 下，智能体选择的动作能够使得回报 <math xmlns="http://www.w3.org/1998/Math/MathML"><mi>R</mi><mo>(</mo><mi>&#x03C4;</mi><mo>)</mo></math> 的期望值最大化。具体来说，我们希望最大化以下期望值：</p>
 
     <div class="math-display">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -94,14 +94,14 @@
 
     <p>其中：</p>
     <ul>
-        <li><span class="math">E(R(τ))<sub>τ∼P<sub>θ</sub>(τ)</sub></span>：表示在策略 <span class="math">P<sub>θ</sub>(τ)</span> 下轨迹 <span class="math">τ</span> 的回报 <span class="math">R(τ)</span> 的期望值。</li>
-        <li><span class="math">R(τ)</span>：轨迹 <span class="math">τ</span> 的回报，即从起始状态到终止状态获得的所有奖励的总和。</li>
-        <li><span class="math">τ</span>：表示一条轨迹，即智能体在环境中的状态和动作序列。</li>
-        <li><span class="math">P<sub>θ</sub>(τ)</span>：在参数 <span class="math">θ</span> 下生成轨迹 <span class="math">τ</span> 的概率，通常由策略或策略网络确定。</li>
-        <li><span class="math">θ</span>：策略的参数，控制着策略 <span class="math">P<sub>θ</sub></span> 的行为。</li>
+        <li><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>E</mi><mo>(</mo><mi>R</mi><mo>(</mo><mi>&#x03C4;</mi><mo>)</mo><mo>)</mo><msub><mrow></mrow><mrow>&#x03C4;&#x223C;<mi>P</mi><msub><mi>&#x03B8;</mi></msub><mo>(</mo><mi>&#x03C4;</mi><mo>)</mo></mrow></msub></math>：表示在策略 <math xmlns="http://www.w3.org/1998/Math/MathML"><mi>P</mi><msub><mi>&#x03B8;</mi></msub><mo>(</mo><mi>&#x03C4;</mi><mo>)</mo></math> 下轨迹 <math xmlns="http://www.w3.org/1998/Math/MathML"><mi>&#x03C4;</mi></math> 的回报 <math xmlns="http://www.w3.org/1998/Math/MathML"><mi>R</mi><mo>(</mo><mi>&#x03C4;</mi><mo>)</mo></math> 的期望值。</li>
+        <li><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>R</mi><mo>(</mo><mi>&#x03C4;</mi><mo>)</mo></math>：轨迹 <math xmlns="http://www.w3.org/1998/Math/MathML"><mi>&#x03C4;</mi></math> 的回报，即从起始状态到终止状态获得的所有奖励的总和。</li>
+        <li><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>&#x03C4;</mi></math>：表示一条轨迹，即智能体在环境中的状态和动作序列。</li>
+        <li><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>P</mi><msub><mi>&#x03B8;</mi></msub><mo>(</mo><mi>&#x03C4;</mi><mo>)</mo></math>：在参数 <math xmlns="http://www.w3.org/1998/Math/MathML"><mi>&#x03B8;</mi></math> 下生成轨迹 <math xmlns="http://www.w3.org/1998/Math/MathML"><mi>&#x03C4;</mi></math> 的概率，通常由策略或策略网络确定。</li>
+        <li><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>&#x03B8;</mi></math>：策略的参数，控制着策略 <math xmlns="http://www.w3.org/1998/Math/MathML"><mi>P</mi><msub><mi>&#x03B8;</mi></msub></math> 的行为。</li>
     </ul>
 
-    <p>为了找到这个策略，我们使用梯度上升的方法，不断更新策略参数 <span class="math">θ</span>，使得 <span class="math">E(R(τ))<sub>τ∼P<sub>θ</sub>(τ)</sub></span> 不断增大。</p>
+    <p>为了找到这个策略，我们使用梯度上升的方法，不断更新策略参数 <math xmlns="http://www.w3.org/1998/Math/MathML"><mi>&#x03B8;</mi></math>，使得 <math xmlns="http://www.w3.org/1998/Math/MathML"><mi>E</mi><mo>(</mo><mi>R</mi><mo>(</mo><mi>&#x03C4;</mi><mo>)</mo><mo>)</mo><msub><mrow></mrow><mrow>&#x03C4;&#x223C;<mi>P</mi><msub><mi>&#x03B8;</mi></msub><mo>(</mo><mi>&#x03C4;</mi><mo>)</mo></mrow></msub></math> 不断增大。</p>
 
     <p>这种学习方式非常有效，因为它不依赖于大量的标注数据，而是通过对环境直接进行交互和反馈进行学习。这使得强化学习在许多需要适应和决策的复杂任务中，比如机器人控制、自动驾驶、金融交易乃至游戏中，都展现出了巨大的潜力。</p>
 

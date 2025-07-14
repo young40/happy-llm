@@ -96,10 +96,10 @@ class ModelConfig(PretrainedConfig):
 
 <p>其中：</p>
 <ul>
-<li>$x_i$ 是输入向量的第 $i$ 个元素</li>
-<li>$\gamma$ 是可学习的缩放参数（对应代码中的 <code>self.weight</code>）</li>
-<li>$n$ 是输入向量的维度数量</li>
-<li>$\epsilon$ 是一个小常数，用于数值稳定性（以避免除以零的情况）</li>
+<li><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>x</mi><mi>i</mi></msub></math> 是输入向量的第 <math xmlns="http://www.w3.org/1998/Math/MathML"><mi>i</mi></math> 个元素</li>
+<li><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>&#x03B3;</mi></math> 是可学习的缩放参数（对应代码中的 <code>self.weight</code>）</li>
+<li><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>n</mi></math> 是输入向量的维度数量</li>
+<li><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>&#x03B5;</mi></math> 是一个小常数，用于数值稳定性（以避免除以零的情况）</li>
 </ul>
 
 <p>这种归一化有助于通过确保权重的规模不会变得过大或过小来稳定学习过程，这在具有许多层的深度学习模型中特别有用。</p>
