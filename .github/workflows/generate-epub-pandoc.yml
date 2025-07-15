@@ -63,25 +63,23 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y pandoc
 
-    - name: 合并所有 xhtml 文件为单一 HTML
+    # 删除合并xhtml步骤，直接用pandoc处理所有xhtml
+    - name: 使用 Pandoc 生成带 MathML 的 EPUB（直接多xhtml）
       run: |
-        cat docs/readme.xhtml \
-            docs/preface.xhtml \
-            docs/chapter1.xhtml \
-            docs/chapter2_transformer_architecture.xhtml \
-            docs/chapter3_pretrained_language_models.xhtml \
-            docs/chapter4/chapter4_large_language_models.xhtml \
-            docs/chapter5_building_large_models.xhtml \
-            docs/chapter6/chapter6_training_pipeline.xhtml \
-            docs/chapter6/chapter6_preference_alignment.xhtml \
-            docs/chapter7/chapter7_applications.xhtml \
-            Extra-Chapter/transformer-architecture/transformer-architecture.xhtml \
-            Extra-Chapter/why-fine-tune-small-large-language-models/why-fine-tune-small-large-language-models.xhtml \
-            > merged.html
-
-    - name: 使用 Pandoc 生成带 MathML 的 EPUB（基于 xhtml）
-      run: |
-        pandoc merged.html -o happy-llm-pandoc.epub \
+        pandoc \
+          docs/readme.xhtml \
+          docs/preface.xhtml \
+          docs/chapter1.xhtml \
+          docs/chapter2_transformer_architecture.xhtml \
+          docs/chapter3_pretrained_language_models.xhtml \
+          docs/chapter4/chapter4_large_language_models.xhtml \
+          docs/chapter5_building_large_models.xhtml \
+          docs/chapter6/chapter6_training_pipeline.xhtml \
+          docs/chapter6/chapter6_preference_alignment.xhtml \
+          docs/chapter7/chapter7_applications.xhtml \
+          Extra-Chapter/transformer-architecture/transformer-architecture.xhtml \
+          Extra-Chapter/why-fine-tune-small-large-language-models/why-fine-tune-small-large-language-models.xhtml \
+          -o happy-llm-pandoc.epub \
           --mathml \
           --css=docs/epub-style.css \
           --metadata title="Happy LLM - 从0开始构建大语言模型" \
