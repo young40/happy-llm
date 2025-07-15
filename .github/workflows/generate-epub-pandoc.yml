@@ -26,7 +26,32 @@ jobs:
     - name: 安装 Calibre 依赖
       run: |
         sudo apt-get update
-        sudo apt-get install -y libegl1 libopengl0
+        sudo apt-get install -y \
+          libegl1 \
+          libopengl0 \
+          libxcb-cursor0 \
+          libxkbcommon-x11-0 \
+          libxcb-xinerama0 \
+          libxcb-icccm4 \
+          libxcb-image0 \
+          libxcb-keysyms1 \
+          libxcb-render-util0 \
+          libxcb-xfixes0 \
+          libxcb-shape0 \
+          libxcb-randr0 \
+          libxcb-xkb1 \
+          libxcb-util1 \
+          libxrender1 \
+          libxi6 \
+          libxcomposite1 \
+          libxcursor1 \
+          libxdamage1 \
+          libxrandr2 \
+          libxtst6 \
+          libxss1 \
+          libxinerama1 \
+          libxkbcommon0 \
+          libxkbcommon-x11-0
 
     - name: Install Calibre
       run: |
