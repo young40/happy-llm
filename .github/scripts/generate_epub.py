@@ -76,33 +76,40 @@ def create_epub():
         with open(file_path, 'r', encoding='utf-8') as f:
             content = f.read()
         print(f"[DEBUG] Adding chapter: {chapter['title']} | Content length: {len(content)}")
+        print(f"[DEBUG] Content head: {content[:200]!r}")
         # Fix relative paths for EPUB
         content = content.replace('../epub-style.css', 'style/epub-style.css')
         content = content.replace('../../docs/epub-style.css', 'style/epub-style.css')
         # Ensure proper XHTML structure
         if '<!DOCTYPE' not in content:
-            content = f'''<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+            content = f'''<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
+<html xmlns=\"http://www.w3.org/1999/xhtml\">
 <head>
     <title>{chapter['title']}</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <link rel="stylesheet" type="text/css" href="style/epub-style.css"/>
+    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/>
+    <link rel=\"stylesheet\" type=\"text/css\" href=\"style/epub-style.css\"/>
 </head>
 <body>
 {content}
 </body>
 </html>'''
-        epub_chapter = epub.EpubHtml(
-            title=chapter['title'],
-            file_name=f"{chapter['id']}.xhtml",
-            lang='zh',
-            content=content
-        )
-        book.add_item(epub_chapter)
-        epub_chapters.append(epub_chapter)
-        spine_items.append(epub_chapter)
+        try:
+            epub_chapter = epub.EpubHtml(
+                title=chapter['title'],
+                file_name=f"{chapter['id']}.xhtml",
+                lang='zh',
+                content=content
+            )
+            book.add_item(epub_chapter)
+            epub_chapters.append(epub_chapter)
+            spine_items.append(epub_chapter)
+            print(f"[DEBUG] Chapter added: {chapter['title']}")
+        except Exception as e:
+            print(f"[ERROR] Failed to add chapter: {chapter['title']} | Exception: {e}")
+
     print(f"[DEBUG] Total chapters to add: {len(epub_chapters)}")
+    print(f"[DEBUG] epub_chapters: {epub_chapters}")
     
     # Create table of contents
     book.toc = tuple(epub_chapters)
