@@ -19,20 +19,43 @@ permissions:
 jobs:
   generate-epub:
     runs-on: ubuntu-latest
-    
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
-      
-    - name: Install dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y python3-pip
-        pip install ebooklib
 
-    - name: 生成 EPUB 电子书（ebooklib）
+    - name: Install Calibre
       run: |
-        python3 .github/scripts/generate_epub.py
+        sudo -v ; wget -nv -O- https://download.calibre-ebook.com/linux-installer.sh | sudo sh /dev/stdin
+        calibre --version
+
+    - name: 合并所有 xhtml 文件为单一 HTML
+      run: |
+        cat docs/readme.xhtml \
+            docs/preface.xhtml \
+            docs/chapter1.xhtml \
+            docs/chapter2_transformer_architecture.xhtml \
+            docs/chapter3_pretrained_language_models.xhtml \
+            docs/chapter4/chapter4_large_language_models.xhtml \
+            docs/chapter5_building_large_models.xhtml \
+            docs/chapter6/chapter6_training_pipeline.xhtml \
+            docs/chapter6/chapter6_preference_alignment.xhtml \
+            docs/chapter7/chapter7_applications.xhtml \
+            Extra-Chapter/transformer-architecture/transformer-architecture.xhtml \
+            Extra-Chapter/why-fine-tune-small-large-language-models/why-fine-tune-small-large-language-models.xhtml \
+            > merged.html
+
+    - name: 生成 EPUB 电子书（Calibre）
+      run: |
+        ebook-convert merged.html happy-llm.epub \
+          --cover docs/images/epub-cover.jpg \
+          --extra-css docs/epub-style.css \
+          --language zh \
+          --title "Happy LLM - 从0开始构建大语言模型" \
+          --authors "DataWhale团队, Happy-LLM贡献者" \
+          --level1-toc //h1 \
+          --level2-toc //h2 \
+          --level3-toc //h3 \
+          --no-default-epub-cover
 
     - name: Validate EPUB
       run: |
@@ -54,7 +77,7 @@ jobs:
         tag_name: "epub-${{ github.run_number }}"
         name: "Happy-LLM EPUB ${{ github.run_number }}"
         body: |
-          使用ebooklib自动生成的Happy-LLM电子书
+          使用Calibre自动生成的Happy-LLM电子书
           
           包含内容：
           - README
@@ -68,7 +91,7 @@ jobs:
           - 第七章 大模型应用
           - 额外章节内容（偏好对齐、模型微调、Transformer详解等）
           
-          生成工具：ebooklib
+          生成工具：Calibre ebook-convert
           样式文件：docs/epub-style.css
         token: ${{ secrets.GITHUB_TOKEN }}
         prerelease: false
