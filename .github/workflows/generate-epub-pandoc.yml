@@ -58,34 +58,35 @@ jobs:
         sudo -v ; wget -nv -O- https://download.calibre-ebook.com/linux-installer.sh | sudo sh /dev/stdin
         calibre --version
 
-    - name: 合并所有 xhtml 文件为单一 HTML
+    - name: 安装 Pandoc
       run: |
-        cat docs/readme.xhtml \
-            docs/preface.xhtml \
-            docs/chapter1.xhtml \
-            docs/chapter2_transformer_architecture.xhtml \
-            docs/chapter3_pretrained_language_models.xhtml \
-            docs/chapter4/chapter4_large_language_models.xhtml \
-            docs/chapter5_building_large_models.xhtml \
-            docs/chapter6/chapter6_training_pipeline.xhtml \
-            docs/chapter6/chapter6_preference_alignment.xhtml \
-            docs/chapter7/chapter7_applications.xhtml \
-            Extra-Chapter/transformer-architecture/transformer-architecture.xhtml \
-            Extra-Chapter/why-fine-tune-small-large-language-models/why-fine-tune-small-large-language-models.xhtml \
-            > merged.html
+        sudo apt-get update
+        sudo apt-get install -y pandoc
 
-    - name: 生成 EPUB 电子书（Calibre）
+    - name: 合并所有 Markdown 文件为单一 Markdown（示例，实际可按需调整）
       run: |
-        ebook-convert merged.html happy-llm.epub \
-          --cover docs/images/epub-cover.jpg \
-          --extra-css docs/epub-style.css \
-          --language zh \
-          --title "Happy LLM - 从0开始构建大语言模型" \
-          --authors "DataWhale团队, Happy-LLM贡献者" \
-          --level1-toc //h1 \
-          --level2-toc //h2 \
-          --level3-toc //h3 \
-          --no-default-epub-cover
+        cat docs/readme.md \
+            docs/前言.md \
+            docs/chapter1/第一章\ NLP基础概念.md \
+            docs/chapter2/第二章\ Transformer架构.md \
+            docs/chapter3/第三章\ 预训练语言模型.md \
+            docs/chapter4/第四章\ 大语言模型.md \
+            docs/chapter5/第五章\ 动手搭建大模型.md \
+            docs/chapter6/第六章\ 大模型训练流程实践.md \
+            docs/chapter7/第七章\ 大模型应用.md \
+            Extra-Chapter/transformer-architecture/readme.md \
+            Extra-Chapter/why-fine-tune-small-large-language-models/readme.md \
+            > merged.md
+
+    - name: 使用 Pandoc 生成带 MathML 的 EPUB
+      run: |
+        pandoc merged.md -o happy-llm-pandoc.epub \
+          --mathml \
+          --css=docs/epub-style.css \
+          --metadata title="Happy LLM - 从0开始构建大语言模型" \
+          --metadata author="DataWhale团队, Happy-LLM贡献者" \
+          --toc \
+          --toc-depth=3
 
     - name: Validate EPUB
       run: |
