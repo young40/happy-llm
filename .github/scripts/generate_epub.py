@@ -113,6 +113,10 @@ def create_epub():
     
     # Create table of contents
     book.toc = tuple(epub_chapters)
+    spine_items = ['nav'] + epub_chapters
+    book.spine = spine_items
+    print(f"[DEBUG] book.spine: {book.spine}")
+    print(f"[DEBUG] book.toc: {book.toc}")
     
     # Add navigation files
     book.add_item(epub.EpubNcx())
