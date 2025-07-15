@@ -53,6 +53,7 @@ jobs:
       run: |
         # Create a list of XHTML files in the correct order
         cat > chapter-order.txt << 'EOF'
+        docs/readme.xhtml
         docs/preface.xhtml
         docs/chapter1.xhtml
         docs/chapter2_transformer_architecture.xhtml
