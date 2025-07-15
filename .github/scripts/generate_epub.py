@@ -111,19 +111,15 @@ def create_epub():
     print(f"[DEBUG] Total chapters to add: {len(epub_chapters)}")
     print(f"[DEBUG] epub_chapters: {epub_chapters}")
     
+    # 添加 NCX 和 Nav 文件，必须在 spine/toc 之前
+    book.add_item(epub.EpubNcx())
+    book.add_item(epub.EpubNav())
     # Create table of contents
     book.toc = tuple(epub_chapters)
     spine_items = ['nav'] + epub_chapters
     book.spine = spine_items
     print(f"[DEBUG] book.spine: {book.spine}")
     print(f"[DEBUG] book.toc: {book.toc}")
-    
-    # Add navigation files
-    book.add_item(epub.EpubNcx())
-    book.add_item(epub.EpubNav())
-    
-    # Create spine
-    book.spine = spine_items
     
     # Generate EPUB file
     epub_path = 'happy-llm.epub'
