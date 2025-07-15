@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy-LLM 封面对比</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            color: white;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        .comparison {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin: 30px 0;
+        }
+        .cover-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        .cover-title {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: #e0e0e0;
+        }
+        .cover-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            margin: 20px 0;
+        }
+        .cover-info {
+            color: #b0b0b0;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+        .improvements {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+        }
+        .improvements h3 {
+            color: #ffd700;
+            margin-bottom: 15px;
+        }
+        .improvements ul {
+            color: #e0e0e0;
+            line-height: 1.8;
+        }
+        .download-section {
+            text-align: center;
+            margin: 40px 0;
+        }
+        .download-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 30px;
+            margin: 10px;
+            border-radius: 25px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📚 Happy-LLM 封面改进对比</h1>
+        
+        <div class="comparison">
+            <div class="cover-card">
+                <div class="cover-title">📸 原始 head.jpg</div>
+                <img src="images/head.jpg" alt="原始封面" class="cover-image">
+                <div class="cover-info">
+                    <p>📏 尺寸: 2400×1350px</p>
+                    <p>📁 格式: WebP</p>
+                    <p>⚠️ 问题: 不适合电子书，比例不合适</p>
+                </div>
+            </div>
+            
+            <div class="cover-card">
+                <div class="cover-title">✨ 改进版封面</div>
+                <img src="images/head-improved.jpg" alt="改进版封面" class="cover-image">
+                <div class="cover-info">
+                    <p>📏 尺寸: 1600×1200px</p>
+                    <p>📁 格式: JPEG</p>
+                    <p>✅ 电子书专用比例</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="improvements">
+            <h3>🎯 改进内容</h3>
+            <ul>
+                <li>📐 调整比例从 16:9 到 4:3，更适合电子书封面</li>
+                <li>🎨 增强色彩饱和度和对比度，使图像更鲜艳</li>
+                <li>🌑 添加渐变暗角，便于文字阅读</li>
+                <li>✍️ 添加专业的中文书名和副标题</li>
+                <li>📱 创建多个尺寸版本适配不同设备</li>
+                <li>🎭 保持原始设计的视觉风格</li>
+            </ul>
+        </div>
+        
+        <div class="download-section">
+            <h3>📥 下载选项</h3>
+            <a href="images/head-improved.jpg" class="download-btn" download>下载改进版主封面</a>
+            <a href="docs/images/epub-cover-head.jpg" class="download-btn" download>下载EPUB封面</a>
+            <a href="docs/images/kindle-cover-head.jpg" class="download-btn" download>下载Kindle封面</a>
+        </div>
+        
+        <div class="cover-card">
+            <div class="cover-title">📱 多尺寸支持</div>
+            <div class="cover-info">
+                <p>✅ 已创建以下版本：</p>
+                <ul style="text-align: left;">
+                    <li>🖼️ images/head-improved.jpg (1600×1200)</li>
+                    <li>📱 docs/images/epub-cover-head.jpg (600×800)</li>
+                    <li>📱 docs/images/kindle-cover-head.jpg (800×1280)</li>
+                    <li>🖼️ docs/images/epub-cover-head-thumb.jpg (300×225)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy-LLM 新封面预览</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #0a0a2e, #4a148c);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+        h1 {
+            color: white;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        .cover-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            margin: 20px 0;
+        }
+        .cover-info {
+            color: #e0e0e0;
+            font-size: 1.2em;
+            margin: 20px 0;
+        }
+        .cover-sizes {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+        .size-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            color: white;
+            font-size: 0.9em;
+        }
+        .download-links {
+            margin: 30px 0;
+        }
+        .download-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 12px 24px;
+            margin: 10px;
+            border-radius: 25px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📚 Happy-LLM 新封面预览</h1>
+        
+        <div class="cover-info">
+            <p>🎨 全新的专业封面设计，专为电子书优化</p>
+        </div>
+        
+        <img src="docs/images/epub-cover-new.jpg" alt="Happy-LLM 新封面" class="cover-image">
+        
+        <div class="cover-sizes">
+            <div class="size-box">
+                <strong>主封面</strong><br>
+                1600×1200px<br>
+                高质量打印版
+            </div>
+            <div class="size-box">
+                <strong>EPUB专用</strong><br>
+                600×800px<br>
+                电子书标准尺寸
+            </div>
+            <div class="size-box">
+                <strong>缩略图</strong><br>
+                300×225px<br>
+                预览图
+            </div>
+        </div>
+        
+        <div class="download-links">
+            <a href="docs/images/epub-cover-new.jpg" class="download-btn" download>下载主封面</a>
+            <a href="docs/images/epub-cover-600x800.jpg" class="download-btn" download>下载EPUB封面</a>
+            <a href="docs/images/epub-cover-new.png" class="download-btn" download>下载PNG版本</a>
+        </div>
+        
+        <div class="cover-info">
+            <p>✨ 设计特色：</p>
+            <ul style="text-align: left; color: #e0e0e0;">
+                <li>🎨 现代渐变背景设计</li>
+                <li>🧠 神经网络图案装饰</li>
+                <li>🌟 发光文字效果</li>
+                <li>📱 多尺寸适配</li>
+                <li>🎯 教育科技风格</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
