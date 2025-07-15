@@ -112,7 +112,16 @@ jobs:
           --epub-metadata=metadata.yaml \
           --resource-path=.:temp_epub:docs:Extra-Chapter \
           --verbose \
-          $(while IFS= read -r file; do echo "temp_epub/$(basename "$file")"; done < chapter-order.txt)
+          temp_epub/readme.xhtml \
+          temp_epub/preface.xhtml \
+          temp_epub/chapter1.xhtml \
+          temp_epub/chapter2_transformer_architecture.xhtml \
+          temp_epub/chapter3_pretrained_language_models.xhtml \
+          temp_epub/chapter4_large_language_models.xhtml \
+          temp_epub/chapter5_building_large_models.xhtml \
+          temp_epub/chapter6_training_pipeline.xhtml \
+          temp_epub/chapter6_preference_alignment.xhtml \
+          temp_epub/chapter7_applications.xhtml 
           
         echo "EPUB generation completed!"
         
