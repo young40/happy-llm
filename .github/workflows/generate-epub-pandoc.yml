@@ -45,7 +45,7 @@ jobs:
         description: 'Happy LLM是一本面向中文社区的大语言模型学习指南，从基础概念到实战应用，帮助读者深入理解并实践构建大语言模型。'
         identifier: 'happy-llm-2025'
         rights: '© 2025 DataWhale团队. All rights reserved.'
-        cover-image: 'docs/images/datawhale.png'
+        cover-image: 'docs/images/epub-cover.jpg'
         ...
         EOF
         
@@ -109,7 +109,7 @@ jobs:
           --metadata-file=metadata.yaml \
           --toc \
           --toc-depth=3 \
-          --epub-cover-image=docs/images/datawhale.png \
+          --epub-cover-image=docs/images/epub-cover.jpg \
           --epub-metadata=metadata.yaml \
           --resource-path=.:temp_epub:docs:Extra-Chapter \
           --verbose \
