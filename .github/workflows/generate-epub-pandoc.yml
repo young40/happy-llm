@@ -23,6 +23,11 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
+    - name: 安装 Calibre 依赖
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libegl1 libopengl0
+
     - name: Install Calibre
       run: |
         sudo -v ; wget -nv -O- https://download.calibre-ebook.com/linux-installer.sh | sudo sh /dev/stdin
