@@ -23,137 +23,40 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
       
-    - name: Setup Pandoc
-      uses: r-lib/actions/setup-pandoc@v2
-      with:
-        pandoc-version: '3.1.11'
-        
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y texlive-latex-base texlive-fonts-recommended texlive-xetex
-        
-    - name: Generate EPUB metadata file
+        sudo apt-get install -y python3-pip
+        pip install ebooklib
+
+    - name: 生成 EPUB 电子书（ebooklib）
       run: |
-        cat > metadata.yaml << 'EOF'
-        ---
-        title: 'Happy LLM - 从0开始构建大语言模型'
-        author: 'DataWhale团队'
-        date: $(date +"%Y-%m-%d")
-        lang: zh-CN
-        subject: ['Large Language Models', 'Machine Learning', 'Natural Language Processing', 'Deep Learning']
-        description: 'Happy LLM是一本面向中文社区的大语言模型学习指南，从基础概念到实战应用，帮助读者深入理解并实践构建大语言模型。'
-        identifier: 'happy-llm-2025'
-        rights: '© 2025 DataWhale团队. All rights reserved.'
-        cover-image: 'docs/images/epub-cover.jpg'
-        ...
-        EOF
-        
-    - name: Create EPUB from XHTML files
-      run: |
-        # Create a list of XHTML files in the correct order
-        cat > chapter-order.txt << 'EOF'
-        docs/readme.xhtml
-        docs/preface.xhtml
-        docs/chapter1.xhtml
-        docs/chapter2_transformer_architecture.xhtml
-        docs/chapter3_pretrained_language_models.xhtml
-        docs/chapter4/chapter4_large_language_models.xhtml
-        docs/chapter5_building_large_models.xhtml
-        docs/chapter6/chapter6_training_pipeline.xhtml
-        docs/chapter6/chapter6_preference_alignment.xhtml
-        docs/chapter7/chapter7_applications.xhtml
-        Extra-Chapter/transformer-architecture/transformer-architecture.xhtml
-        Extra-Chapter/why-fine-tune-small-large-language-models/why-fine-tune-small-large-language-models.xhtml
-        EOF
-        
-        # Check if all files exist
-        echo "Checking XHTML files..."
-        while IFS= read -r file; do
-          if [ -f "$file" ]; then
-            echo "✓ Found: $file"
-          else
-            echo "✗ Missing: $file"
-            exit 1
-          fi
-        done < chapter-order.txt
-        
-        # Generate EPUB using pandoc
-        echo "Generating EPUB with Pandoc..."
-        # Read files into array to handle spaces in filenames
-        mapfile -t files < chapter-order.txt
-        
-        # Create temporary directory for processing with correct image paths
-        mkdir -p temp_epub/images
-        
-        # Copy images to temp directory with correct paths
-        cp -r docs/images/* temp_epub/images/ 2>/dev/null || true
-        cp -r Extra-Chapter/transformer-architecture/images/* temp_epub/images/ 2>/dev/null || true
-        
-        # Process each XHTML file to fix image paths
-        for file in "${files[@]}"; do
-          filename=$(basename "$file")
-          temp_file="temp_epub/$filename"
-          # Fix image paths in XHTML files
-          sed 's|src="\./images/|src="images/|g' "$file" > "$temp_file"
-          sed -i 's|src="\../images/|src="images/|g' "$temp_file" || true
-          sed -i 's|src="\../../images/|src="images/|g' "$temp_file" || true
-        done
-        
-        # Generate EPUB using pandoc
-        pandoc \
-          --from=html \
-          --to=epub \
-          --output=happy-llm-pandoc.epub \
-          --css=docs/epub-style.css \
-          --metadata-file=metadata.yaml \
-          --toc \
-          --toc-depth=3 \
-          --epub-cover-image=docs/images/epub-cover.jpg \
-          --epub-metadata=metadata.yaml \
-          --resource-path=.:temp_epub:docs:Extra-Chapter \
-          --verbose \
-          temp_epub/readme.xhtml \
-          temp_epub/preface.xhtml \
-          temp_epub/chapter1.xhtml \
-          temp_epub/chapter2_transformer_architecture.xhtml \
-          temp_epub/chapter3_pretrained_language_models.xhtml \
-          temp_epub/chapter4_large_language_models.xhtml \
-          temp_epub/chapter5_building_large_models.xhtml \
-          temp_epub/chapter6_training_pipeline.xhtml \
-          temp_epub/chapter6_preference_alignment.xhtml \
-          temp_epub/chapter7_applications.xhtml \
-          temp_epub/transformer-architecture.xhtml \
-          temp_epub/why-fine-tune-small-large-language-models.xhtml
-          
-        echo "EPUB generation completed!"
-        
+        python3 .github/scripts/generate_epub.py
+
     - name: Validate EPUB
       run: |
-        # Install epubcheck for validation
         wget https://github.com/w3c/epubcheck/releases/download/v5.1.0/epubcheck-5.1.0.zip
         unzip epubcheck-5.1.0.zip
-        
-        # Validate the generated EPUB
-        java -jar epubcheck-5.1.0/epubcheck.jar --failonwarnings=false happy-llm-pandoc.epub || echo "EPUB validation completed with warnings"
-        
+        java -jar epubcheck-5.1.0/epubcheck.jar --failonwarnings=false happy-llm.epub || echo "EPUB validation completed with warnings"
+
     - name: Upload EPUB artifact
       uses: actions/upload-artifact@v4
       with:
         name: happy-llm-epub
-        path: happy-llm-pandoc.epub
+        path: happy-llm.epub
         retention-days: 30
-        
+
     - name: Create or update release
       uses: softprops/action-gh-release@v1
       with:
-        files: "happy-llm-pandoc.epub"
+        files: "happy-llm.epub"
         tag_name: "epub-${{ github.run_number }}"
         name: "Happy-LLM EPUB ${{ github.run_number }}"
         body: |
-          使用Pandoc自动生成的Happy-LLM电子书
+          使用ebooklib自动生成的Happy-LLM电子书
           
           包含内容：
+          - README
           - 前言
           - 第一章 NLP基础概念
           - 第二章 Transformer架构
@@ -164,16 +67,16 @@ jobs:
           - 第七章 大模型应用
           - 额外章节内容（偏好对齐、模型微调、Transformer详解等）
           
-          生成工具：Pandoc 3.1.11
+          生成工具：ebooklib
           样式文件：docs/epub-style.css
         token: ${{ secrets.GITHUB_TOKEN }}
         prerelease: false
-        
+
     - name: Update latest release
       if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
       uses: softprops/action-gh-release@v1
       with:
-        files: "happy-llm-pandoc.epub"
+        files: "happy-llm.epub"
         tag_name: "latest"
         name: "Happy-LLM EPUB (Latest)"
         body: |
