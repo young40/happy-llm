@@ -69,7 +69,7 @@ def create_epub():
     
     for idx, chapter in enumerate(chapters, 1):
         file_path = Path(chapter['file'])
-        
+        print(f"[DEBUG] Checking chapter: {chapter['title']} | Path: {file_path.resolve()} | Exists: {file_path.exists()}")
         if not file_path.exists():
             print(f"Warning: {file_path} not found, skipping...")
             continue
