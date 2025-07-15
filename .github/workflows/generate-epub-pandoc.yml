@@ -10,6 +10,7 @@ on:
       - 'Extra-Chapter/**/*.xhtml'
       - 'docs/epub-style.css'
       - '.github/workflows/generate-epub-pandoc.yml'
+      - '.github/scripts/*.py'
   workflow_dispatch:
 
 permissions:
