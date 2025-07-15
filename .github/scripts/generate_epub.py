@@ -73,15 +73,12 @@ def create_epub():
         if not file_path.exists():
             print(f"Warning: {file_path} not found, skipping...")
             continue
-            
-        # Read and process XHTML content
         with open(file_path, 'r', encoding='utf-8') as f:
             content = f.read()
-        
+        print(f"[DEBUG] Adding chapter: {chapter['title']} | Content length: {len(content)}")
         # Fix relative paths for EPUB
         content = content.replace('../epub-style.css', 'style/epub-style.css')
         content = content.replace('../../docs/epub-style.css', 'style/epub-style.css')
-        
         # Ensure proper XHTML structure
         if '<!DOCTYPE' not in content:
             content = f'''<?xml version="1.0" encoding="UTF-8"?>
@@ -96,18 +93,16 @@ def create_epub():
 {content}
 </body>
 </html>'''
-        
-        # Create EPUB chapter
         epub_chapter = epub.EpubHtml(
             title=chapter['title'],
             file_name=f"{chapter['id']}.xhtml",
             lang='zh',
             content=content
         )
-        
         book.add_item(epub_chapter)
         epub_chapters.append(epub_chapter)
         spine_items.append(epub_chapter)
+    print(f"[DEBUG] Total chapters to add: {len(epub_chapters)}")
     
     # Create table of contents
     book.toc = tuple(epub_chapters)
