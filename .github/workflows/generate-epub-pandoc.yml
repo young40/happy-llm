@@ -100,31 +100,28 @@ jobs:
           sed -i 's|src="\../../images/|src="images/|g' "$temp_file" || true
         done
         
-        # Generate EPUB using pandoc
+    - name: 使用 Pandoc 生成带 MathML 的 EPUB（直接多xhtml）
+      run: |
         pandoc \
-          --from=html \
-          --to=epub \
-          --output=happy-llm-pandoc.epub \
+          docs/readme.xhtml \
+          docs/preface.xhtml \
+          docs/chapter1.xhtml \
+          docs/chapter2_transformer_architecture.xhtml \
+          docs/chapter3_pretrained_language_models.xhtml \
+          docs/chapter4/chapter4_large_language_models.xhtml \
+          docs/chapter5_building_large_models.xhtml \
+          docs/chapter6/chapter6_training_pipeline.xhtml \
+          docs/chapter6/chapter6_preference_alignment.xhtml \
+          docs/chapter7/chapter7_applications.xhtml \
+          Extra-Chapter/transformer-architecture/transformer-architecture.xhtml \
+          Extra-Chapter/why-fine-tune-small-large-language-models/why-fine-tune-small-large-language-models.xhtml \
+          -o happy-llm-pandoc.epub \
+          --mathml \
           --css=docs/epub-style.css \
-          --metadata-file=metadata.yaml \
+          --metadata title="Happy LLM - 从0开始构建大语言模型" \
+          --metadata author="DataWhale团队, Happy-LLM贡献者" \
           --toc \
-          --toc-depth=3 \
-          --epub-cover-image=docs/images/epub-cover.jpg \
-          --epub-metadata=metadata.yaml \
-          --resource-path=.:temp_epub:docs:Extra-Chapter \
-          --verbose \
-          temp_epub/readme.xhtml \
-          temp_epub/preface.xhtml \
-          temp_epub/chapter1.xhtml \
-          temp_epub/chapter2_transformer_architecture.xhtml \
-          temp_epub/chapter3_pretrained_language_models.xhtml \
-          temp_epub/chapter4_large_language_models.xhtml \
-          temp_epub/chapter5_building_large_models.xhtml \
-          temp_epub/chapter6_training_pipeline.xhtml \
-          temp_epub/chapter6_preference_alignment.xhtml \
-          temp_epub/chapter7_applications.xhtml \
-          temp_epub/transformer-architecture.xhtml \
-          temp_epub/why-fine-tune-small-large-language-models.xhtml
+          --toc-depth=3
           
         echo "EPUB generation completed!"
         
