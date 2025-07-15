@@ -51,17 +51,17 @@ def create_epub():
     # Define chapters in order
     chapters = [
         {'title': 'README', 'file': 'docs/readme.xhtml', 'id': 'readme'},
-        {'title': '前言', 'file': 'docs/preface.xhtml', 'id': 'preface'},
-        {'title': '第一章 NLP基础概念', 'file': 'docs/chapter1.xhtml', 'id': 'chapter1'},
-        {'title': '第二章 Transformer架构', 'file': 'docs/chapter2_transformer_architecture.xhtml', 'id': 'chapter2'},
-        {'title': '第三章 预训练语言模型', 'file': 'docs/chapter3_pretrained_language_models.xhtml', 'id': 'chapter3'},
-        {'title': '第四章 大语言模型', 'file': 'docs/chapter4/chapter4_large_language_models.xhtml', 'id': 'chapter4'},
-        {'title': '第五章 动手搭建大模型', 'file': 'docs/chapter5_building_large_models.xhtml', 'id': 'chapter5'},
-        {'title': '第六章 大模型训练流程实践', 'file': 'docs/chapter6/chapter6_training_pipeline.xhtml', 'id': 'chapter6'},
-        {'title': '4.1 偏好对齐', 'file': 'docs/chapter6/chapter6_preference_alignment.xhtml', 'id': 'preference_alignment'},
-        {'title': '第七章 大模型应用', 'file': 'docs/chapter7/chapter7_applications.xhtml', 'id': 'chapter7'},
-        {'title': 'Transformer架构详解', 'file': 'Extra-Chapter/transformer-architecture/transformer-architecture.xhtml', 'id': 'transformer-architecture'},
-        {'title': '为什么微调小型大语言模型', 'file': 'Extra-Chapter/why-fine-tune-small-large-language-models/why-fine-tune-small-large-language-models.xhtml', 'id': 'why-fine-tune'},
+        # {'title': '前言', 'file': 'docs/preface.xhtml', 'id': 'preface'},
+        # {'title': '第一章 NLP基础概念', 'file': 'docs/chapter1.xhtml', 'id': 'chapter1'},
+        # {'title': '第二章 Transformer架构', 'file': 'docs/chapter2_transformer_architecture.xhtml', 'id': 'chapter2'},
+        # {'title': '第三章 预训练语言模型', 'file': 'docs/chapter3_pretrained_language_models.xhtml', 'id': 'chapter3'},
+        # {'title': '第四章 大语言模型', 'file': 'docs/chapter4/chapter4_large_language_models.xhtml', 'id': 'chapter4'},
+        # {'title': '第五章 动手搭建大模型', 'file': 'docs/chapter5_building_large_models.xhtml', 'id': 'chapter5'},
+        # {'title': '第六章 大模型训练流程实践', 'file': 'docs/chapter6/chapter6_training_pipeline.xhtml', 'id': 'chapter6'},
+        # {'title': '4.1 偏好对齐', 'file': 'docs/chapter6/chapter6_preference_alignment.xhtml', 'id': 'preference_alignment'},
+        # {'title': '第七章 大模型应用', 'file': 'docs/chapter7/chapter7_applications.xhtml', 'id': 'chapter7'},
+        # {'title': 'Transformer架构详解', 'file': 'Extra-Chapter/transformer-architecture/transformer-architecture.xhtml', 'id': 'transformer-architecture'},
+        # {'title': '为什么微调小型大语言模型', 'file': 'Extra-Chapter/why-fine-tune-small-large-language-models/why-fine-tune-small-large-language-models.xhtml', 'id': 'why-fine-tune'},
     ]
     
     epub_chapters = []
