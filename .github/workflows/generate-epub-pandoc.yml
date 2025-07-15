@@ -62,8 +62,8 @@ jobs:
         docs/chapter6/chapter6_training_pipeline.xhtml
         docs/chapter6/chapter6_preference_alignment.xhtml
         docs/chapter7/chapter7_applications.xhtml
-        Extra-Chapter/transformer-architecture/readme.xhtml
-        Extra-Chapter/why-fine-tune-small-large-language-models/readme.xhtml
+        Extra-Chapter/transformer-architecture/transformer-architecture.xhtml
+        Extra-Chapter/why-fine-tune-small-large-language-models/why-fine-tune-small-large-language-models.xhtml
         EOF
         
         # Check if all files exist
@@ -121,7 +121,9 @@ jobs:
           temp_epub/chapter5_building_large_models.xhtml \
           temp_epub/chapter6_training_pipeline.xhtml \
           temp_epub/chapter6_preference_alignment.xhtml \
-          temp_epub/chapter7_applications.xhtml 
+          temp_epub/chapter7_applications.xhtml \
+          temp_epub/transformer-architecture.xhtml \
+          temp_epub/why-fine-tune-small-large-language-models.xhtml
           
         echo "EPUB generation completed!"
         
